@@ -1,22 +1,23 @@
 "use client"
 import { useAdminTextbookStore } from '@/stores/useTexbookStore';
 import {
-    AlertCircle,
-    ArrowLeft,
-    BookMarked,
-    BookOpen,
-    Building,
-    Calendar,
-    Check,
-    FileText,
-    GraduationCap,
-    Image as ImageIcon,
-    Loader2,
-    Target,
-    Upload,
-    User,
-    X
+  AlertCircle,
+  ArrowLeft,
+  BookMarked,
+  BookOpen,
+  Building,
+  Calendar,
+  Check,
+  FileText,
+  GraduationCap,
+  Image as ImageIcon,
+  Loader2,
+  Target,
+  Upload,
+  User,
+  X
 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 
@@ -53,11 +54,6 @@ interface ModernSelectProps extends React.SelectHTMLAttributes<HTMLSelectElement
   error?: string;
   required?: boolean;
   children: React.ReactNode;
-}
-
-interface AddNewTextbookProps {
-  onBack: () => void;
-  onSuccess?: () => void;
 }
 
 interface FormData {
@@ -304,7 +300,10 @@ const ModernSelect: React.FC<ModernSelectProps> = ({
   );
 };
 
-const AddNewTextbook: React.FC<AddNewTextbookProps> = ({ onBack, onSuccess }) => {
+// Main page component
+export default function NewTextbookPage() {
+  const router = useRouter();
+  
   // Use the store
   const { 
     createTextbook, 
@@ -447,6 +446,16 @@ const AddNewTextbook: React.FC<AddNewTextbookProps> = ({ onBack, onSuccess }) =>
     return Object.keys(errors).length === 0;
   };
 
+  // Handle back navigation
+  const handleBack = () => {
+    router.push('/admin/textbooks');
+  };
+
+  // Handle success callback
+  const handleSuccess = () => {
+    router.push('/admin/textbooks');
+  };
+
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -499,7 +508,7 @@ const AddNewTextbook: React.FC<AddNewTextbookProps> = ({ onBack, onSuccess }) =>
         resetForm();
         
         // Call onSuccess callback
-        onSuccess?.();
+        handleSuccess();
       } else {
         // Show error toast if creation failed
         toast.error('Failed to create textbook. Please try again.', {
@@ -526,7 +535,7 @@ const AddNewTextbook: React.FC<AddNewTextbookProps> = ({ onBack, onSuccess }) =>
         <div className="mb-8">
           <div className="flex items-center gap-4 mb-6">
             <button
-              onClick={onBack}
+              onClick={handleBack}
               className="flex items-center gap-2 px-4 py-2 text-slate-600 hover:text-slate-900 hover:bg-white/50 rounded-lg transition-all duration-200"
             >
               <ArrowLeft className="h-5 w-5" />
@@ -765,7 +774,7 @@ const AddNewTextbook: React.FC<AddNewTextbookProps> = ({ onBack, onSuccess }) =>
           <div className="flex flex-col sm:flex-row gap-4 justify-end">
             <button
               type="button"
-              onClick={onBack}
+              onClick={handleBack}
               className="px-6 py-3 text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 hover:border-slate-400 transition-all duration-200 font-medium"
               disabled={isCreating}
             >
@@ -793,6 +802,4 @@ const AddNewTextbook: React.FC<AddNewTextbookProps> = ({ onBack, onSuccess }) =>
       </div>
     </div>
   );
-};
-
-export default AddNewTextbook;
+}
