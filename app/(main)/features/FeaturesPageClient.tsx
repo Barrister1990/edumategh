@@ -93,7 +93,7 @@ export default function FeaturesPageClient({
             </h1>
             
             <p className="text-xl text-purple-100 mb-8 leading-relaxed max-w-3xl mx-auto">
-              Comprehensive AI-powered educational tools designed specifically for Ghana's curriculum, 
+              Comprehensive AI-powered educational tools designed specifically for Ghana&apos;s curriculum, 
               empowering both students and teachers with cutting-edge technology.
             </p>
           </motion.div>
