@@ -104,7 +104,7 @@ export default function DownloadPage() {
               variants={itemVariants}
               className="text-lg md:text-xl text-white/90 mb-6 md:mb-8 max-w-2xl mx-auto px-4"
             >
-              Join thousands of students already using Ghana's #1 learning app
+              Join thousands of students already using Ghana&apos;s #1 learning app
             </motion.p>
             
             {/* Quick Stats */}

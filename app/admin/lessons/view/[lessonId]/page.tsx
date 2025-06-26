@@ -845,7 +845,7 @@ const lessonId = params?.lessonId as string;
                                       className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
                                     />
                                     <p className="text-xs text-gray-500 mt-1">
-                                      Upload a video or use HTML syntax: &lt;video controls src="video-url"&gt;&lt;/video&gt;
+                                      Upload a video or use HTML syntax: &lt;video controls src= &apos;video-url &apos;&gt;&lt;/video&gt;
                                     </p>
                                   </div>
                                 )}

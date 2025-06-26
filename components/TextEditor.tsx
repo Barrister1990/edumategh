@@ -1,23 +1,19 @@
-import React, { useRef, useEffect } from 'react';
-import { 
-  Bold, 
-  Italic, 
-  Underline, 
-  List, 
-  ListOrdered, 
-  Quote, 
-  Code, 
-  Link,
+import {
+  Bold,
+  Code,
   Heading1,
   Heading2,
   Heading3,
-  AlignLeft,
-  AlignCenter,
-  AlignRight,
+  Italic,
+  Link,
+  List,
+  ListOrdered,
+  Quote,
   Strikethrough,
-  Type,
+  Underline,
   X
 } from 'lucide-react';
+import React, { useRef } from 'react';
 
 interface TextEditorProps {
   value: string;
@@ -280,11 +276,11 @@ const TextEditor: React.FC<TextEditorProps> = ({
       </div>
 
       {/* Quick Help */}
-      <div className="px-4 py-2 bg-blue-50 border-b border-gray-100">
-        <div className="text-xs text-blue-700">
-          <span className="font-medium">Quick tips:</span> Use $LaTeX$ for math equations, **bold**, *italic*, `code`, and > for quotes
-        </div>
+       <div className="px-4 py-2 bg-blue-50 border-b border-gray-100">
+      <div className="text-xs text-blue-700">
+        <span className="font-medium">Quick tips:</span> Use $LaTeX$ for math equations, **bold**, *italic*, `code`, and {'>'}  for quotes
       </div>
+    </div>
 
       {/* Text Area */}
       <div className="p-3">

@@ -3,17 +3,17 @@
 import { uploadToCloudinary } from '@/lib/cloudinary';
 import { shsCourses, useAdminCurriculumStore } from '@/stores/curriculum';
 import {
-    AlertCircle,
-    ArrowLeft,
-    Check,
-    Download,
-    Edit3,
-    ExternalLink,
-    Eye,
-    FileText,
-    Image,
-    Save,
-    X
+  AlertCircle,
+  ArrowLeft,
+  Check,
+  Download,
+  Edit3,
+  ExternalLink,
+  Eye,
+  FileText,
+  Image,
+  Save,
+  X
 } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -701,7 +701,7 @@ const handleInputChange = (field: keyof FormData, value: string): void => {
                                 Drop new PDF here or click to browse
                               </p>
                               <p className="text-xs text-gray-500">
-                                Current: {selectedDocument?.title} || 'Document'</p>
+                                Current: {selectedDocument?.title} || &apos;Document&apos;</p>
                             </div>
                           )}
                         </div>

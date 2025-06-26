@@ -114,7 +114,7 @@ export default function HomePageClient({ features, benefits, testimonials, stats
               </span>
             </h2>
             <p className="text-base lg:text-xl text-slate-600 dark:text-slate-300 leading-relaxed">
-              Experience education like never before with AI-powered tools designed specifically for Ghana's curriculum
+              Experience education like never before with AI-powered tools designed specifically for Ghana&apos;s curriculum
             </p>
           </motion.div>
           
@@ -272,7 +272,7 @@ export default function HomePageClient({ features, benefits, testimonials, stats
               <span className="text-slate-900 dark:text-white">Real Stories from</span>
               <br />
               <span className="bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-800 bg-clip-text text-transparent">
-                Ghana's Educators
+                Ghana&apos;s Educators
               </span>
             </h2>
             <p className="text-base lg:text-xl text-slate-600 dark:text-slate-300 leading-relaxed">
@@ -300,7 +300,7 @@ export default function HomePageClient({ features, benefits, testimonials, stats
                 </div>
                 
                 <blockquote className="text-sm lg:text-base text-slate-700 dark:text-slate-300 mb-4 lg:mb-6 leading-relaxed italic">
-                  "{testimonial.content}"
+                 &apos;{testimonial.content}&apos;
                 </blockquote>
                 
                 <div className="flex items-center space-x-3 lg:space-x-4">

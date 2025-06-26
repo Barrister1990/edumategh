@@ -156,7 +156,7 @@ const ContactPage = () => {
           >
             <div className="inline-flex items-center px-4 py-2 rounded-full bg-white/20 backdrop-blur-xl text-white text-sm font-medium mb-6">
               <Sparkles className="w-4 h-4 mr-2" />
-              We're Here to Help
+              We&apos;re Here to Help
             </div>
             
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-6">
@@ -246,7 +246,7 @@ const ContactPage = () => {
               </div>
               
               <h2 className="text-3xl md:text-4xl font-black mb-4 md:mb-6">
-                <span className="text-slate-900 dark:text-white">Let's Start a</span>
+                <span className="text-slate-900 dark:text-white">Let&apos;s Start a</span>
                 <br />
                 <span className="bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-800 bg-clip-text text-transparent">
                   Conversation
@@ -254,7 +254,7 @@ const ContactPage = () => {
               </h2>
               
               <p className="text-lg text-slate-600 dark:text-slate-300 mb-6 md:mb-8 leading-relaxed">
-                We'd love to hear from you. Whether you have a question about features, 
+                We&apos;d love to hear from you. Whether you have a question about features, 
                 need technical support, or want to provide feedback, our team is ready to help.
               </p>
               
@@ -402,7 +402,7 @@ const ContactPage = () => {
                       Message Sent!
                     </h3>
                     <p className="text-slate-600 dark:text-slate-300 mb-4">
-                      Thank you for reaching out. We'll get back to you within 24 hours.
+                      Thank you for reaching out. We&apos;ll get back to you within 24 hours.
                     </p>
                     <div className="text-sm text-slate-500 dark:text-slate-400">
                       Redirecting in 3 seconds...
