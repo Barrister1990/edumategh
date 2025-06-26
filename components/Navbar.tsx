@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion, Variants } from "framer-motion";
 import { BookOpen, Menu, Smartphone, Sparkles, X, Zap } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export function Navbar() {
@@ -246,10 +247,10 @@ export function Navbar() {
                   <motion.div
                     className="absolute inset-0 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                   />
-                  <span className="relative flex items-center gap-2">
+                  <Link href="admin/dashboard" className="relative flex items-center gap-2">
                     <Zap className="w-4 h-4" />
                     Get Started Free
-                  </span>
+                  </Link>
                   
                   {/* Shine effect */}
                   <motion.div
