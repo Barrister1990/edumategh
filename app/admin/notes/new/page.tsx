@@ -175,7 +175,7 @@ useEffect(() => {
 
   // Get filtered data based on current selections
   const availableSubjects = getSubjectsForLevel(watchedLevel, watchedCourse);
-  const availableStrands = getStrandsForSubject(watchedSubjectId, watchedLevel, watchedClass, watchedCourse);
+  const availableStrands = getStrandsForSubject(watchedSubjectId);
   const availableSubStrands = getSubStrandsForStrand(watchedStrandId);
   const availableIndicators = getIndicatorsForSubStrand(watchedSubStrandId);
 

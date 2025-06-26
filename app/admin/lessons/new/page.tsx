@@ -1,9 +1,9 @@
 "use client";
 import MathToolbar, { MathButton } from '@/components/MathToolbar';
+import TextEditor from '@/components/TextEditor';
 import { useAdminLessonStore } from '@/stores/adminLessonStore';
 import { Eye, FileText, HelpCircle, Image, Move, Save, Trash2, Video, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import TextEditor from '@/components/TextEditor'; 
 
 
 interface FormData {
@@ -71,7 +71,7 @@ const [formData, setFormData] = useState<FormData>({
   const [activeContentEditor, setActiveContentEditor] = useState<number | null>(null);
   const [showMathToolbar, setShowMathToolbar] = useState(false);
   const [previewMode, setPreviewMode] = useState(false);
-const [activeTextEditor, setActiveTextEditor] = useState<number | null>(null);
+const [activeTextEditor, setActiveTextEditor] = useState<number | string | null>(null);
   // Course options for SHS
   const shsCourses = [
     'General Science',
@@ -629,7 +629,7 @@ const renderContentPreview = (content: ContentSection) => {
                                 value={section.content}
                                 onChange={(value) => updateContent(section.id, 'content', value)}
                                 placeholder="Enter your content here... Use $LaTeX$ for math equations"
-                                contentId={section.id}
+                                contentId={section.id.toString()}
                                 isVisible={activeTextEditor === section.id}
                                 onClose={() => setActiveTextEditor(null)}
                                 rows={8}

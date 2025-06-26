@@ -19,7 +19,7 @@ interface TextEditorProps {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
-  contentId: number;
+  contentId: string;
   isVisible: boolean;
   onClose: () => void;
   rows?: number;
