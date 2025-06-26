@@ -15,7 +15,8 @@ export default function StructuredData({ page = 'home' }: StructuredDataProps) {
     ];
 
     if (page === 'contact') {
-      baseSchemas.push(structuredData.faqPage);
+      // Type assertion to handle the schema type mismatch
+      baseSchemas.push(structuredData.faqPage as any);
     }
 
     return baseSchemas;
