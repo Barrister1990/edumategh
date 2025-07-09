@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 
 interface FormData {
   title: string;
-  level: 'JHS' | 'SHS';
+  level: string;
   course: string;
   subject: string;
   sub_strand: string;
@@ -86,6 +86,7 @@ const [activeTextEditor, setActiveTextEditor] = useState<number | string | null>
   // Class options
   const jhsClasses = ['JHS 1', 'JHS 2', 'JHS 3'];
   const shsClasses = ['SHS 1', 'SHS 2', 'SHS 3'];
+  const basicClasses = ['Basic 4', 'Basic 5', 'Basic 6'];
 
 
 
@@ -111,6 +112,13 @@ useEffect(() => {
 useEffect(() => {
   if (formData.level === 'JHS') {
     fetchSubjects('JHS');
+    setFormData(prev => ({ ...prev, course: '', subject: '', sub_strand: '' }));
+  }
+}, [formData.level, formData.class, fetchSubjects]);
+
+useEffect(() => {
+  if (formData.level === 'Basic') {
+    fetchSubjects('Basic');
     setFormData(prev => ({ ...prev, course: '', subject: '', sub_strand: '' }));
   }
 }, [formData.level, formData.class, fetchSubjects]);
@@ -375,6 +383,7 @@ const renderContentPreview = (content: ContentSection) => {
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 >
+                  <option value="Basic">Upper Primary</option>
                   <option value="JHS">Junior High School (JHS)</option>
                   <option value="SHS">Senior High School (SHS)</option>
                 </select>
@@ -391,9 +400,14 @@ const renderContentPreview = (content: ContentSection) => {
                   required
                 >
                   <option value="">Select Class</option>
-                  {(formData.level === 'JHS' ? jhsClasses : shsClasses).map(cls => (
-                    <option key={cls} value={cls}>{cls}</option>
-                  ))}
+                   {(formData.level === 'Basic'
+    ? basicClasses
+    : formData.level === 'JHS'
+    ? jhsClasses
+    : shsClasses
+  ).map(cls => (
+    <option key={cls} value={cls}>{cls}</option>
+  ))}
                 </select>
               </div>
 

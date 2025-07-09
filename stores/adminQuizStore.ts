@@ -6,7 +6,7 @@ export interface Subject {
   id: string;
   name: string;
   class: string;
-  level: 'JHS' | 'SHS';
+  level: string;
   description?: string;
   course?: string; // Only for SHS level subjects
 }
@@ -40,7 +40,7 @@ export interface Quiz {
   substrand: string;
   course: string;
   subject: string;
-  level: 'JHS' | 'SHS';
+  level: string;
   class: string;
   questions: QuizQuestion[];
   description?: string;
@@ -56,7 +56,7 @@ export interface CreateQuizData {
   title: string;
   subject_id: string;
   substrand_id: string;
-  level: 'JHS' | 'SHS';
+  level: string;
   class: string;
   questions: QuizQuestion[];
   description?: string;
@@ -104,7 +104,7 @@ interface AdminQuizState {
   reorderQuestions: (fromIndex: number, toIndex: number) => void;
   
   // Actions - Data Fetching
-  fetchSubjects: (level?: 'JHS' | 'SHS', classFilter?: string) => Promise<void>;
+  fetchSubjects: (level?: string, classFilter?: string) => Promise<void>;
   fetchSubStrands: (subjectId: string, classFilter?: string) => Promise<void>;
   
   // Actions - UI State
@@ -115,7 +115,7 @@ interface AdminQuizState {
 }
 
 export interface QuizFilters {
-  level?: 'JHS' | 'SHS';
+  level?: string;
   class?: string;
   subject_id?: string;
   substrand_id?: string;
@@ -425,7 +425,7 @@ export const useAdminQuizStore = create<AdminQuizState>((set, get) => ({
   },
 
   // Data Fetching
-  fetchSubjects: async (level?: 'JHS' | 'SHS', classFilter?: string) => {
+  fetchSubjects: async (level?: string, classFilter?: string) => {
     set({ isLoading: true, error: null });
     console.log(classFilter);
     

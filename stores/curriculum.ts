@@ -3,8 +3,8 @@ import { create } from 'zustand';
 
 // Types
 export interface CurriculumOptions {
-  level: 'JHS' | 'SHS';
-  class: '1' | '2' | '3';
+  level: string;
+  class: string;
   course?: string; // For SHS
   subject: string;
 }
@@ -46,8 +46,8 @@ export interface UpdateCurriculumDocument {
 }
 
 export interface FilterOptions {
-  level?: 'JHS' | 'SHS';
-  class?: '1' | '2' | '3';
+  level?: string;
+  class?: string;
   course?: string;
   subject?: string;
   searchTerm?: string;
@@ -64,7 +64,7 @@ export interface PaginationState {
 export interface Subject {
   id: string;
   name: string;
-  level: 'JHS' | 'SHS';
+  level: string;
   course?: string; // Only for SHS subjects
   createdAt: string;
   updatedAt: string;
@@ -109,7 +109,7 @@ interface AdminCurriculumState {
   // Actions
   fetchDocuments: () => Promise<void>;
   fetchDocumentById: (id: string) => Promise<CurriculumDocument | null>;
-  fetchSubjects: (level?: 'JHS' | 'SHS', course?: string) => Promise<void>;
+  fetchSubjects: (level?: string, course?: string) => Promise<void>;
   createDocument: (document: CreateCurriculumDocument) => Promise<boolean>;
   updateDocument: (document: UpdateCurriculumDocument) => Promise<boolean>;
   deleteDocument: (id: string) => Promise<boolean>;
@@ -126,7 +126,7 @@ interface AdminCurriculumState {
   setPageSize: (pageSize: number) => void;
   
   // Utility
-  getSubjectsForLevel: (level?: 'JHS' | 'SHS', course?: string) => Subject[];
+  getSubjectsForLevel: (level?: string, course?: string) => Subject[];
   resetState: () => void;
   clearErrors: () => void;
 }
@@ -266,8 +266,8 @@ export const useAdminCurriculumStore = create<AdminCurriculumState>((set, get) =
 
       // Apply filters
       if (filters.level && filters.class) {
-        const dbClass = `${filters.level} ${filters.class}`;
-        query = query.eq('class', dbClass);
+       
+        query = query.eq('class', filters.class);
       }
       
       if (filters.subject) {
@@ -385,21 +385,24 @@ export const useAdminCurriculumStore = create<AdminCurriculumState>((set, get) =
   },
 // Add this method to your useAdminCurriculumStore in the store file
 
-checkDuplicateDocument: async (level: string, classNum: string, subject: string, course?: string) => {
+checkDuplicateDocument: async (
+  level: string,
+  classNum: string,
+  subject: string,
+  course?: string
+) => {
   try {
-    const dbClass = `${level} ${classNum}`;
-    
     let query = supabase
       .from('curriculum_documents')
       .select('id, title')
-      .eq('class', dbClass)
+      .eq('class', classNum)
       .eq('subject', subject);
 
     // Add course filter for SHS documents
     if (level === 'SHS' && course) {
       query = query.eq('course', course);
-    } else if (level === 'JHS') {
-      // For JHS, course should be null
+    } else if (level === 'JHS' || level === 'Basic') {
+      // For JHS and Basic, course should be null
       query = query.is('course', null);
     }
 
@@ -413,6 +416,7 @@ checkDuplicateDocument: async (level: string, classNum: string, subject: string,
     throw new Error('Failed to check for existing documents');
   }
 },
+
   updateDocument: async (document) => {
     set({ isUpdating: true, updateError: null });
 
@@ -569,27 +573,30 @@ checkDuplicateDocument: async (level: string, classNum: string, subject: string,
     },
   })),
 
-  getSubjectsForLevel: (level, course) => {
-    const { subjects } = get();
-    
-    if (!level) {
-      return subjects;
-    }
-    
-    if (level === 'JHS') {
-      return subjects.filter(subject => subject.level === 'JHS');
-    } else if (level === 'SHS') {
-      if (course) {
-        return subjects.filter(subject => 
-          subject.level === 'SHS' && subject.course === course
-        );
-      } else {
-        return subjects.filter(subject => subject.level === 'SHS');
-      }
-    }
-    
+getSubjectsForLevel: (level, course) => {
+  const { subjects } = get();
+
+  if (!level) {
     return subjects;
-  },
+  }
+
+  if (level === 'JHS') {
+    return subjects.filter(subject => subject.level === 'JHS');
+  } else if (level === 'SHS') {
+    if (course) {
+      return subjects.filter(subject =>
+        subject.level === 'SHS' && subject.course === course
+      );
+    } else {
+      return subjects.filter(subject => subject.level === 'SHS');
+    }
+  } else if (level === 'Basic') {
+    return subjects.filter(subject => subject.level === 'Basic');
+  }
+
+  return subjects;
+},
+
 
   resetState: () => set(initialState),
 

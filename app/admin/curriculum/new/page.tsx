@@ -4,11 +4,12 @@ import { uploadToCloudinary } from '@/lib/cloudinary';
 import { shsCourses, useAdminCurriculumStore } from '@/stores/curriculum';
 import { AlertCircle, ArrowLeft, Check, FileText, Image, Upload } from 'lucide-react';
 import { useEffect, useState } from 'react';
+
 // Type definitions
 interface FormData {
   title: string;
   description: string;
-  level: 'JHS' | 'SHS' | '';
+  level: 'Basic' | 'JHS' | 'SHS' | '';
   class: string;
   course: string;
   subject: string;
@@ -40,6 +41,13 @@ interface UploadProgress {
 type FileField = 'pdfFile' | 'thumbnailFile';
 type ProgressField = 'pdf' | 'thumbnail';
 
+// Class options for each level
+const classOptions = {
+  Basic: ['Basic 4', 'Basic 5', 'Basic 6'],
+  JHS: ['JHS 1', 'JHS 2', 'JHS 3'],
+  SHS: ['SHS 1', 'SHS 2', 'SHS 3']
+};
+
 const AddNewCurriculum = () => {
   const {
     createDocument,
@@ -67,7 +75,8 @@ const AddNewCurriculum = () => {
   const [errors, setErrors] = useState<FormErrors>({});
   const [isDragOver, setIsDragOver] = useState<DragState>({ pdf: false, thumbnail: false });
   const [uploadProgress, setUploadProgress] = useState<UploadProgress>({ pdf: 0, thumbnail: 0 });
-const [isDuplicateChecking, setIsDuplicateChecking] = useState(false);
+  const [isDuplicateChecking, setIsDuplicateChecking] = useState(false);
+
   useEffect(() => {
     if (formData.level) {
       fetchSubjects(formData.level, formData.course || undefined);
@@ -107,7 +116,7 @@ const [isDuplicateChecking, setIsDuplicateChecking] = useState(false);
       ...prev,
       [field]: value,
       // Reset dependent fields
-      ...(field === 'level' && { course: '', subject: '' }),
+      ...(field === 'level' && { class: '', course: '', subject: '' }),
       ...(field === 'course' && { subject: '' })
     }));
 
@@ -117,64 +126,64 @@ const [isDuplicateChecking, setIsDuplicateChecking] = useState(false);
     }
   };
 
- // Enhanced handleFileUpload function with immediate progress feedback
-const handleFileUpload = (field: FileField, file: File | null): void => {
-  if (file) {
+  // Enhanced handleFileUpload function with immediate progress feedback
+  const handleFileUpload = (field: FileField, file: File | null): void => {
+    if (file) {
+      const progressField: ProgressField = field === 'pdfFile' ? 'pdf' : 'thumbnail';
+      
+      // Show immediate feedback
+      setUploadProgress(prev => ({ ...prev, [progressField]: 10 }));
+      
+      // Simulate validation progress
+      setTimeout(() => {
+        setUploadProgress(prev => ({ ...prev, [progressField]: 30 }));
+      }, 200);
+
+      setFormData(prev => ({ ...prev, [field]: file }));
+      if (errors[field]) {
+        setErrors(prev => ({ ...prev, [field]: '' }));
+      }
+
+      // Complete local processing
+      setTimeout(() => {
+        setUploadProgress(prev => ({ ...prev, [progressField]: 50 }));
+      }, 500);
+    }
+  };
+
+  // Alternative: Upload files immediately when selected (optional)
+  const handleFileUploadImmediate = async (field: FileField, file: File | null): Promise<void> => {
+    if (!file) return;
+
     const progressField: ProgressField = field === 'pdfFile' ? 'pdf' : 'thumbnail';
     
-    // Show immediate feedback
-    setUploadProgress(prev => ({ ...prev, [progressField]: 10 }));
-    
-    // Simulate validation progress
-    setTimeout(() => {
-      setUploadProgress(prev => ({ ...prev, [progressField]: 30 }));
-    }, 200);
-
-    setFormData(prev => ({ ...prev, [field]: file }));
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
+    try {
+      setUploadProgress(prev => ({ ...prev, [progressField]: 10 }));
+      
+      const folder = field === 'pdfFile' ? 'curriculum/pdfs' : 'curriculum/thumbnails';
+      const uploadResult = await uploadToCloudinary(file, folder);
+      
+      setUploadProgress(prev => ({ ...prev, [progressField]: 100 }));
+      
+      // Store both file and URL for later use
+      setFormData(prev => ({ 
+        ...prev, 
+        [field]: file,
+        [`${field}Url`]: uploadResult.secure_url // You'd need to add these to FormData interface
+      }));
+      
+      if (errors[field]) {
+        setErrors(prev => ({ ...prev, [field]: '' }));
+      }
+    } catch (error) {
+      console.error(`Error uploading ${field}:`, error);
+      setUploadProgress(prev => ({ ...prev, [progressField]: 0 }));
+      setErrors(prev => ({ 
+        ...prev, 
+        [field]: `Upload failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      }));
     }
-
-    // Complete local processing
-    setTimeout(() => {
-      setUploadProgress(prev => ({ ...prev, [progressField]: 50 }));
-    }, 500);
-  }
-};
-
-// Alternative: Upload files immediately when selected (optional)
-const handleFileUploadImmediate = async (field: FileField, file: File | null): Promise<void> => {
-  if (!file) return;
-
-  const progressField: ProgressField = field === 'pdfFile' ? 'pdf' : 'thumbnail';
-  
-  try {
-    setUploadProgress(prev => ({ ...prev, [progressField]: 10 }));
-    
-    const folder = field === 'pdfFile' ? 'curriculum/pdfs' : 'curriculum/thumbnails';
-    const uploadResult = await uploadToCloudinary(file, folder);
-    
-    setUploadProgress(prev => ({ ...prev, [progressField]: 100 }));
-    
-    // Store both file and URL for later use
-    setFormData(prev => ({ 
-      ...prev, 
-      [field]: file,
-      [`${field}Url`]: uploadResult.secure_url // You'd need to add these to FormData interface
-    }));
-    
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
-    }
-  } catch (error) {
-    console.error(`Error uploading ${field}:`, error);
-    setUploadProgress(prev => ({ ...prev, [progressField]: 0 }));
-    setErrors(prev => ({ 
-      ...prev, 
-      [field]: `Upload failed: ${error instanceof Error ? error.message : 'Unknown error'}`
-    }));
-  }
-};
+  };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>, field: ProgressField): void => {
     e.preventDefault();
@@ -197,94 +206,97 @@ const handleFileUploadImmediate = async (field: FileField, file: File | null): P
     }
   };
 
-const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
-  e.preventDefault();
-  
-  if (!validateForm()) return;
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+    e.preventDefault();
+    
+    if (!validateForm()) return;
 
-  // Ensure files exist
-  if (!formData.pdfFile || !formData.thumbnailFile) {
-    return;
-  }
-
-  try {
-    // Check for duplicate document first
-    setIsDuplicateChecking(true);
-    const existingDocument = await checkDuplicateDocument(
-      formData.level,
-      formData.class,
-      formData.subject,
-      formData.level === 'SHS' ? formData.course : undefined
-    );
-
-    setIsDuplicateChecking(false);
-
-    if (existingDocument) {
-      const courseText = formData.level === 'SHS' && formData.course ? ` (${formData.course})` : '';
-      alert(
-        `A document for ${formData.level} Class ${formData.class} - ${formData.subject}${courseText} already exists.\n\nExisting document: "${existingDocument.title}"\n\nPlease choose different criteria or update the existing document instead.`
-      );
+    // Ensure files exist
+    if (!formData.pdfFile || !formData.thumbnailFile) {
       return;
     }
 
-    // Update progress for both files
-    setUploadProgress({ pdf: 0, thumbnail: 0 });
+    try {
+      // Check for duplicate document first
+      setIsDuplicateChecking(true);
+      const existingDocument = await checkDuplicateDocument(
+        formData.level,
+        formData.class, // Pass full class name
+        formData.subject,
+        formData.level === 'SHS' ? formData.course : undefined
+      );
 
-    // Upload PDF to Cloudinary
-    setUploadProgress(prev => ({ ...prev, pdf: 20 }));
-    const pdfUpload = await uploadToCloudinary(formData.pdfFile, 'curriculum/pdfs');
-    setUploadProgress(prev => ({ ...prev, pdf: 60 }));
+      setIsDuplicateChecking(false);
 
-    // Upload thumbnail to Cloudinary
-    setUploadProgress(prev => ({ ...prev, thumbnail: 20 }));
-    const thumbnailUpload = await uploadToCloudinary(formData.thumbnailFile, 'curriculum/thumbnails');
-    setUploadProgress(prev => ({ ...prev, thumbnail: 60 }));
+      if (existingDocument) {
+        const courseText = formData.level === 'SHS' && formData.course ? ` (${formData.course})` : '';
+        alert(
+          `A document for ${formData.level} ${formData.class} - ${formData.subject}${courseText} already exists.\n\nExisting document: "${existingDocument.title}"\n\nPlease choose different criteria or update the existing document instead.`
+        );
+        return;
+      }
 
-    // Complete progress
-    setUploadProgress({ pdf: 100, thumbnail: 100 });
-
-    const documentData = {
-      title: formData.title.trim(),
-      description: formData.description.trim(),
-      class: `${formData.level} ${formData.class}`,
-      subject: formData.subject,
-      level: formData.level,
-      course: formData.level === 'SHS' ? formData.course : undefined,
-      pdfUrl: pdfUpload.secure_url,
-      thumbnailUrl: thumbnailUpload.secure_url
-    };
-
-    const success = await createDocument(documentData);
-    
-    if (success) {
-      // Reset form
-      setFormData({
-        title: '',
-        description: '',
-        level: '',
-        class: '',
-        course: '',
-        subject: '',
-        pdfFile: null,
-        thumbnailFile: null
-      });
+      // Update progress for both files
       setUploadProgress({ pdf: 0, thumbnail: 0 });
-      alert('Curriculum document created successfully!');
-    }
-  } catch (error) {
-    console.error('Error:', error);
-    setUploadProgress({ pdf: 0, thumbnail: 0 });
-    setIsDuplicateChecking(false);
-    
-    if (error instanceof Error && error.message.includes('duplicate') || error instanceof Error && error.message.includes('existing')) {
-      alert(`Cannot create document: ${error.message}`);
-    } else {
-      alert(`Error: ${error instanceof Error ? error.message : 'Unknown error occurred'}`);
-    }
-  }
-};
 
-  const availableSubjects = getSubjectsForLevel(formData.level as 'JHS' | 'SHS' | undefined, formData.course);
+      // Upload PDF to Cloudinary
+      setUploadProgress(prev => ({ ...prev, pdf: 20 }));
+      const pdfUpload = await uploadToCloudinary(formData.pdfFile, 'curriculum/pdfs');
+      setUploadProgress(prev => ({ ...prev, pdf: 60 }));
+
+      // Upload thumbnail to Cloudinary
+      setUploadProgress(prev => ({ ...prev, thumbnail: 20 }));
+      const thumbnailUpload = await uploadToCloudinary(formData.thumbnailFile, 'curriculum/thumbnails');
+      setUploadProgress(prev => ({ ...prev, thumbnail: 60 }));
+
+      // Complete progress
+      setUploadProgress({ pdf: 100, thumbnail: 100 });
+
+      const documentData = {
+        title: formData.title.trim(),
+        description: formData.description.trim(),
+        class: formData.class, // Pass full class name
+        subject: formData.subject,
+        level: formData.level,
+        course: formData.level === 'SHS' ? formData.course : undefined,
+        pdfUrl: pdfUpload.secure_url,
+        thumbnailUrl: thumbnailUpload.secure_url
+      };
+
+      const success = await createDocument(documentData);
+      
+      if (success) {
+        // Reset form
+        setFormData({
+          title: '',
+          description: '',
+          level: '',
+          class: '',
+          course: '',
+          subject: '',
+          pdfFile: null,
+          thumbnailFile: null
+        });
+        setUploadProgress({ pdf: 0, thumbnail: 0 });
+        alert('Curriculum document created successfully!');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setUploadProgress({ pdf: 0, thumbnail: 0 });
+      setIsDuplicateChecking(false);
+      
+      if (error instanceof Error && error.message.includes('duplicate') || error instanceof Error && error.message.includes('existing')) {
+        alert(`Cannot create document: ${error.message}`);
+      } else {
+        alert(`Error: ${error instanceof Error ? error.message : 'Unknown error occurred'}`);
+      }
+    }
+  };
+
+  const availableSubjects = getSubjectsForLevel(formData.level as 'Basic' | 'JHS' | 'SHS' | undefined, formData.course);
+  
+  // Get available classes for the selected level
+  const availableClasses = formData.level ? classOptions[formData.level as keyof typeof classOptions] : [];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
@@ -372,6 +384,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> 
                       } focus:outline-none`}
                     >
                       <option value="">Select Level</option>
+                      <option value="Basic">Basic School</option>
                       <option value="JHS">Junior High School</option>
                       <option value="SHS">Senior High School</option>
                     </select>
@@ -396,9 +409,11 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> 
                       } focus:outline-none disabled:bg-gray-100`}
                     >
                       <option value="">Select Class</option>
-                      <option value="1">Class 1</option>
-                      <option value="2">Class 2</option>
-                      <option value="3">Class 3</option>
+                      {availableClasses.map(className => (
+                        <option key={className} value={className}>
+                          {className}
+                        </option>
+                      ))}
                     </select>
                     {errors.class && (
                       <p className="text-red-600 text-sm mt-1 flex items-center gap-1">
@@ -611,27 +626,27 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> 
               {/* Submit Button */}
               <div className="flex justify-end pt-6 border-t border-gray-200">
                 <button
-  type="submit"
-  disabled={isCreating || isDuplicateChecking}
-  className="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center gap-2"
->
-  {isDuplicateChecking ? (
-    <>
-      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-      Checking for duplicates...
-    </>
-  ) : isCreating ? (
-    <>
-      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-      Creating Document...
-    </>
-  ) : (
-    <>
-      <Upload className="w-5 h-5" />
-      Create Curriculum Document
-    </>
-  )}
-</button>
+                  type="submit"
+                  disabled={isCreating || isDuplicateChecking}
+                  className="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center gap-2"
+                >
+                  {isDuplicateChecking ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      Checking for duplicates...
+                    </>
+                  ) : isCreating ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      Creating Document...
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="w-5 h-5" />
+                      Create Curriculum Document
+                    </>
+                  )}
+                </button>
               </div>
             </form>
           </div>

@@ -1,5 +1,5 @@
 export interface LessonOptions {
-  level: 'JHS' | 'SHS';
+  level: string;
   class: string;
   subject: string;
   course?: string;

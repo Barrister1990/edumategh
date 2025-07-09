@@ -6,7 +6,7 @@ export interface Subject {
   id: string;
   name: string;
   class: string;
-  level: 'JHS' | 'SHS';
+  level: string;
   description?: string;
   course?: string; // Only for SHS level subjects
 }
@@ -44,7 +44,7 @@ export interface Lesson {
   substrand: string;
   course: string;
   subject:string;
-  level: 'JHS' | 'SHS';
+  level: string;
   class: string;
   content: LessonContent[];
   description?: string;
@@ -58,7 +58,7 @@ export interface CreateLessonData {
   title: string;
   subject_id: string;
   substrand_id: string;
-  level: 'JHS' | 'SHS';
+  level: string;
   class: string;
   content: LessonContent[];
   description?: string;
@@ -104,7 +104,7 @@ interface AdminLessonState {
   reorderContentSections: (fromIndex: number, toIndex: number) => void;
   
   // Actions - Data Fetching
-  fetchSubjects: (level?: 'JHS' | 'SHS', classFilter?: string) => Promise<void>;
+  fetchSubjects: (level?: string, classFilter?: string) => Promise<void>;
    fetchSubStrands: (subjectId: string, classFilter?: string) => Promise<void>;
   
   // Actions - UI State
@@ -115,7 +115,7 @@ interface AdminLessonState {
 }
 
 export interface LessonFilters {
-  level?: 'JHS' | 'SHS';
+  level?: string;
   class?: string;
   subject_id?: string;
   substrand_id?: string;
@@ -257,7 +257,7 @@ export const useAdminLessonStore = create<AdminLessonState>((set, get) => ({
         .from('lessons')
         .select(`
           *,
-          subjects(id, name, level, description, course),
+          subjects(id, name, level, course),
           curriculum_sub_strands(
             id,
             sub_strand,
@@ -300,7 +300,7 @@ fetchLessons: async (page = 1, filters = {}) => {
       .from('lessons')
       .select(`
         *,
-        subjects(id, name, level, description, course),
+        subjects(id, name, level, course),
         curriculum_sub_strands(
           id, 
           sub_strand, 
@@ -424,9 +424,8 @@ fetchLessons: async (page = 1, filters = {}) => {
   },
 
   // Data Fetching
-  fetchSubjects: async (level?: 'JHS' | 'SHS', classFilter?: string) => {
+  fetchSubjects: async (level?: string, classFilter?: string) => {
     set({ isLoading: true, error: null });
-    console.log(classFilter)
     try {
       let query = supabase
         .from('subjects')
