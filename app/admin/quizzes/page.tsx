@@ -29,7 +29,7 @@ interface Quiz {
 }
 
 interface QuizFilters {
-  level: 'JHS' | 'SHS';
+  level: string;
   course: string;
   class: string;
   subject_id: string;
@@ -326,7 +326,7 @@ const getFilteredSubjects = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Level</label>
                   <select
                     value={filters.level}
-                    onChange={(e) => handleFilterChange('level', e.target.value as 'JHS' | 'SHS' | '')}
+                    onChange={(e) => handleFilterChange('level', e.target.value as string | '')}
                     className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
                     <option value="">All Levels</option>
