@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 
 interface FormData {
   title: string;
-  level: 'JHS' | 'SHS';
+  level: string;
   course: string;
   subject: string;
   sub_strand: string;
