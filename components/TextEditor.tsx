@@ -1,5 +1,5 @@
 // @ts-nocheck
-import 'katex/dist/katex.min.css';
+
 import {
   Bold,
   Code,
