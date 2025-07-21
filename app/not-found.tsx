@@ -56,7 +56,7 @@ export default function NotFound() {
               Looks like this page went to the library and never came back!
             </p>
             <p className="text-base sm:text-lg text-gray-500">
-              Don't worry, there's plenty more to explore in EduMate GH
+              Don&apos;t worry, there&apos;s plenty more to explore in EduMate GH
             </p>
           </div>
         </div>
@@ -113,7 +113,7 @@ export default function NotFound() {
         {/* Fun educational quote */}
         <div className="bg-gradient-to-r from-indigo-600/10 to-purple-600/10 backdrop-blur-sm rounded-2xl p-6 border border-indigo-200/50">
           <blockquote className="text-lg font-medium text-gray-700 mb-2">
-            "Every master was once a disaster"
+            &apos;Every master was once a disaster&apos;
           </blockquote>
           <cite className="text-sm text-gray-500">- Keep learning with EduMate GH!</cite>
         </div>
