@@ -37,7 +37,7 @@ export default function ModernComingSoonPage() {
   }, []);
 
   useEffect(() => {
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e:any) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
 
@@ -110,7 +110,7 @@ export default function ModernComingSoonPage() {
     }
   };
 
-  const handleKeyPress = (e) => {
+  const handleKeyPress = (e: any) => {
     if (e.key === 'Enter') {
       handleSubmit();
     }
