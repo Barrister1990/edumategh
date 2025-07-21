@@ -29,7 +29,7 @@ interface Textbook {
   publisher: string;
   year: string;
   subject: string;
-  level: 'JHS' | 'SHS';
+  level: string;
   class: string;
   course?: string;
   cover_url?: string | null;
@@ -40,7 +40,7 @@ interface Textbook {
 
 interface Filters {
   search?: string;
-  level?: 'JHS' | 'SHS';
+  level?: string;
   class?: string;
   subject?: string;
 }
@@ -145,7 +145,7 @@ const handleDuplicate = useCallback(async (id: string) => { // Changed from stri
 }, [duplicateTextbook]);
 
   // Get level badge color
-  const getLevelBadgeColor = useCallback((level: 'JHS' | 'SHS'): string => {
+  const getLevelBadgeColor = useCallback((level: string): string => {
     return level === 'JHS' 
       ? 'bg-blue-100 text-blue-800 border-blue-200' 
       : 'bg-purple-100 text-purple-800 border-purple-200';
