@@ -1,9 +1,7 @@
 // @ts-nocheck
 "use client";
-import 'katex/dist/katex.min.css';
 import { Calculator, Table, X } from 'lucide-react';
 import { useState } from 'react';
-import Latex from 'react-latex-next';
 
 // Type definitions
 interface MathSymbol {
@@ -393,7 +391,7 @@ const MathToolbar: React.FC<MathToolbarProps> = ({
                   <span className="text-xs text-gray-500 capitalize">{template.category}</span>
                 </div>
                 <div className="mt-1 text-xs font-mono text-gray-600 bg-white p-2 rounded border">
-                  <Latex>{`$${template.latex}$`}</Latex>
+                  {`$${template.latex}$`}
                 </div>
               </div>
             ))}
@@ -497,7 +495,7 @@ const MathToolbar: React.FC<MathToolbarProps> = ({
                 title={item.name}
               >
                 <div className="text-lg font-semibold text-gray-700 group-hover:text-blue-700">
-                  <Latex>{`$${item.latex}$`}</Latex>
+                  {`$${item.latex}$`}
                 </div>
                 <div className="text-xs text-gray-500 mt-1 truncate">
                   {item.name}
@@ -529,7 +527,7 @@ const MathToolbar: React.FC<MathToolbarProps> = ({
         </div>
         {customEquation && (
           <div className="mt-2 p-2 bg-gray-50 rounded border text-sm">
-            <strong>Preview:</strong> <Latex>{`$${customEquation}$`}</Latex>
+            <strong>Preview:</strong> {`$${customEquation}$`}
           </div>
         )}
       </div>

@@ -17,7 +17,6 @@ import {
   X
 } from 'lucide-react';
 import React, { useRef, useState } from 'react';
-import Latex from 'react-latex-next';
 import ReactMarkdown from 'react-markdown';
 
 interface TextEditorProps {
@@ -301,9 +300,7 @@ const TextEditor: React.FC<TextEditorProps> = ({
       <div className="p-3">
         {showPreview ? (
           <div className="prose prose-sm max-w-none">
-            <Latex>
-                <ReactMarkdown>{value}</ReactMarkdown>
-            </Latex>
+            <ReactMarkdown>{value}</ReactMarkdown>
           </div>
         ) : (
           <textarea
