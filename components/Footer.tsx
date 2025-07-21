@@ -108,7 +108,7 @@ export function Footer() {
       {/* Background decorative elements */}
       <div className="absolute inset-0 pointer-events-none">
         <motion.div
-          className="absolute top-10 left-10 w-32 h-32 bg-gradient-to-br from-blue-200/20 to-purple-200/20 dark:from-blue-900/20 dark:to-purple-900/20 rounded-full blur-xl"
+          className="absolute top-5 left-5 sm:top-10 sm:left-10 w-16 h-16 sm:w-32 sm:h-32 bg-gradient-to-br from-blue-200/20 to-purple-200/20 dark:from-blue-900/20 dark:to-purple-900/20 rounded-full blur-xl"
           animate={{
             scale: [1, 1.2, 1],
             rotate: [0, 180, 360]
@@ -120,7 +120,7 @@ export function Footer() {
           }}
         />
         <motion.div
-          className="absolute bottom-10 right-10 w-24 h-24 bg-gradient-to-br from-pink-200/20 to-yellow-200/20 dark:from-pink-900/20 dark:to-yellow-900/20 rounded-full blur-xl"
+          className="absolute bottom-5 right-5 sm:bottom-10 sm:right-10 w-12 h-12 sm:w-24 sm:h-24 bg-gradient-to-br from-pink-200/20 to-yellow-200/20 dark:from-pink-900/20 dark:to-yellow-900/20 rounded-full blur-xl"
           animate={{
             scale: [1.2, 1, 1.2],
             rotate: [360, 180, 0]
@@ -133,9 +133,9 @@ export function Footer() {
         />
       </div>
 
-      <div className="container mx-auto px-4 py-12 md:py-16 relative">
+      <div className="container mx-auto px-4 py-8 sm:py-12 md:py-16 relative">
         <motion.div 
-          className="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-12"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-12"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
@@ -144,12 +144,12 @@ export function Footer() {
           
           {/* About Section */}
           <motion.div 
-            className="lg:col-span-1 space-y-6"
+            className="sm:col-span-2 lg:col-span-1 space-y-4 sm:space-y-6"
             variants={itemVariants}
           >
             {/* Logo */}
             <motion.div 
-              className="flex items-center space-x-3 group"
+              className="flex items-center space-x-2 sm:space-x-3 group"
               whileHover={{ scale: 1.02 }}
             >
               <motion.div
@@ -161,39 +161,39 @@ export function Footer() {
                   ease: "easeInOut"
                 }}
               >
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300">
-                  <BookOpen className="h-6 w-6 text-white" />
+                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300">
+                  <BookOpen className="h-4 w-4 sm:h-6 sm:w-6 text-white" />
                   <motion.div
-                    className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full flex items-center justify-center"
+                    className="absolute -top-0.5 -right-0.5 sm:-top-1 sm:-right-1 w-2 h-2 sm:w-3 sm:h-3 bg-yellow-400 rounded-full flex items-center justify-center"
                     animate={{ scale: [1, 1.2, 1] }}
                     transition={{ duration: 2, repeat: Infinity }}
                   >
-                    <Sparkles className="w-2 h-2 text-white" />
+                    <Sparkles className="w-1 h-1 sm:w-2 sm:h-2 text-white" />
                   </motion.div>
                 </div>
               </motion.div>
               
               <div className="flex flex-col">
-                <span className="text-2xl font-black bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                <span className="text-lg sm:text-xl md:text-2xl font-black bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
                   EduMate GH
                 </span>
-                <span className="text-sm text-gray-500 dark:text-gray-400 font-medium -mt-1">
+                <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 font-medium -mt-0.5 sm:-mt-1">
                   Learn Smarter
                 </span>
               </div>
             </motion.div>
 
-            <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 leading-relaxed">
               Empowering students in Ghana with AI-powered educational tools that make learning personalized, accessible, and engaging.
             </p>
 
             {/* Social Links */}
-            <div className="flex space-x-4">
+            <div className="flex space-x-3 sm:space-x-4">
               {socialLinks.map((social, index) => (
                 <motion.a
                   key={social.label}
                   href={social.href}
-                  className={`relative p-3 rounded-xl bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 text-gray-500 dark:text-gray-400 ${social.hoverColor} transition-all duration-300 group`}
+                  className={`relative p-2 sm:p-3 rounded-lg sm:rounded-xl bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 text-gray-500 dark:text-gray-400 ${social.hoverColor} transition-all duration-300 group`}
                   whileHover={{ 
                     scale: 1.1, 
                     y: -2,
@@ -206,14 +206,14 @@ export function Footer() {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <social.icon size={20} />
+                  <social.icon size={16} className="sm:w-5 sm:h-5" />
                   <span className="sr-only">{social.label}</span>
                   
                   {/* Hover glow effect */}
                   <AnimatePresence>
                     {hoveredSocial === social.label && (
                       <motion.div
-                        className={`absolute inset-0 rounded-xl bg-gradient-to-r ${social.color} opacity-20 -z-10`}
+                        className={`absolute inset-0 rounded-lg sm:rounded-xl bg-gradient-to-r ${social.color} opacity-20 -z-10`}
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 0.2, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.8 }}
@@ -226,24 +226,25 @@ export function Footer() {
             </div>
           </motion.div>
           
-          {/* Quick Links & Contact - Mobile: Same Row, Desktop: Separate Columns */}
-          <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Quick Links & Contact - Mobile: Stack vertically, Desktop: Side by side */}
+          <div className="sm:col-span-2 lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
             
             {/* Quick Links */}
             <motion.div 
-              className="space-y-6"
+              className="space-y-4 sm:space-y-6"
               variants={itemVariants}
             >
-              <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+              <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
                 <motion.div
                   animate={{ rotate: [0, 10, -10, 0] }}
                   transition={{ duration: 4, repeat: Infinity }}
+                  className="text-sm sm:text-base"
                 >
                   ⚡
                 </motion.div>
                 Quick Links
               </h3>
-              <ul className="space-y-3">
+              <ul className="space-y-2 sm:space-y-3">
                 {quickLinks.map((link, index) => (
                   <motion.li
                     key={link.href}
@@ -253,23 +254,23 @@ export function Footer() {
                   >
                     <motion.a
                       href={link.href}
-                      className="group flex items-start gap-3 p-2 rounded-lg hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 dark:hover:from-blue-900/20 dark:hover:to-purple-900/20 transition-all duration-300"
-                      whileHover={{ x: 4, scale: 1.01 }}
+                      className="group flex items-start gap-2 sm:gap-3 p-1.5 sm:p-2 rounded-lg hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 dark:hover:from-blue-900/20 dark:hover:to-purple-900/20 transition-all duration-300"
+                      whileHover={{ x: 2, scale: 1.01 }}
                       onMouseEnter={() => setHoveredLink(link.href)}
                       onMouseLeave={() => setHoveredLink(null)}
                     >
                       <motion.div
-                        className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 mt-1"
+                        className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 mt-0.5 sm:mt-1 text-sm sm:text-base"
                         animate={hoveredLink === link.href ? { x: [0, 3, 0] } : {}}
                         transition={{ duration: 1, repeat: Infinity }}
                       >
                         →
                       </motion.div>
                       <div className="flex-1">
-                        <div className="font-semibold text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        <div className="font-semibold text-sm sm:text-base text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                           {link.label}
                         </div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                        <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                           {link.description}
                         </div>
                       </div>
@@ -281,35 +282,36 @@ export function Footer() {
 
             {/* Contact Info */}
             <motion.div 
-              className="space-y-6"
+              className="space-y-4 sm:space-y-6"
               variants={itemVariants}
             >
-              <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+              <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
                 <motion.div
                   animate={{ scale: [1, 1.1, 1] }}
                   transition={{ duration: 2, repeat: Infinity }}
+                  className="text-sm sm:text-base"
                 >
                   📞
                 </motion.div>
                 Contact Us
               </h3>
-              <ul className="space-y-4">
+              <ul className="space-y-3 sm:space-y-4">
                 {contactInfo.map((contact, index) => (
                   <motion.li
                     key={index}
-                    className="flex items-start space-x-3 group"
+                    className="flex items-start space-x-2 sm:space-x-3 group"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    whileHover={{ x: 2 }}
+                    whileHover={{ x: 1 }}
                   >
                     <motion.div
-                      className={`p-2 rounded-lg bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 ${contact.color} shadow-sm group-hover:shadow-md transition-all duration-300`}
+                      className={`p-1.5 sm:p-2 rounded-lg bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 ${contact.color} shadow-sm group-hover:shadow-md transition-all duration-300`}
                       whileHover={{ scale: 1.1, rotate: 5 }}
                     >
-                      <contact.icon size={16} />
+                      <contact.icon size={14} className="sm:w-4 sm:h-4" />
                     </motion.div>
-                    <span className="text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-200 transition-colors flex-1">
+                    <span className="text-sm sm:text-base text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-200 transition-colors flex-1 break-all">
                       {contact.text}
                     </span>
                   </motion.li>
@@ -320,15 +322,15 @@ export function Footer() {
 
           {/* Developer Website */}
           <motion.div 
-            className="lg:col-span-1 space-y-6"
+            className="sm:col-span-2 lg:col-span-1 space-y-4 sm:space-y-6"
             variants={itemVariants}
           >
-            <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+            <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
               <motion.div
                 animate={{ rotate: [0, 360] }}
                 transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
               >
-                <Code2 className="w-5 h-5 text-purple-500" />
+                <Code2 className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500" />
               </motion.div>
               Developer
             </h3>
@@ -337,7 +339,7 @@ export function Footer() {
               href="https://developer-website.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="group block p-6 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-2xl border border-purple-200/50 dark:border-purple-700/50 hover:shadow-xl transition-all duration-300"
+              className="group block p-4 sm:p-6 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl sm:rounded-2xl border border-purple-200/50 dark:border-purple-700/50 hover:shadow-xl transition-all duration-300"
               whileHover={{ 
                 scale: 1.02, 
                 y: -2,
@@ -345,17 +347,17 @@ export function Footer() {
               }}
               whileTap={{ scale: 0.98 }}
             >
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
+              <div className="flex items-center justify-between mb-3 sm:mb-4">
+                <div className="flex items-center gap-2 sm:gap-3">
                   <motion.div
-                    className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center text-white shadow-lg"
+                    className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg sm:rounded-xl flex items-center justify-center text-white shadow-lg"
                     whileHover={{ rotate: 15 }}
                   >
-                    <Code2 className="w-5 h-5" />
+                    <Code2 className="w-4 h-4 sm:w-5 sm:h-5" />
                   </motion.div>
                   <div>
-                    <div className="font-bold text-gray-900 dark:text-gray-100">Portfolio</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">View our work</div>
+                    <div className="font-bold text-sm sm:text-base text-gray-900 dark:text-gray-100">Portfolio</div>
+                    <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">View our work</div>
                   </div>
                 </div>
                 <motion.div
@@ -363,11 +365,11 @@ export function Footer() {
                   animate={{ x: [0, 3, 0] }}
                   transition={{ duration: 2, repeat: Infinity }}
                 >
-                  <ExternalLink className="w-5 h-5" />
+                  <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5" />
                 </motion.div>
               </div>
               
-              <p className="text-sm text-gray-600 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors">
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors">
                 Discover more innovative projects and solutions crafted with passion and precision.
               </p>
               
@@ -390,7 +392,7 @@ export function Footer() {
         
         {/* Separator */}
         <motion.div 
-          className="my-12 h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-600 to-transparent"
+          className="my-8 sm:my-12 h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-600 to-transparent"
           initial={{ scaleX: 0 }}
           whileInView={{ scaleX: 1 }}
           viewport={{ once: true }}
@@ -399,14 +401,14 @@ export function Footer() {
         
         {/* Footer Bottom */}
         <motion.div 
-          className="flex flex-col md:flex-row justify-between items-center gap-4"
+          className="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.6 }}
         >
           <motion.div 
-            className="flex items-center gap-2 text-gray-600 dark:text-gray-400"
+            className="flex items-center gap-1 sm:gap-2 text-sm sm:text-base text-gray-600 dark:text-gray-400 text-center sm:text-left"
             whileHover={{ scale: 1.02 }}
           >
             <span>&copy; {currentYear} EduMate GH. Made with</span>
@@ -414,22 +416,22 @@ export function Footer() {
               animate={{ scale: [1, 1.2, 1] }}
               transition={{ duration: 1.5, repeat: Infinity }}
             >
-              <Heart className="w-4 h-4 text-red-500 fill-current" />
+              <Heart className="w-3 h-3 sm:w-4 sm:h-4 text-red-500 fill-current" />
             </motion.div>
             <span>in Ghana</span>
           </motion.div>
           
-          <div className="flex space-x-6">
+          <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-6">
             <motion.a 
               href="/terms" 
-              className="text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors text-sm"
+              className="text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors text-xs sm:text-sm"
               whileHover={{ y: -1 }}
             >
               Terms of Service
             </motion.a>
             <motion.a 
               href="/privacy" 
-              className="text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors text-sm"
+              className="text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors text-xs sm:text-sm"
               whileHover={{ y: -1 }}
             >
               Privacy Policy

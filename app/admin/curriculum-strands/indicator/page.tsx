@@ -1,25 +1,25 @@
 "use client";
 import { CreateIndicatorInput, useCurriculumStore } from '@/stores/curriculumStrand';
 import {
-    AlertCircle,
-    CheckCircle,
-    ChevronDown,
-    Clipboard,
-    GraduationCap,
-    Lightbulb,
-    List,
-    Loader2,
-    Plus,
-    RotateCcw,
-    School,
-    X
+  AlertCircle,
+  CheckCircle,
+  ChevronDown,
+  Clipboard,
+  GraduationCap,
+  Lightbulb,
+  List,
+  Loader2,
+  Plus,
+  RotateCcw,
+  School,
+  X
 } from 'lucide-react';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 // Form data interface for better type safety
 interface FormData {
   name: string;
-  level: 'JHS' | 'SHS';
+  level: string;
   class: string;
   course: string;
   subjectId: string;
@@ -67,32 +67,44 @@ const AddNewIndicator = () => {
   const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set());
   const [isLoading, setIsLoading] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
+  const [availableCourses, setAvailableCourses] = useState<string[]>([]);
 
   // Memoized calculations for better performance
-  const availableCourses = useMemo(() => {
-    if (formData.level !== 'SHS' || !subjects.length) return [];
-    
-    const courses = Array.from(new Set(
-      subjects
-        .filter(subject => subject.level === 'SHS' && subject.course)
-        .map(subject => subject.course)
-        .filter(Boolean)
-    )) as string[];
-    
-    return courses;
+  useEffect(() => {
+    if (formData.level === 'SHS' && subjects.length > 0) {
+      const courses = Array.from(new Set(
+        subjects
+          .filter(subject => subject.level === 'SHS' && Array.isArray(subject.course))
+          .flatMap(subject => subject.course) // flatten array of arrays
+      )).filter(Boolean) as string[];
+
+      setAvailableCourses(courses);
+    } else {
+      setAvailableCourses([]);
+      setFormData(prev => ({ ...prev, course: '' }));
+    }
   }, [formData.level, subjects]);
 
-  const availableSubjects = useMemo(() => {
-    if (formData.level === 'JHS') {
-      return subjects.filter(subject => subject.level === 'JHS');
-    } else if (formData.level === 'SHS') {
-      if (!formData.course) return [];
-      return subjects.filter(
-        subject => subject.level === 'SHS' && subject.course === formData.course
-      );
-    }
-    return [];
-  }, [formData.level, formData.course, subjects]);
+
+
+
+
+const availableSubjects = useMemo(() => {
+  if (formData.level === 'Basic') {
+    return subjects.filter(subject => subject.level === 'Basic');
+  } else if (formData.level === 'JHS') {
+    return subjects.filter(subject => subject.level === 'JHS');
+  } else if (formData.level === 'SHS') {
+    if (!formData.course) return [];
+    return subjects.filter(
+      subject => 
+        subject.level === 'SHS' &&
+        Array.isArray(subject.course) &&
+        subject.course.includes(formData.course)
+    );
+  }
+  return [];
+}, [formData.level, formData.course, subjects]);
 
   const availableStrands = useMemo(() => {
     if (!formData.subjectId) return [];
@@ -121,30 +133,30 @@ const AddNewIndicator = () => {
     );
   }, [formData.subStrandId, contentStandards]);
 
-  const isFormValid = useMemo(() => {
-    return formData.name.trim() !== '' && 
-           formData.subjectId !== '' && 
-           formData.strandId !== '' &&
-           formData.subStrandId !== '' &&
-           formData.contentStandardId !== '' &&
-           (formData.level === 'JHS' || formData.course !== '');
-  }, [formData]);
+const isFormValid = useMemo(() => {
+  return formData.name.trim() !== '' && 
+         formData.subjectId !== '' && 
+         formData.strandId !== '' &&
+         formData.subStrandId !== '' &&
+         formData.contentStandardId !== '' &&
+         (formData.level === 'Basic' || formData.level === 'JHS' || formData.course !== '');
+}, [formData]);
 
-  const progressPercentage = useMemo(() => {
-    const totalFields = formData.level === 'JHS' ? 7 : 8;
-    let filledFields = 0;
-    
-    if (formData.name.trim()) filledFields++;
-    if (formData.level) filledFields++;
-    if (formData.class) filledFields++;
-    if (formData.subjectId) filledFields++;
-    if (formData.strandId) filledFields++;
-    if (formData.subStrandId) filledFields++;
-    if (formData.contentStandardId) filledFields++;
-    if (formData.level === 'JHS' || formData.course) filledFields++;
-    
-    return Math.round((filledFields / totalFields) * 100);
-  }, [formData]);
+const progressPercentage = useMemo(() => {
+  const totalFields = (formData.level === 'Basic' || formData.level === 'JHS') ? 7 : 8;
+  let filledFields = 0;
+  
+  if (formData.name.trim()) filledFields++;
+  if (formData.level) filledFields++;
+  if (formData.class) filledFields++;
+  if (formData.subjectId) filledFields++;
+  if (formData.strandId) filledFields++;
+  if (formData.subStrandId) filledFields++;
+  if (formData.contentStandardId) filledFields++;
+  if (formData.level === 'Basic' || formData.level === 'JHS' || formData.course) filledFields++;
+  
+  return Math.round((filledFields / totalFields) * 100);
+}, [formData]);
 
   // Load data with proper error handling
   const loadData = useCallback(async () => {
@@ -309,35 +321,35 @@ const AddNewIndicator = () => {
     }
   }, [availableSubjects, availableStrands, availableSubStrands, availableContentStandards]);
 
-  const validateForm = useCallback(() => {
-    const errors: string[] = [];
-    
-    if (!formData.name.trim()) {
-      errors.push('Indicator name is required');
-    }
-    
-    if (!formData.subjectId) {
-      errors.push('Please select a subject');
-    }
+const validateForm = useCallback(() => {
+  const errors: string[] = [];
+  
+  if (!formData.name.trim()) {
+    errors.push('Indicator name is required');
+  }
+  
+  if (!formData.subjectId) {
+    errors.push('Please select a subject');
+  }
 
-    if (!formData.strandId) {
-      errors.push('Please select a strand');
-    }
+  if (!formData.strandId) {
+    errors.push('Please select a strand');
+  }
 
-    if (!formData.subStrandId) {
-      errors.push('Please select a sub-strand');
-    }
+  if (!formData.subStrandId) {
+    errors.push('Please select a sub-strand');
+  }
 
-    if (!formData.contentStandardId) {
-      errors.push('Please select a content standard');
-    }
+  if (!formData.contentStandardId) {
+    errors.push('Please select a content standard');
+  }
 
-    if (formData.level === 'SHS' && !formData.course) {
-      errors.push('Please select a course for SHS');
-    }
+  if (formData.level === 'SHS' && !formData.course) {
+    errors.push('Please select a course for SHS');
+  }
 
-    return errors;
-  }, [formData]);
+  return errors;
+}, [formData]);
 
   const handleSubmit = useCallback(async () => {
     const validationErrors = validateForm();
@@ -389,26 +401,26 @@ const AddNewIndicator = () => {
     }
   }, [clearError]);
 
-  const getFieldError = useCallback((fieldName: string): string => {
-    if (!touchedFields.has(fieldName)) return '';
-    
-    switch (fieldName) {
-      case 'name':
-        return formData.name.trim() === '' ? 'Indicator name is required' : '';
-      case 'subjectId':
-        return formData.subjectId === '' ? 'Please select a subject' : '';
-      case 'strandId':
-        return formData.strandId === '' ? 'Please select a strand' : '';
-      case 'subStrandId':
-        return formData.subStrandId === '' ? 'Please select a sub-strand' : '';
-      case 'contentStandardId':
-        return formData.contentStandardId === '' ? 'Please select a content standard' : '';
-      case 'course':
-        return formData.level === 'SHS' && formData.course === '' ? 'Please select a course' : '';
-      default:
-        return '';
-    }
-  }, [formData, touchedFields]);
+const getFieldError = useCallback((fieldName: string): string => {
+  if (!touchedFields.has(fieldName)) return '';
+  
+  switch (fieldName) {
+    case 'name':
+      return formData.name.trim() === '' ? 'Indicator name is required' : '';
+    case 'subjectId':
+      return formData.subjectId === '' ? 'Please select a subject' : '';
+    case 'strandId':
+      return formData.strandId === '' ? 'Please select a strand' : '';
+    case 'subStrandId':
+      return formData.subStrandId === '' ? 'Please select a sub-strand' : '';
+    case 'contentStandardId':
+      return formData.contentStandardId === '' ? 'Please select a content standard' : '';
+    case 'course':
+      return formData.level === 'SHS' && formData.course === '' ? 'Please select a course' : '';
+    default:
+      return '';
+  }
+}, [formData, touchedFields]);
 
   if (isLoading) {
     return (
@@ -646,69 +658,80 @@ const AddNewIndicator = () => {
                   </div>
 
                   {/* Level Selection */}
-                  <div className="space-y-4">
-                    <label className="block text-sm font-semibold text-gray-700">
-                      Education Level *
-                    </label>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {(['JHS', 'SHS'] as const).map((level) => (
-                        <label key={level} className="relative cursor-pointer">
-                          <input
-                            type="radio"
-                            name="level"
-                            value={level}
-                            checked={formData.level === level}
-                            onChange={handleInputChange}
-                            className="sr-only"
-                          />
-                          <div className={`p-4 border-2 rounded-xl text-center transition-all duration-200 ${
-                            formData.level === level
-                              ? 'border-green-500 bg-green-50 shadow-lg ring-4 ring-green-500/20'
-                              : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
-                          }`}>
-                            <div className="flex items-center justify-center mb-2">
-                              {level === 'JHS' ? (
-                                <School className={`w-5 h-5 ${formData.level === level ? 'text-green-700' : 'text-gray-600'}`} />
-                              ) : (
-                                <GraduationCap className={`w-5 h-5 ${formData.level === level ? 'text-green-700' : 'text-gray-600'}`} />
-                              )}
-                            </div>
-                            <div className={`font-semibold text-sm md:text-base ${formData.level === level ? 'text-green-700' : 'text-gray-700'}`}>
-                              {level === 'JHS' ? 'Junior High School' : 'Senior High School'}
-                            </div>
-                            <div className={`text-xs md:text-sm ${formData.level === level ? 'text-green-600' : 'text-gray-500'}`}>
-                              {level}
-                            </div>
-                          </div>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
+<div className="space-y-4">
+  <label className="block text-sm font-semibold text-gray-700">
+    Education Level *
+  </label>
+  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    {(['Basic', 'JHS', 'SHS'] as const).map((level) => (
+      <label key={level} className="relative cursor-pointer">
+        <input
+          type="radio"
+          name="level"
+          value={level}
+          checked={formData.level === level}
+          onChange={handleInputChange}
+          className="sr-only"
+        />
+        <div className={`p-4 border-2 rounded-xl text-center transition-all duration-200 ${
+          formData.level === level
+            ? 'border-green-500 bg-green-50 shadow-lg ring-4 ring-green-500/20'
+            : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+        }`}>
+          <div className="flex items-center justify-center mb-2">
+            {level === 'Basic' ? (
+              <School className={`w-5 h-5 ${formData.level === level ? 'text-green-700' : 'text-gray-600'}`} />
+            ) : level === 'JHS' ? (
+              <School className={`w-5 h-5 ${formData.level === level ? 'text-green-700' : 'text-gray-600'}`} />
+            ) : (
+              <GraduationCap className={`w-5 h-5 ${formData.level === level ? 'text-green-700' : 'text-gray-600'}`} />
+            )}
+          </div>
+          <div className={`font-semibold text-sm md:text-base ${formData.level === level ? 'text-green-700' : 'text-gray-700'}`}>
+            {level === 'Basic' ? 'Basic School' : level === 'JHS' ? 'Junior High School' : 'Senior High School'}
+          </div>
+          <div className={`text-xs md:text-sm ${formData.level === level ? 'text-green-600' : 'text-gray-500'}`}>
+            {level}
+          </div>
+        </div>
+      </label>
+    ))}
+  </div>
+</div>
 
                   {/* Class Selection */}
-                  <div>
-                    <label htmlFor="class" className="block text-sm font-semibold text-gray-700 mb-3">
-                      Class Level *
-                    </label>
-                    <div className="grid grid-cols-3 gap-3">
-                      {['1', '2', '3'].map((classNum) => (
-                        <button
-                          key={classNum}
-                          type="button"
-                          onClick={() => handleInputChange({ target: { name: 'class', value: classNum } } as any)}
-                          className={`p-3 border-2 rounded-xl text-center transition-all duration-200 ${
-                            formData.class === classNum
-                              ? 'border-green-500 bg-green-50 text-green-700 shadow-lg ring-4 ring-green-500/20'
-                              : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-700'
-                          }`}
-                        >
-                          <div className="font-semibold text-sm md:text-base">
-                            {formData.level} {classNum}
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+<div>
+  <label htmlFor="class" className="block text-sm font-semibold text-gray-700 mb-3">
+    Class Level *
+  </label>
+  <div className="grid grid-cols-3 gap-3">
+    {(() => {
+      let classOptions;
+      if (formData.level === 'Basic') {
+        classOptions = ['4', '5', '6'];
+      } else {
+        classOptions = ['1', '2', '3'];
+      }
+      
+      return classOptions.map((classNum) => (
+        <button
+          key={classNum}
+          type="button"
+          onClick={() => handleInputChange({ target: { name: 'class', value: classNum } } as any)}
+          className={`p-3 border-2 rounded-xl text-center transition-all duration-200 ${
+            formData.class === classNum
+              ? 'border-green-500 bg-green-50 text-green-700 shadow-lg ring-4 ring-green-500/20'
+              : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-700'
+          }`}
+        >
+          <div className="font-semibold text-sm md:text-base">
+            {formData.level} {classNum}
+          </div>
+        </button>
+      ));
+    })()}
+  </div>
+</div>
 
                   {/* Course Selection (SHS only) */}
                   {formData.level === 'SHS' && (

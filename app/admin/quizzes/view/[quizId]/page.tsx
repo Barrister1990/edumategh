@@ -14,7 +14,6 @@ interface FormData {
   subject_id: string;
   substrand_id: string;
   class: string;
-  description: string;
   duration_minutes: number;
   difficulty: 'easy' | 'medium' | 'hard';
 }
@@ -63,7 +62,6 @@ const ViewEditQuiz = () => {
     subject_id: '',
     substrand_id: '',
     class: '',
-    description: '',
     duration_minutes: 30,
     difficulty: 'medium'
   });
@@ -116,7 +114,6 @@ const ViewEditQuiz = () => {
         subject_id: currentQuiz.subject_id || '',
         substrand_id: currentQuiz.substrand_id || '',
         class: currentQuiz.class || '',
-        description: currentQuiz.description || '',
         duration_minutes: currentQuiz.duration_minutes || 30,
         difficulty: currentQuiz.difficulty || 'medium'
       });
@@ -277,7 +274,6 @@ const ViewEditQuiz = () => {
         subject_id: originalQuiz.subject_id || '',
         substrand_id: originalQuiz.substrand_id || '',
         class: originalQuiz.class || '',
-        description: originalQuiz.description || '',
         duration_minutes: originalQuiz.duration_minutes || 30,
         difficulty: originalQuiz.difficulty || 'medium'
       });
@@ -518,7 +514,6 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                   {renderViewOnlyField('Sub-strand', formData.sub_strand)}
                   {renderViewOnlyField('Duration (minutes)', formData.duration_minutes)}
                   {renderViewOnlyField('Difficulty', formData.difficulty.charAt(0).toUpperCase() + formData.difficulty.slice(1))}
-                  {renderViewOnlyField('Description', formData.description, 'lg:col-span-2')}
                 </>
               ) : (
                 <>
@@ -659,18 +654,6 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                     </select>
                   </div>
 
-                  <div className="lg:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Description
-                    </label>
-                    <textarea
-                      value={formData.description}
-                      onChange={(e) => handleInputChange('description', e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      rows={3}
-                      placeholder="Brief description of the quiz..."
-                    />
-                  </div>
                 </>
               )}
             </div>

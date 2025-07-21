@@ -5,7 +5,7 @@ import { create } from 'zustand';
 export interface Subject {
   id: string;
   name: string;
-  level: 'JHS' | 'SHS';
+  level:string;
   course?: string; // Only for SHS subjects
   createdAt: string;
   updatedAt: string;
@@ -16,7 +16,7 @@ export interface Strand {
   name: string;
   subjectId: string;
   subject: string; // Subject name for display
-  level: 'JHS' | 'SHS';
+  level:string;
   class: string;
   course?: string; // Only for SHS
   createdAt: string;
@@ -66,7 +66,7 @@ export interface CreateStrandInput {
   name: string;
   subjectId: string;
   subject: string;
-  level: 'JHS' | 'SHS';
+  level:string;
   class: string;
   course?: string;
 }
@@ -87,7 +87,7 @@ export interface CreateContentStandardInput {
   strand: string;
   subjectId: string;
   subject: string;
-  level: 'JHS' | 'SHS';
+  level:string;
   class: string;
   course?: string;
 }
@@ -102,7 +102,7 @@ export interface CreateIndicatorInput {
   strand: string;
   subjectId: string;
   subject: string;
-  level: 'JHS' | 'SHS';
+  level: string;
   class: string;
   course?: string;
 }
@@ -138,8 +138,8 @@ export interface CurriculumFilters {
 
 // Selection options for forms
 export interface CurriculumOptions {
-  level: 'JHS' | 'SHS';
-  class: '1' | '2' | '3';
+  level: string;
+  class: string;
   course?: string;
   subjectId?: string;
   subject?: string;
@@ -247,7 +247,7 @@ interface CurriculumState {
   setCurriculumOptions: (options: Partial<CurriculumOptions>) => void;
   
   // Actions - Utility getters
-  getSubjectsForLevel: (level?: 'JHS' | 'SHS', course?: string) => Subject[];
+  getSubjectsForLevel: (level?:string, course?: string) => Subject[];
   getStrandsForSubject: (subjectId: string) => Strand[];
   getSubStrandsForStrand: (strandId: string) => SubStrand[];
   getContentStandardsForSubStrand: (subStrandId: string) => ContentStandard[];
@@ -366,9 +366,9 @@ export const useCurriculumStore = create<CurriculumState>((set, get) => ({
         .eq('level', level)
         .order('name');
       
-      if (level === 'SHS' && course) {
-        query = query.eq('course', course);
-      }
+if (level === 'SHS' && course) {
+            query = query.contains('course', [course]);
+          }
       
       const { data, error } = await query;
       
@@ -408,9 +408,6 @@ export const useCurriculumStore = create<CurriculumState>((set, get) => ({
         .eq('level', level)
         .eq('class', formattedClass);
       
-      if (level == 'SHS' && course) {
-        query = query.eq('course', course);
-      }
       
       const { data, error } = await query.order('strand');
       console.log(data)
@@ -1300,7 +1297,7 @@ setCurriculumOptions: (options: Partial<CurriculumOptions>) => {
 },
 
   // Utility getters
-  getSubjectsForLevel: (level?: 'JHS' | 'SHS', course?: string) => {
+  getSubjectsForLevel: (level?:string, course?: string) => {
     const { subjects } = get();
     
     if (!level) return subjects;

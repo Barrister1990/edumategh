@@ -11,8 +11,8 @@ export interface CreateTextbookInput {
   cover_url?: string;
   publisher: string;
   year: string;
-  level: 'JHS' | 'SHS';
-  class: '1' | '2' | '3';
+  level: string;
+  class: string;
   course?: string; // For SHS only
   subject: string;
 }
@@ -30,8 +30,8 @@ export interface AdminTextbook {
   cover_url: string | null;
   publisher: string;
   year: string;
-  level: 'JHS' | 'SHS';
-  class: '1' | '2' | '3';
+  level: string;
+  class: string;
   course: string | null;
   subject: string;
   created_at: string;
@@ -39,8 +39,8 @@ export interface AdminTextbook {
 }
 
 export interface TextbookFilters {
-  level?: 'JHS' | 'SHS';
-  class?: '1' | '2' | '3';
+  level?: string;
+  class?: string;
   course?: string;
   subject?: string;
   search?: string;
@@ -49,7 +49,7 @@ export interface TextbookFilters {
 export interface Subject {
   id: string;
   name: string;
-  level: 'JHS' | 'SHS';
+  level: string;
   course?: string;
   createdAt: string;
   updatedAt: string;
@@ -250,9 +250,9 @@ export const useAdminTextbookStore = create<AdminTextbookState>((set, get) => ({
         .eq('level', level)
         .order('name');
       
-      if (level === 'SHS' && course) {
-        query = query.eq('course', course);
-      }
+if (level === 'SHS' && course) {
+            query = query.contains('course', [course]);
+          }
       
       const { data, error } = await query;
       

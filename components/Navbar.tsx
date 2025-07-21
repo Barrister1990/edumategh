@@ -128,7 +128,7 @@ export function Navbar() {
         className={`fixed w-full z-50 transition-all duration-500 ${
           scrolled 
             ? "bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-lg shadow-black/5 border-b border-white/20 py-2" 
-            : "bg-transparent py-4"
+            : "bg-transparent py-3 md:py-4"
         }`}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
@@ -145,7 +145,7 @@ export function Navbar() {
             {/* Logo */}
             <motion.a 
               href="/" 
-              className="flex items-center space-x-3 group"
+              className="flex items-center space-x-2 md:space-x-3 group"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -158,21 +158,21 @@ export function Navbar() {
                   ease: "easeInOut"
                 }}
               >
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300">
-                  <BookOpen className="h-5 w-5 text-white" />
+                <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300">
+                  <BookOpen className="h-4 w-4 md:h-5 md:w-5 text-white" />
                   <motion.div
-                    className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full"
+                    className="absolute -top-0.5 -right-0.5 md:-top-1 md:-right-1 w-2.5 h-2.5 md:w-3 md:h-3 bg-yellow-400 rounded-full flex items-center justify-center"
                     animate={{ scale: [1, 1.2, 1] }}
                     transition={{ duration: 2, repeat: Infinity }}
                   >
-                    <Sparkles className="w-2 h-2 text-white" />
+                    <Sparkles className="w-1.5 h-1.5 md:w-2 md:h-2 text-white" />
                   </motion.div>
                 </div>
               </motion.div>
               
               <div className="flex flex-col">
                 <motion.span
-                  className="text-xl font-black bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent"
+                  className="text-lg md:text-xl font-black bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.3, duration: 0.6 }}
@@ -271,7 +271,7 @@ export function Navbar() {
 
             {/* Mobile Menu Toggle */}
             <motion.button
-              className="md:hidden relative p-2 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-200"
+              className="md:hidden relative p-2 rounded-lg md:rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-200"
               onClick={toggleMenu}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -288,8 +288,8 @@ export function Navbar() {
                   transition={{ duration: 0.2 }}
                 >
                   {isOpen ? 
-                    <X className="h-6 w-6 text-gray-700 dark:text-gray-200" /> : 
-                    <Menu className="h-6 w-6 text-gray-700 dark:text-gray-200" />
+                    <X className="h-5 w-5 md:h-6 md:w-6 text-gray-700 dark:text-gray-200" /> : 
+                    <Menu className="h-5 w-5 md:h-6 md:w-6 text-gray-700 dark:text-gray-200" />
                   }
                 </motion.div>
               </AnimatePresence>
@@ -307,10 +307,10 @@ export function Navbar() {
               animate="visible"
               exit="exit"
             >
-              <div className="container mx-auto px-4 py-6">
+              <div className="container mx-auto px-4 py-4 md:py-6">
                 
                 {/* Navigation Links */}
-                <div className="space-y-1 mb-6">
+                <div className="space-y-1 mb-4 md:mb-6">
                   {navLinks.map((link, index) => (
                     <motion.div
                       key={link.href}
@@ -319,15 +319,15 @@ export function Navbar() {
                       <motion.a
                         href={link.href}
                         onClick={closeMenu}
-                        className="flex items-center gap-4 p-4 rounded-2xl text-gray-700 dark:text-gray-200 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 dark:hover:from-blue-900/20 dark:hover:to-purple-900/20 transition-all duration-300 group"
+                        className="flex items-center gap-3 p-3 md:p-4 rounded-xl md:rounded-2xl text-gray-700 dark:text-gray-200 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 dark:hover:from-blue-900/20 dark:hover:to-purple-900/20 transition-all duration-300 group"
                         whileHover={{ x: 8, scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                       >
-                        <div className="text-2xl group-hover:scale-110 transition-transform duration-200">
+                        <div className="text-lg md:text-xl group-hover:scale-110 transition-transform duration-200">
                           {link.icon}
                         </div>
                         <div className="flex-1">
-                          <div className="font-semibold text-lg">{link.label}</div>
+                          <div className="font-semibold text-base md:text-lg">{link.label}</div>
                           <div className="text-xs text-gray-500 dark:text-gray-400">
                             {link.label === "Home" && "Back to homepage"}
                             {link.label === "Features" && "Explore app features"}
@@ -336,7 +336,7 @@ export function Navbar() {
                           </div>
                         </div>
                         <motion.div
-                          className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                          className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-sm"
                           animate={{ x: [0, 5, 0] }}
                           transition={{ duration: 1.5, repeat: Infinity }}
                         >
@@ -352,22 +352,20 @@ export function Navbar() {
                   className="space-y-3"
                   variants={mobileItemVariants}
                 >
-                 
-
                   {/* Web App Button */}
                   <motion.button
-                    className="w-full group relative overflow-hidden bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-2xl p-4 shadow-lg hover:shadow-xl transition-all duration-300"
+                    className="w-full group relative overflow-hidden bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-xl md:rounded-2xl p-3 md:p-4 shadow-lg hover:shadow-xl transition-all duration-300"
                     whileHover={{ scale: 1.02, y: -2 }}
                     whileTap={{ scale: 0.98 }}
                   >
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                          <Smartphone className="w-6 h-6" />
+                      <div className="flex items-center gap-3 md:gap-4">
+                        <div className="w-10 h-10 md:w-12 md:h-12 bg-white/20 rounded-lg md:rounded-xl flex items-center justify-center">
+                          <Smartphone className="w-5 h-5 md:w-6 md:h-6" />
                         </div>
                         <div className="text-left">
                           <div className="text-xs font-medium opacity-90">TRY NOW</div>
-                          <div className="text-lg font-bold">Web App</div>
+                          <div className="text-base md:text-lg font-bold">Web App</div>
                         </div>
                       </div>
                       <motion.div
@@ -375,7 +373,7 @@ export function Navbar() {
                         transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
                         className="opacity-70 group-hover:opacity-100 transition-opacity"
                       >
-                        <Zap className="w-5 h-5" />
+                        <Zap className="w-4 h-4 md:w-5 md:h-5" />
                       </motion.div>
                     </div>
                     
@@ -395,8 +393,6 @@ export function Navbar() {
                     />
                   </motion.button>
                 </motion.div>
-
-
               </div>
             </motion.div>
           )}

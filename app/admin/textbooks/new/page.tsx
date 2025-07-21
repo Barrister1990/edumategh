@@ -62,8 +62,8 @@ interface FormData {
   description: string;
   publisher: string;
   year: string;
-  level: 'JHS' | 'SHS' | '';
-  class: '1' | '2' | '3' | '';
+  level: string;
+  class: string;
   course: string;
   subject: string;
 }
@@ -365,15 +365,15 @@ export default function NewTextbookPage() {
   };
 
   // Fetch subjects when level and class change
-  useEffect(() => {
-    if (formData.level) {
-      if (formData.level === 'JHS') {
-        fetchSubjects(formData.level);
-      } else if (formData.level === 'SHS' && formData.course) {
-        fetchSubjects(formData.level, formData.course);
-      }
+useEffect(() => {
+  if (formData.level) {
+    if (formData.level === 'Basic' || formData.level === 'JHS') {
+      fetchSubjects(formData.level);
+    } else if (formData.level === 'SHS' && formData.course) {
+      fetchSubjects(formData.level, formData.course);
     }
-  }, [formData.level, formData.course, fetchSubjects]);
+  }
+}, [formData.level, formData.course, fetchSubjects]);
 
   // Fetch courses when level is SHS
   useEffect(() => {
@@ -476,8 +476,8 @@ export default function NewTextbookPage() {
         description: formData.description,
         publisher: formData.publisher,
         year: formData.year,
-        level: formData.level as 'JHS' | 'SHS',
-        class: formData.class as '1' | '2' | '3',
+        level: formData.level as string,
+        class: formData.class as string,
         course: formData.level === 'SHS' ? formData.course : undefined,
         subject: formData.subject
       };
@@ -663,28 +663,39 @@ export default function NewTextbookPage() {
                 icon={GraduationCap}
                 required
                 value={formData.level}
-                onChange={(e) => handleInputChange('level', e.target.value as 'JHS' | 'SHS')}
+                onChange={(e) => handleInputChange('level', e.target.value as string)}
                 error={validationErrors.level}
               >
                 <option value="">Select level</option>
-                <option value="JHS">JHS (Junior High School)</option>
-                <option value="SHS">SHS (Senior High School)</option>
+  <option value="Basic">Basic (Primary School)</option>
+  <option value="JHS">JHS (Junior High School)</option>
+  <option value="SHS">SHS (Senior High School)</option>
               </ModernSelect>
 
-              <ModernSelect
-                label="Class"
-                icon={Target}
-                required
-                value={formData.class}
-                onChange={(e) => handleInputChange('class', e.target.value)}
-                error={validationErrors.class}
-                disabled={!formData.level}
-              >
-                <option value="">Select class</option>
-                <option value="1">Class 1</option>
-                <option value="2">Class 2</option>
-                <option value="3">Class 3</option>
-              </ModernSelect>
+<ModernSelect
+  label="Class"
+  icon={Target}
+  required
+  value={formData.class}
+  onChange={(e) => handleInputChange('class', e.target.value)}
+  error={validationErrors.class}
+  disabled={!formData.level}
+>
+  <option value="">Select class</option>
+  {formData.level === 'Basic' ? (
+    <>
+      <option value="4">Basic 4</option>
+      <option value="5">Basic 5</option>
+      <option value="6">Basic 6</option>
+    </>
+  ) : (
+    <>
+      <option value="1">Class 1</option>
+      <option value="2">Class 2</option>
+      <option value="3">Class 3</option>
+    </>
+  )}
+</ModernSelect>
             </div>
 
             {formData.level === 'SHS' && (

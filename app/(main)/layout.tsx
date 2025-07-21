@@ -1,6 +1,6 @@
 // app/layout.tsx
-import { Footer } from '@/components/Footer';
-import { Navbar } from '@/components/Navbar';
+//import { Footer } from '@/components/Footer';
+//import { Navbar } from '@/components/Navbar';
 import { Toaster } from '@/components/ui/toaster';
 import '../globals.css';
 
@@ -15,9 +15,10 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <div className="flex min-h-screen flex-col">
-          <Navbar />
+  {/* Mouse  <Navbar /> gradient */}    
           <main className="flex-1">{children}</main>
-          <Footer />
+           {/* Mouse  <Footer /> gradient */}    
+          
         </div>
         <Toaster />
       </body>

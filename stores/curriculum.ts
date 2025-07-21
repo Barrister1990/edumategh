@@ -222,9 +222,9 @@ export const useAdminCurriculumStore = create<AdminCurriculumState>((set, get) =
       }
 
       // Filter by course if provided (for SHS subjects)
-      if (course) {
-        query = query.eq('course', course);
-      }
+      if (level === 'SHS' && course) {
+            query = query.contains('course', [course]);
+          }
 
       const { data, error } = await query;
 

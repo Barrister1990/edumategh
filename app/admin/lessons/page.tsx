@@ -200,59 +200,59 @@ const getFilteredSubjects = () => {
 };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-50 p-3 md:p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
+        <div className="mb-6">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Lessons Dashboard</h1>
-              <p className="text-gray-600">Manage and organize your educational content</p>
+              <h1 className="text-xl md:text-2xl font-bold text-gray-900 mb-1">Lessons Dashboard</h1>
+              <p className="text-gray-600 text-sm md:text-base">Manage and organize your educational content</p>
             </div>
             <button
               type="button"
-              onClick={() => router.push('/admin/lessons/create')}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium flex items-center gap-2 transition-colors"
+              onClick={() => router.push('/admin/lessons/new')}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg font-medium flex items-center gap-2 transition-colors text-sm self-start md:self-auto"
             >
-              <Plus size={20} />
-              Create Lesson
+              <Plus size={16} />
+              <span>Create Lesson</span>
             </button>
           </div>
 
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-            <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <BookOpen className="w-6 h-6 text-blue-600" />
+          {/* Stats Cards - Mobile First */}
+          <div className="grid grid-cols-1 gap-3 mt-4 md:grid-cols-3 md:gap-6 md:mt-6">
+            <div className="bg-white rounded-lg shadow-sm p-3 border border-gray-200 md:rounded-xl md:p-6">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0 md:w-12 md:h-12">
+                  <BookOpen className="w-4 h-4 text-blue-600 md:w-6 md:h-6" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Lessons</p>
-                  <p className="text-2xl font-bold text-gray-900">{totalLessons}</p>
+                  <p className="text-xs font-medium text-gray-600 md:text-sm">Total Lessons</p>
+                  <p className="text-lg font-bold text-gray-900 md:text-xl">{totalLessons}</p>
                 </div>
               </div>
             </div>
             
-            <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                  <Users className="w-6 h-6 text-green-600" />
+            <div className="bg-white rounded-lg shadow-sm p-3 border border-gray-200 md:rounded-xl md:p-6">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0 md:w-12 md:h-12">
+                  <Users className="w-4 h-4 text-green-600 md:w-6 md:h-6" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Subjects</p>
-                  <p className="text-2xl font-bold text-gray-900">{subjects.length}</p>
+                  <p className="text-xs font-medium text-gray-600 md:text-sm">Subjects</p>
+                  <p className="text-lg font-bold text-gray-900 md:text-xl">{subjects.length}</p>
                 </div>
               </div>
             </div>
             
-            <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <Clock className="w-6 h-6 text-purple-600" />
+            <div className="bg-white rounded-lg shadow-sm p-3 border border-gray-200 md:rounded-xl md:p-6">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0 md:w-12 md:h-12">
+                  <Clock className="w-4 h-4 text-purple-600 md:w-6 md:h-6" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Avg. Duration</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-xs font-medium text-gray-600 md:text-sm">Avg. Duration</p>
+                  <p className="text-lg font-bold text-gray-900 md:text-xl">
                     {lessons.length > 0 
                       ? Math.round(lessons.reduce((acc, lesson) => acc + (lesson.duration_minutes || 0), 0) / lessons.length)
                       : 0}m
@@ -264,52 +264,54 @@ const getFilteredSubjects = () => {
         </div>
 
         {/* Search and Filters */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-4 md:rounded-xl md:p-6 md:mb-6">
           <form onSubmit={handleSearch}>
-            <div className="flex gap-4 items-end">
+            <div className="flex flex-col gap-3 md:flex-row md:gap-4 md:items-end">
               <div className="flex-1">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Search Lessons</label>
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
                   <input
                     type="text"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="Search by title or description..."
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Search by title..."
+                    className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                   />
                 </div>
               </div>
               
-              <button
-                type="button"
-                onClick={() => setShowFilters(!showFilters)}
-                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center gap-2"
-              >
-                <Filter size={20} />
-                Filters
-              </button>
-              
-              <button
-                type="submit"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
-              >
-                Search
-              </button>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowFilters(!showFilters)}
+                  className="px-3 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center gap-2 text-sm"
+                >
+                  <Filter size={16} />
+                  <span>Filters</span>
+                </button>
+                
+                <button
+                  type="submit"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg font-medium transition-colors text-sm"
+                >
+                  Search
+                </button>
+              </div>
             </div>
           </form>
 
           {/* Advanced Filters */}
           {showFilters && (
-            <div className="mt-6 pt-6 border-t border-gray-200">
-              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div className="mt-4 pt-4 border-t border-gray-200 md:mt-6 md:pt-6">
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 md:gap-4">
                 {/* Level Filter */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Level</label>
                   <select
                     value={filters.level}
                     onChange={(e) => handleFilterChange('level', e.target.value as string)}
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                   >
                     <option value="">All Levels</option>
                     <option value="JHS">JHS</option>
@@ -324,7 +326,7 @@ const getFilteredSubjects = () => {
                     <select
                       value={filters.course}
                       onChange={(e) => handleFilterChange('course', e.target.value)}
-                      className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                     >
                       <option value="">All Courses</option>
                       {getCoursesForSHS().map((course) => (
@@ -342,7 +344,7 @@ const getFilteredSubjects = () => {
                   <select
                     value={filters.class}
                     onChange={(e) => handleFilterChange('class', e.target.value)}
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                   >
                     <option value="">All Classes</option>
                     {filters.level === 'JHS' ? (
@@ -376,7 +378,7 @@ const getFilteredSubjects = () => {
                   <select
                     value={filters.subject_id}
                     onChange={(e) => handleFilterChange('subject_id', e.target.value)}
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                     disabled={!filters.level || (filters.level === 'SHS' && !filters.course)}
                   >
                     <option value="">All Subjects</option>
@@ -394,7 +396,7 @@ const getFilteredSubjects = () => {
                   <select
                     value={filters.substrand_id}
                     onChange={(e) => handleFilterChange('substrand_id', e.target.value)}
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                     disabled={!filters.subject_id}
                   >
                     <option value="">All Sub-strands</option>
@@ -412,7 +414,7 @@ const getFilteredSubjects = () => {
                   <select
                     value={filters.difficulty}
                     onChange={(e) => handleFilterChange('difficulty', e.target.value as 'easy' | 'medium' | 'hard')}
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                   >
                     <option value="">All Difficulties</option>
                     <option value="easy">Easy</option>
@@ -426,14 +428,14 @@ const getFilteredSubjects = () => {
                 <button
                   type="button"
                   onClick={() => handleSearch({ preventDefault: () => {} } as React.FormEvent<HTMLFormElement>)}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg font-medium transition-colors text-sm"
                 >
                   Apply Filters
                 </button>
                 <button
                   type="button"
                   onClick={resetFilters}
-                  className="border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors"
+                  className="border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2.5 rounded-lg font-medium transition-colors text-sm"
                 >
                   Reset
                 </button>
@@ -442,21 +444,78 @@ const getFilteredSubjects = () => {
           )}
         </div>
 
-        {/* Lessons Table */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        {/* Lessons Content */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden md:rounded-xl">
           {isLoading ? (
-            <div className="flex items-center justify-center h-64">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <div className="flex items-center justify-center h-40 md:h-64">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 md:h-8 md:w-8"></div>
             </div>
           ) : lessons.length === 0 ? (
-            <div className="text-center py-12">
-              <BookOpen className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No lessons found</h3>
-              <p className="text-gray-500">Try adjusting your search or filters</p>
+            <div className="text-center py-8 md:py-12">
+              <BookOpen className="mx-auto h-8 w-8 text-gray-400 mb-3 md:h-12 md:w-12 md:mb-4" />
+              <h3 className="text-base font-medium text-gray-900 mb-2 md:text-lg">No lessons found</h3>
+              <p className="text-gray-500 text-sm">Try adjusting your search or filters</p>
             </div>
           ) : (
             <>
-              <div className="overflow-x-auto">
+              {/* Mobile Cards View */}
+              <div className="block md:hidden">
+                <div className="divide-y divide-gray-200">
+                  {lessons.map((lesson) => (
+                    <div key={lesson.id} className="p-4">
+                      <div className="flex justify-between items-start mb-3">
+                        <div className="flex-1 min-w-0 mr-3">
+                          <h3 className="text-base font-medium text-gray-900 truncate">{lesson.title}</h3>
+                          {lesson.description && (
+                            <p className="text-sm text-gray-500 mt-1 line-clamp-2">{lesson.description}</p>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-1 flex-shrink-0">
+                          <button
+                            onClick={() => handleView(lesson.id as string)}
+                            className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors"
+                          >
+                            <Eye size={16} />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(lesson.id as string, lesson.title)}
+                            disabled={isDeleting}
+                            className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors disabled:opacity-50"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </div>
+                      
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getLevelBadge(lesson.level)}`}>
+                          {lesson.level}
+                        </span>
+                        <span className="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-full">
+                          {lesson.class}
+                        </span>
+                        {lesson.difficulty && (
+                          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getDifficultyBadge(lesson.difficulty)}`}>
+                            {lesson.difficulty}
+                          </span>
+                        )}
+                      </div>
+                      
+                      <div className="flex justify-between items-center text-xs text-gray-500">
+                        <span>
+                          {lesson.duration_minutes ? `${lesson.duration_minutes}m` : 'No duration'}
+                        </span>
+                        <span>
+                          {lesson.created_at ? new Date(lesson.created_at).toLocaleDateString() : 'No date'}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto">
                 <table className="w-full">
                   <thead className="bg-gray-50">
                     <tr>

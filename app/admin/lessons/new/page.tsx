@@ -321,19 +321,19 @@ const renderContentPreview = (content: ContentSection) => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-8">
         <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-          <div className="border-b border-gray-200 p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Create New Lesson</h1>
-                <p className="text-gray-600 mt-1">Build comprehensive lessons with rich content, equations, and interactive quizzes</p>
+          <div className="border-b border-gray-200 p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between">
+              <div className="mb-4 sm:mb-0">
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Create New Lesson</h1>
+                <p className="text-gray-600 mt-1 text-sm sm:text-base">Build comprehensive lessons with rich content, equations, and interactive quizzes</p>
               </div>
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-2 sm:space-x-3">
                 <button
                   type="button"
                   onClick={() => setPreviewMode(!previewMode)}
-                  className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                  className="flex items-center px-3 py-2 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
                 >
                   <Eye className="w-4 h-4 mr-2" />
                   {previewMode ? 'Edit Mode' : 'Preview Mode'}
@@ -356,11 +356,11 @@ const renderContentPreview = (content: ContentSection) => {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="p-6">
+          <form onSubmit={handleSubmit} className="p-4 sm:p-6">
             {/* Basic Information */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
               <div className="lg:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                   Lesson Title
                 </label>
                 <input
@@ -374,7 +374,7 @@ const renderContentPreview = (content: ContentSection) => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                   Level
                 </label>
                 <select
@@ -390,7 +390,7 @@ const renderContentPreview = (content: ContentSection) => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                   Class
                 </label>
                 <select
@@ -413,7 +413,7 @@ const renderContentPreview = (content: ContentSection) => {
 
               {formData.level === 'SHS' && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                     Course
                   </label>
                   <select
@@ -431,7 +431,7 @@ const renderContentPreview = (content: ContentSection) => {
               )}
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                   Subject
                 </label>
                 <select
@@ -449,7 +449,7 @@ const renderContentPreview = (content: ContentSection) => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                   Sub-strand
                 </label>
                 <select
@@ -467,7 +467,7 @@ const renderContentPreview = (content: ContentSection) => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                   Duration (minutes)
                 </label>
                 <input
@@ -481,7 +481,7 @@ const renderContentPreview = (content: ContentSection) => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                   Difficulty
                 </label>
                 <select
@@ -496,7 +496,7 @@ const renderContentPreview = (content: ContentSection) => {
               </div>
 
               <div className="lg:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                   Description
                 </label>
                 <textarea
@@ -510,38 +510,38 @@ const renderContentPreview = (content: ContentSection) => {
             </div>
 
             {/* Content Management */}
-            <div className="border-t border-gray-200 pt-8">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-gray-900">Lesson Content</h2>
-                <div className="flex items-center space-x-2">
+            <div className="border-t border-gray-200 pt-6 sm:pt-8">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6">
+                <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-0">Lesson Content</h2>
+                <div className="grid grid-cols-2 sm:flex sm:items-center gap-2">
                   <button
                     type="button"
                     onClick={() => addNewContentSection('text')}
-                    className="flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+                    className="flex items-center justify-center px-3 py-2 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
                   >
-                    <FileText className="w-4 h-4 mr-2" />
-                    Add Text
+                    <FileText className="w-4 h-4 mr-1 sm:mr-2" />
+                    <span>Text</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => addNewContentSection('image')}
-                    className="flex items-center px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors"
+                    className="flex items-center justify-center px-3 py-2 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors"
                   >
-                    <Image className="w-4 h-4 mr-2" />
-                    Add Image
+                    <Image className="w-4 h-4 mr-1 sm:mr-2" />
+                    <span>Image</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => addNewContentSection('video')}
-                    className="flex items-center px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700 transition-colors"
+                    className="flex items-center justify-center px-3 py-2 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700 transition-colors"
                   >
-                    <Video className="w-4 h-4 mr-2" />
-                    Add Video
+                    <Video className="w-4 h-4 mr-1 sm:mr-2" />
+                    <span>Video</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => addNewContentSection('quiz')}
-                    className="flex items-center px-4 py-2 text-sm font-medium text-white bg-orange-600 rounded-lg hover:bg-orange-700 transition-colors"
+                    className="flex items-center justify-center px-3 py-2 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium text-white bg-orange-600 rounded-lg hover:bg-orange-700 transition-colors"
                   >
                     <HelpCircle className="w-4 h-4 mr-2" />
                     Add Quiz
@@ -560,9 +560,9 @@ const renderContentPreview = (content: ContentSection) => {
               )}
 
               {/* Content Sections */}
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 {currentLesson?.content.map((section, index) => (
-                  <div key={section.id} className="bg-gray-50 border border-gray-200 rounded-lg p-6">
+                  <div key={section.id} className="bg-gray-50 border border-gray-200 rounded-lg p-4 sm:p-6">
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center space-x-2">
                         <div className="flex items-center space-x-1">

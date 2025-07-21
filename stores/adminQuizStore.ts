@@ -258,7 +258,7 @@ export const useAdminQuizStore = create<AdminQuizState>((set, get) => ({
         .from('quizzes')
         .select(`
           *,
-          subjects(id, name, level, description, course),
+          subjects(id, name, level, course),
           curriculum_sub_strands(
             id,
             sub_strand,
@@ -301,7 +301,7 @@ export const useAdminQuizStore = create<AdminQuizState>((set, get) => ({
         .from('quizzes')
         .select(`
           *,
-          subjects(id, name, level, description, course),
+          subjects(id, name, level, course),
           curriculum_sub_strands(
             id, 
             sub_strand, 

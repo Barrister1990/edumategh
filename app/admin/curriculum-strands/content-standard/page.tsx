@@ -1,28 +1,28 @@
 "use client";
 import { CreateContentStandardInput, useCurriculumStore } from '@/stores/curriculumStrand';
 import {
-    AlertCircle,
-    BookOpen,
-    CheckCircle,
-    ChevronDown,
-    Clipboard,
-    FileText,
-    GraduationCap,
-    Lightbulb,
-    Link,
-    Loader2,
-    Plus,
-    RotateCcw,
-    School,
-    Target,
-    X
+  AlertCircle,
+  BookOpen,
+  CheckCircle,
+  ChevronDown,
+  Clipboard,
+  FileText,
+  GraduationCap,
+  Lightbulb,
+  Link,
+  Loader2,
+  Plus,
+  RotateCcw,
+  School,
+  Target,
+  X
 } from 'lucide-react';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 // Form data interface for better type safety
 interface FormData {
   name: string;
-  level: 'JHS' | 'SHS';
+  level: string;
   class: string;
   course: string;
   subjectId: string;
@@ -64,32 +64,39 @@ const AddNewContentStandard = () => {
   const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set());
   const [isLoading, setIsLoading] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
-
+ const [availableCourses, setAvailableCourses] = useState<string[]>([]);
   // Memoized calculations for better performance
-  const availableCourses = useMemo(() => {
-    if (formData.level !== 'SHS' || !subjects.length) return [];
-    
-    const courses = Array.from(new Set(
-      subjects
-        .filter(subject => subject.level === 'SHS' && subject.course)
-        .map(subject => subject.course)
-        .filter(Boolean)
-    )) as string[];
-    
-    return courses;
+  useEffect(() => {
+    if (formData.level === 'SHS' && subjects.length > 0) {
+      const courses = Array.from(new Set(
+        subjects
+          .filter(subject => subject.level === 'SHS' && Array.isArray(subject.course))
+          .flatMap(subject => subject.course) // flatten array of arrays
+      )).filter(Boolean) as string[];
+
+      setAvailableCourses(courses);
+    } else {
+      setAvailableCourses([]);
+      setFormData(prev => ({ ...prev, course: '' }));
+    }
   }, [formData.level, subjects]);
 
-  const availableSubjects = useMemo(() => {
-    if (formData.level === 'JHS') {
-      return subjects.filter(subject => subject.level === 'JHS');
-    } else if (formData.level === 'SHS') {
-      if (!formData.course) return [];
-      return subjects.filter(
-        subject => subject.level === 'SHS' && subject.course === formData.course
-      );
-    }
-    return [];
-  }, [formData.level, formData.course, subjects]);
+const availableSubjects = useMemo(() => {
+  if (formData.level === 'Basic') {
+    return subjects.filter(subject => subject.level === 'Basic');
+  } else if (formData.level === 'JHS') {
+    return subjects.filter(subject => subject.level === 'JHS');
+  } else if (formData.level === 'SHS') {
+    if (!formData.course) return [];
+    return subjects.filter(
+      subject => 
+        subject.level === 'SHS' &&
+        Array.isArray(subject.course) &&
+        subject.course.includes(formData.course)
+    );
+  }
+  return [];
+}, [formData.level, formData.course, subjects]);
 
   const availableStrands = useMemo(() => {
     if (!formData.subjectId) return [];
@@ -110,28 +117,28 @@ const AddNewContentStandard = () => {
     );
   }, [formData.strandId, subStrands]);
 
-  const isFormValid = useMemo(() => {
-    return formData.name.trim() !== '' && 
-           formData.subjectId !== '' && 
-           formData.strandId !== '' &&
-           formData.subStrandId !== '' &&
-           (formData.level === 'JHS' || formData.course !== '');
-  }, [formData]);
+const isFormValid = useMemo(() => {
+  return formData.name.trim() !== '' && 
+         formData.subjectId !== '' && 
+         formData.strandId !== '' &&
+         formData.subStrandId !== '' &&
+         (formData.level === 'Basic' || formData.level === 'JHS' || formData.course !== '');
+}, [formData]);
 
-  const progressPercentage = useMemo(() => {
-    const totalFields = formData.level === 'JHS' ? 6 : 7;
-    let filledFields = 0;
-    
-    if (formData.name.trim()) filledFields++;
-    if (formData.level) filledFields++;
-    if (formData.class) filledFields++;
-    if (formData.subjectId) filledFields++;
-    if (formData.strandId) filledFields++;
-    if (formData.subStrandId) filledFields++;
-    if (formData.level === 'JHS' || formData.course) filledFields++;
-    
-    return Math.round((filledFields / totalFields) * 100);
-  }, [formData]);
+const progressPercentage = useMemo(() => {
+  const totalFields = (formData.level === 'Basic' || formData.level === 'JHS') ? 6 : 7;
+  let filledFields = 0;
+  
+  if (formData.name.trim()) filledFields++;
+  if (formData.level) filledFields++;
+  if (formData.class) filledFields++;
+  if (formData.subjectId) filledFields++;
+  if (formData.strandId) filledFields++;
+  if (formData.subStrandId) filledFields++;
+  if (formData.level === 'Basic' || formData.level === 'JHS' || formData.course) filledFields++;
+  
+  return Math.round((filledFields / totalFields) * 100);
+}, [formData]);
 
   // Load data with proper error handling
   const loadData = useCallback(async () => {
@@ -260,31 +267,31 @@ const AddNewContentStandard = () => {
     }
   }, [availableSubjects, availableStrands, availableSubStrands]);
 
-  const validateForm = useCallback(() => {
-    const errors: string[] = [];
-    
-    if (!formData.name.trim()) {
-      errors.push('Content standard name is required');
-    }
-    
-    if (!formData.subjectId) {
-      errors.push('Please select a subject');
-    }
+const validateForm = useCallback(() => {
+  const errors: string[] = [];
+  
+  if (!formData.name.trim()) {
+    errors.push('Content standard name is required');
+  }
+  
+  if (!formData.subjectId) {
+    errors.push('Please select a subject');
+  }
 
-    if (!formData.strandId) {
-      errors.push('Please select a strand');
-    }
+  if (!formData.strandId) {
+    errors.push('Please select a strand');
+  }
 
-    if (!formData.subStrandId) {
-      errors.push('Please select a sub-strand');
-    }
+  if (!formData.subStrandId) {
+    errors.push('Please select a sub-strand');
+  }
 
-    if (formData.level === 'SHS' && !formData.course) {
-      errors.push('Please select a course for SHS');
-    }
+  if (formData.level === 'SHS' && !formData.course) {
+    errors.push('Please select a course for SHS');
+  }
 
-    return errors;
-  }, [formData]);
+  return errors;
+}, [formData]);
 
   const handleSubmit = useCallback(async () => {
     const validationErrors = validateForm();
@@ -583,74 +590,75 @@ const AddNewContentStandard = () => {
                   </div>
 
                   {/* Level Selection */}
-                  <div className="space-y-4">
-                    <label className="block text-sm font-semibold text-gray-700">
-                      Education Level *
-                    </label>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {(['JHS', 'SHS'] as const).map((level) => (
-                        <label key={level} className="relative cursor-pointer">
-                          <input
-                            type="radio"
-                            name="level"
-                            value={level}
-                            checked={formData.level === level}
-                            onChange={handleInputChange}
-                            className="sr-only"
-                          />
-                          <div className={`p-4 border-2 rounded-xl text-center transition-all duration-200 ${
-                            formData.level === level
-                              ? 'border-blue-500 bg-blue-50 shadow-lg ring-4 ring-blue-500/20'
-                              : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
-                          }`}>
-                            <div className="flex items-center justify-center mb-2">
-                              {level === 'JHS' ? (
-                                <School className={`w-5 h-5 ${formData.level === level ? 'text-blue-700' : 'text-gray-600'}`} />
-                              ) : (
-                                <GraduationCap className={`w-5 h-5 ${formData.level === level ? 'text-blue-700' : 'text-gray-600'}`} />
-                              )}
-                            </div>
-                            <div className={`font-semibold text-sm md:text-base ${formData.level === level ? 'text-blue-700' : 'text-gray-700'}`}>
-                              {level === 'JHS' ? 'Junior High School' : 'Senior High School'}
-                            </div>
-                            <div className={`text-xs md:text-sm ${formData.level === level ? 'text-blue-600' : 'text-gray-500'}`}>
-                              {level}
-                            </div>
-                          </div>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-
+<div className="space-y-4">
+  <label className="block text-sm font-semibold text-gray-700">
+    Education Level *
+  </label>
+  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4"> {/* Changed from grid-cols-2 to grid-cols-3 */}
+    {(['Basic', 'JHS', 'SHS'] as const).map((level) => (
+      <label key={level} className="relative cursor-pointer">
+        <input
+          type="radio"
+          name="level"
+          value={level}
+          checked={formData.level === level}
+          onChange={handleInputChange}
+          className="sr-only"
+        />
+        <div className={`p-4 border-2 rounded-xl text-center transition-all duration-200 ${
+          formData.level === level
+            ? 'border-blue-500 bg-blue-50 shadow-lg ring-4 ring-blue-500/20'
+            : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+        }`}>
+          <div className="flex items-center justify-center mb-2">
+            {level === 'Basic' ? (
+              <BookOpen className={`w-5 h-5 ${formData.level === level ? 'text-blue-700' : 'text-gray-600'}`} />
+            ) : level === 'JHS' ? (
+              <School className={`w-5 h-5 ${formData.level === level ? 'text-blue-700' : 'text-gray-600'}`} />
+            ) : (
+              <GraduationCap className={`w-5 h-5 ${formData.level === level ? 'text-blue-700' : 'text-gray-600'}`} />
+            )}
+          </div>
+          <div className={`font-semibold text-sm md:text-base ${formData.level === level ? 'text-blue-700' : 'text-gray-700'}`}>
+            {level === 'Basic' ? 'Basic School' : level === 'JHS' ? 'Junior High School' : 'Senior High School'}
+          </div>
+          <div className={`text-xs md:text-sm ${formData.level === level ? 'text-blue-600' : 'text-gray-500'}`}>
+            {level}
+          </div>
+        </div>
+      </label>
+    ))}
+  </div>
+</div>
                   {/* Class Selection */}
-                  <div>
-                    <label htmlFor="class" className="block text-sm font-semibold text-gray-700 mb-3">
-                      Class Level *
-                    </label>
-                    <div className="grid grid-cols-3 gap-3">
-                      {['1', '2', '3'].map((classNum) => (
-                        <label key={classNum} className="relative cursor-pointer">
-                          <input
-                            type="radio"
-                            name="class"
-                            value={classNum}
-                            checked={formData.class === classNum}
-                            onChange={handleInputChange}
-                            className="sr-only"
-                          />
-                          <div className={`p-3 border-2 rounded-lg text-center font-medium transition-all duration-200 ${
-                            formData.class === classNum
-                              ? 'border-blue-500 bg-blue-50 text-blue-700 shadow-md'
-                              : 'border-gray-200 text-gray-700 hover:border-gray-300 hover:bg-gray-50'
-                          }`}>
-                            <div className="text-sm md:text-base">
-                              {formData.level} {classNum}
-                            </div>
-                          </div>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
+<div>
+  <label htmlFor="class" className="block text-sm font-semibold text-gray-700 mb-3">
+    Class Level *
+  </label>
+  <div className="grid grid-cols-3 gap-3">
+    {(formData.level === 'Basic' ? ['4', '5', '6'] : ['1', '2', '3']).map((classNum) => (
+      <label key={classNum} className="relative cursor-pointer">
+        <input
+          type="radio"
+          name="class"
+          value={classNum}
+          checked={formData.class === classNum}
+          onChange={handleInputChange}
+          className="sr-only"
+        />
+        <div className={`p-3 border-2 rounded-lg text-center font-medium transition-all duration-200 ${
+          formData.class === classNum
+            ? 'border-blue-500 bg-blue-50 text-blue-700 shadow-md'
+            : 'border-gray-200 text-gray-700 hover:border-gray-300 hover:bg-gray-50'
+        }`}>
+          <div className="text-sm md:text-base">
+            {formData.level} {classNum}
+          </div>
+        </div>
+      </label>
+    ))}
+  </div>
+</div>
 
                   {/* Course Selection (SHS only) */}
                   {formData.level === 'SHS' && (

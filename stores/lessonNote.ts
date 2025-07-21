@@ -647,9 +647,9 @@ export const useAdminLessonNoteStore = create<AdminLessonNoteState>((set, get) =
         .eq('level', level)
         .order('name');
       
-      if (level === 'SHS' && course) {
-        query = query.eq('course', course);
-      }
+     if (level === 'SHS' && course) {
+            query = query.contains('course', [course]);
+          }
       
       const { data, error } = await query;
       

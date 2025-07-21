@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 interface Subject {
   id: string;
   name: string;
-  level: 'JHS' | 'SHS';
+  level: string;
   course?: string;
 }
 
@@ -22,8 +22,8 @@ const AddNewStrand = () => {
 
   const [formData, setFormData] = useState({
     name: '',
-    level: 'JHS' as 'JHS' | 'SHS',
-    class: '1',
+    level: 'Basic' as string,
+    class: '4',
     course: '',
     subjectId: '',
     subject: ''
@@ -48,10 +48,10 @@ const AddNewStrand = () => {
     if (formData.level === 'SHS' && subjects.length > 0) {
       const courses = Array.from(new Set(
         subjects
-          .filter(subject => subject.level === 'SHS' && subject.course)
-          .map(subject => subject.course)
+          .filter(subject => subject.level === 'SHS' && Array.isArray(subject.course))
+          .flatMap(subject => subject.course) // flatten array of arrays
       )).filter(Boolean) as string[];
-      
+
       setAvailableCourses(courses);
     } else {
       setAvailableCourses([]);
@@ -61,13 +61,16 @@ const AddNewStrand = () => {
 
   // Filter subjects based on level and course
   useEffect(() => {
-    if (formData.level === 'JHS') {
-      const jhsSubjects = subjects.filter(subject => subject.level === 'JHS');
-      setAvailableSubjects(jhsSubjects);
+    if (formData.level === 'Basic' || formData.level === 'JHS') {
+      const levelSubjects = subjects.filter(subject => subject.level === formData.level);
+      setAvailableSubjects(levelSubjects);
     } else if (formData.level === 'SHS') {
       if (formData.course) {
         const shsSubjects = subjects.filter(
-          subject => subject.level === 'SHS' && subject.course === formData.course
+          subject => 
+  subject.level === 'SHS' &&
+  Array.isArray(subject.course) &&
+  subject.course.includes(formData.course)
         );
         setAvailableSubjects(shsSubjects);
       } else {
@@ -81,11 +84,22 @@ const AddNewStrand = () => {
     setFormData(prev => ({ ...prev, subjectId: '', subject: '' }));
   }, [formData.level, formData.course]);
 
+  // Reset class when level changes to appropriate default
+  useEffect(() => {
+    let defaultClass = '1';
+    if (formData.level === 'Basic') {
+      defaultClass = '4';
+    } else if (formData.level === 'JHS' || formData.level === 'SHS') {
+      defaultClass = '1';
+    }
+    setFormData(prev => ({ ...prev, class: defaultClass }));
+  }, [formData.level]);
+
   // Form validation
   useEffect(() => {
     const isValid = formData.name.trim() !== '' && 
                    formData.subjectId !== '' && 
-                   (formData.level === 'JHS' || formData.course !== '');
+                   (formData.level !== 'SHS' || formData.course !== '');
     setIsFormValid(isValid);
     setShowPreview(isValid);
   }, [formData]);
@@ -139,8 +153,8 @@ const AddNewStrand = () => {
       // Reset form on success
       setFormData({
         name: '',
-        level: 'JHS',
-        class: '1',
+        level: 'Basic',
+        class: '4',
         course: '',
         subjectId: '',
         subject: ''
@@ -153,8 +167,8 @@ const AddNewStrand = () => {
   const handleReset = () => {
     setFormData({
       name: '',
-      level: 'JHS',
-      class: '1',
+      level: 'Basic',
+      class: '4',
       course: '',
       subjectId: '',
       subject: ''
@@ -179,16 +193,41 @@ const AddNewStrand = () => {
   };
 
   const getProgressPercentage = () => {
-    const totalFields = formData.level === 'JHS' ? 4 : 5; // name, level, class, subject, (+course for SHS)
+    const totalFields = formData.level === 'SHS' ? 5 : 4; // name, level, class, subject, (+course for SHS)
     let filledFields = 0;
     
     if (formData.name.trim()) filledFields++;
     if (formData.level) filledFields++;
     if (formData.class) filledFields++;
     if (formData.subjectId) filledFields++;
-    if (formData.level === 'JHS' || formData.course) filledFields++;
+    if (formData.level !== 'SHS' || formData.course) filledFields++;
     
     return Math.round((filledFields / totalFields) * 100);
+  };
+
+  const getClassOptions = () => {
+    switch (formData.level) {
+      case 'Basic':
+        return ['4', '5', '6'];
+      case 'JHS':
+      case 'SHS':
+        return ['1', '2', '3'];
+      default:
+        return ['1', '2', '3'];
+    }
+  };
+
+  const getLevelDisplayName = (level: string) => {
+    switch (level) {
+      case 'Basic':
+        return 'Basic School';
+      case 'JHS':
+        return 'Junior High School';
+      case 'SHS':
+        return 'Senior High School';
+      default:
+        return level;
+    }
   };
 
   return (
@@ -279,8 +318,8 @@ const AddNewStrand = () => {
                   <label className="block text-sm font-semibold text-gray-700">
                     Education Level *
                   </label>
-                  <div className="grid grid-cols-2 gap-4">
-                    {['JHS', 'SHS'].map((level) => (
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {['Basic', 'JHS', 'SHS'].map((level) => (
                       <label key={level} className="relative cursor-pointer">
                         <input
                           type="radio"
@@ -296,7 +335,7 @@ const AddNewStrand = () => {
                             : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                         }`}>
                           <div className={`font-semibold ${formData.level === level ? 'text-blue-700' : 'text-gray-700'}`}>
-                            {level === 'JHS' ? 'Junior High School' : 'Senior High School'}
+                            {getLevelDisplayName(level)}
                           </div>
                           <div className={`text-sm ${formData.level === level ? 'text-blue-600' : 'text-gray-500'}`}>
                             {level}
@@ -313,7 +352,7 @@ const AddNewStrand = () => {
                     Class Level *
                   </label>
                   <div className="grid grid-cols-3 gap-3">
-                    {['1', '2', '3'].map((classNum) => (
+                    {getClassOptions().map((classNum) => (
                       <label key={classNum} className="relative cursor-pointer">
                         <input
                           type="radio"

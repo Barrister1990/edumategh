@@ -1,5 +1,6 @@
 "use client";
 import MathToolbar, { MathButton } from '@/components/MathToolbar';
+import TextEditor from '@/components/TextEditor';
 import { useAdminQuizStore } from '@/stores/adminQuizStore';
 import { Eye, HelpCircle, Move, Save, Trash2, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
@@ -13,7 +14,6 @@ interface FormData {
   subject_id: string;
   substrand_id: string;
   class: string;
-  description: string;
   duration_minutes: number;
   difficulty: 'easy' | 'medium' | 'hard';
 }
@@ -55,7 +55,6 @@ const AddNewQuiz = () => {
     subject_id: '',
     substrand_id: '',
     class: '',
-    description: '',
     duration_minutes: 30,
     difficulty: 'medium'
   });
@@ -65,6 +64,7 @@ const AddNewQuiz = () => {
   const [previewMode, setPreviewMode] = useState(false);
   const [currentFocusedField, setCurrentFocusedField] = useState<string | null>(null);
   const [cursorPosition, setCursorPosition] = useState<{ start: number; end: number } | null>(null);
+  const [activeTextEditor, setActiveTextEditor] = useState<string | null>(null);
 
   // Store refs for all textareas to track focus and cursor position
   const textareaRefs = useRef<{ [key: string]: HTMLTextAreaElement }>({});
@@ -83,6 +83,7 @@ const AddNewQuiz = () => {
   // Class options
   const jhsClasses = ['JHS 1', 'JHS 2', 'JHS 3'];
   const shsClasses = ['SHS 1', 'SHS 2', 'SHS 3'];
+  const basicClasses = ['Basic 4', 'Basic 5', 'Basic 6'];
 
   useEffect(() => {
     fetchSubjects();
@@ -97,7 +98,6 @@ const AddNewQuiz = () => {
       level: 'JHS',
       class: '',
       questions: [],
-      description: '',
       duration_minutes: 30,
       difficulty: 'medium'
     });
@@ -106,6 +106,12 @@ const AddNewQuiz = () => {
   useEffect(() => {
     if (formData.level === 'JHS') {
       fetchSubjects('JHS');
+      setFormData(prev => ({ ...prev, course: '', subject: '', sub_strand: '' }));
+    }
+  }, [formData.level, formData.class, fetchSubjects]);
+    useEffect(() => {
+    if (formData.level === 'Basic') {
+      fetchSubjects('Basic');
       setFormData(prev => ({ ...prev, course: '', subject: '', sub_strand: '' }));
     }
   }, [formData.level, formData.class, fetchSubjects]);
@@ -285,7 +291,6 @@ const AddNewQuiz = () => {
         subject_id: '',
         substrand_id: '',
         class: '',
-        description: '',
         duration_minutes: 30,
         difficulty: 'medium'
       });
@@ -299,7 +304,6 @@ const AddNewQuiz = () => {
         level: 'JHS' as const,
         class: '',
         questions: [],
-        description: '',
         duration_minutes: 30,
         difficulty: 'medium'
       });
@@ -369,19 +373,19 @@ const AddNewQuiz = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-8">
         <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-          <div className="border-b border-gray-200 p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Create New Quiz</h1>
-                <p className="text-gray-600 mt-1">Build interactive quizzes with multiple choice, true/false, and short answer questions</p>
+          <div className="border-b border-gray-200 p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between">
+              <div className="mb-4 sm:mb-0">
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Create New Quiz</h1>
+                <p className="text-gray-600 mt-1 text-sm sm:text-base">Build interactive quizzes with multiple choice, true/false, and short answer questions</p>
               </div>
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-2 sm:space-x-3">
                 <button
                   type="button"
                   onClick={() => setPreviewMode(!previewMode)}
-                  className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                  className="flex items-center px-3 py-2 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
                 >
                   <Eye className="w-4 h-4 mr-2" />
                   {previewMode ? 'Edit Mode' : 'Preview Mode'}
@@ -404,11 +408,11 @@ const AddNewQuiz = () => {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="p-6">
+          <form onSubmit={handleSubmit} className="p-4 sm:p-6">
             {/* Basic Information */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
               <div className="lg:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                   Quiz Title
                 </label>
                 <input
@@ -422,7 +426,7 @@ const AddNewQuiz = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                   Level
                 </label>
                 <select
@@ -431,13 +435,14 @@ const AddNewQuiz = () => {
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 >
+                  <option value="Basic">Upper Primary</option>
                   <option value="JHS">Junior High School (JHS)</option>
                   <option value="SHS">Senior High School (SHS)</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                   Class
                 </label>
                 <select
@@ -447,7 +452,12 @@ const AddNewQuiz = () => {
                   required
                 >
                   <option value="">Select Class</option>
-                  {(formData.level === 'JHS' ? jhsClasses : shsClasses).map(cls => (
+                  {(formData.level === 'Basic'
+                    ? basicClasses
+                    : formData.level === 'JHS'
+                    ? jhsClasses
+                    : shsClasses
+                  ).map(cls => (
                     <option key={cls} value={cls}>{cls}</option>
                   ))}
                 </select>
@@ -455,7 +465,7 @@ const AddNewQuiz = () => {
 
               {formData.level === 'SHS' && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                     Course
                   </label>
                   <select
@@ -473,7 +483,7 @@ const AddNewQuiz = () => {
               )}
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                   Subject
                 </label>
                 <select
@@ -491,7 +501,7 @@ const AddNewQuiz = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                   Sub-strand
                 </label>
                 <select
@@ -509,7 +519,7 @@ const AddNewQuiz = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                   Duration (minutes)
                 </label>
                 <input
@@ -523,7 +533,7 @@ const AddNewQuiz = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                   Difficulty
                 </label>
                 <select
@@ -537,45 +547,33 @@ const AddNewQuiz = () => {
                 </select>
               </div>
 
-              <div className="lg:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Description
-                </label>
-                <textarea
-                  value={formData.description}
-                  onChange={(e) => handleInputChange('description', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  rows={3}
-                  placeholder="Brief description of the quiz..."
-                />
-              </div>
             </div>
 
             {/* Quiz Questions Management */}
-            <div className="border-t border-gray-200 pt-8">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-gray-900">Quiz Questions</h2>
-                <div className="flex items-center space-x-2">
+            <div className="border-t border-gray-200 pt-6 sm:pt-8">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6">
+                <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-0">Quiz Questions</h2>
+                <div className="grid grid-cols-2 sm:flex sm:items-center gap-2">
                   <button
                     type="button"
                     onClick={() => addNewQuestion('multiple_choice')}
-                    className="flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+                    className="flex items-center justify-center px-3 py-2 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
                   >
-                    <HelpCircle className="w-4 h-4 mr-2" />
-                    Multiple Choice
+                    <HelpCircle className="w-4 h-4 mr-1 sm:mr-2" />
+                    <span>MCQ</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => addNewQuestion('true_false')}
-                    className="flex items-center px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors"
+                    className="flex items-center justify-center px-3 py-2 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors"
                   >
-                    <HelpCircle className="w-4 h-4 mr-2" />
-                    True/False
+                    <HelpCircle className="w-4 h-4 mr-1 sm:mr-2" />
+                    <span>T/F</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => addNewQuestion('short_answer')}
-                    className="flex items-center px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700 transition-colors"
+                    className="flex items-center justify-center px-3 py-2 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700 transition-colors"
                   >
                     <HelpCircle className="w-4 h-4 mr-2" />
                     Short Answer
@@ -594,9 +592,9 @@ const AddNewQuiz = () => {
               )}
 
               {/* Questions */}
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 {currentQuiz?.questions.map((question, index) => (
-                  <div key={question.id} className="bg-gray-50 border border-gray-200 rounded-lg p-6">
+                  <div key={question.id} className="bg-gray-50 border border-gray-200 rounded-lg p-4 sm:p-6">
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center space-x-2">
                         <div className="flex items-center space-x-1">
@@ -629,6 +627,14 @@ const AddNewQuiz = () => {
                         />
                         <button
                           type="button"
+                          onClick={() => setActiveTextEditor(activeTextEditor === `question-${question.id}` ? null : `question-${question.id}`)}
+                          className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          title="Text Editor"
+                        >
+                          <span className="text-sm">T</span>
+                        </button>
+                        <button
+                          type="button"
                           onClick={() => deleteQuestion(question.id)}
                           className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded"
                         >
@@ -646,6 +652,14 @@ const AddNewQuiz = () => {
                           <label className="block text-sm font-medium text-gray-700 mb-2">
                             Question (Supports LaTeX)
                           </label>
+                          <TextEditor
+                            value={question.question}
+                            onChange={(value) => updateQuestionField(question.id, 'question', value)}
+                            placeholder="Enter your question here... Use $LaTeX$ for math equations"
+                            contentId={`question-${question.id}`}
+                            isVisible={activeTextEditor === `question-${question.id}`}
+                            onClose={() => setActiveTextEditor(null)}
+                          />
                           <textarea
                             ref={(el) => setTextareaRef(`question-${question.id}`, el)}
                             value={question.question}
@@ -680,6 +694,18 @@ const AddNewQuiz = () => {
                                   <span className="text-sm font-medium text-gray-700 min-w-0">
                                     {String.fromCharCode(65 + idx)}.
                                   </span>
+                                  <TextEditor
+                                    value={option}
+                                    onChange={(value) => {
+                                      const newOptions = [...(question.options || [])];
+                                      newOptions[idx] = value;
+                                      updateQuestionField(question.id, 'options', newOptions);
+                                    }}
+                                    placeholder={`Option ${String.fromCharCode(65 + idx)} (supports LaTeX)`}
+                                    contentId={`option-${question.id}-${idx}`}
+                                    isVisible={activeTextEditor === `option-${question.id}-${idx}`}
+                                    onClose={() => setActiveTextEditor(null)}
+                                  />
                                   <textarea
                                     ref={(el) => setTextareaRef(`option-${question.id}-${idx}`, el)}
                                     value={option}
@@ -739,6 +765,14 @@ const AddNewQuiz = () => {
                             <label className="block text-sm font-medium text-gray-700 mb-2">
                               Correct Answer (Supports LaTeX)
                             </label>
+                            <TextEditor
+                              value={question.correct_answer}
+                              onChange={(value) => updateQuestionField(question.id, 'correct_answer', value)}
+                              placeholder="Enter the correct answer... Use $LaTeX$ for math equations"
+                              contentId={`answer-${question.id}`}
+                              isVisible={activeTextEditor === `answer-${question.id}`}
+                              onClose={() => setActiveTextEditor(null)}
+                            />
                             <textarea
                               ref={(el) => setTextareaRef(`answer-${question.id}`, el)}
                               value={question.correct_answer}
@@ -760,6 +794,14 @@ const AddNewQuiz = () => {
                           <label className="block text-sm font-medium text-gray-700 mb-2">
                             Explanation (Optional - Supports LaTeX)
                           </label>
+                          <TextEditor
+                            value={question.explanation || ''}
+                            onChange={(value) => updateQuestionField(question.id, 'explanation', value)}
+                            placeholder="Provide an explanation for the answer... Use $LaTeX$ for math equations"
+                            contentId={`explanation-${question.id}`}
+                            isVisible={activeTextEditor === `explanation-${question.id}`}
+                            onClose={() => setActiveTextEditor(null)}
+                          />
                           <textarea
                             ref={(el) => setTextareaRef(`explanation-${question.id}`, el)}
                             value={question.explanation || ''}
@@ -832,7 +874,6 @@ const AddNewQuiz = () => {
                           subject_id: '',
                           substrand_id: '',
                           class: '',
-                          description: '',
                           duration_minutes: 30,
                           difficulty: 'medium'
                         });
@@ -846,7 +887,6 @@ const AddNewQuiz = () => {
                           level: 'JHS' as const,
                           class: '',
                           questions: [],
-                          description: '',
                           duration_minutes: 30,
                           difficulty: 'medium'
                         });
