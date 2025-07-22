@@ -272,8 +272,8 @@ export default function ModernComingSoonPage() {
                             objectPosition: 'center',
                           }}
                         >
-                          <source src="/demo.mp4" type="video/mp4" />
-                          <source src="/demo.MP4" type="video/mp4" />
+                          <source src="https://res.cloudinary.com/dzcnx3v0n/video/upload/v1753180557/demo_frrm5i.mp4" type="video/mp4" />
+                          <source src="https://res.cloudinary.com/dzcnx3v0n/video/upload/v1753180557/demo_frrm5i.mp4" type="video/mp4" />
                         </video>
                       ) : null}
 
@@ -417,8 +417,8 @@ export default function ModernComingSoonPage() {
                           borderRadius: '2.5rem'
                         }}
                       >
-                        <source src="/demo.mp4" type="video/mp4" />
-                        <source src="/demo.MP4" type="video/mp4" />
+                        <source src="https://res.cloudinary.com/dzcnx3v0n/video/upload/v1753180557/demo_frrm5i.mp4" type="video/mp4" />
+                        <source src="https://res.cloudinary.com/dzcnx3v0n/video/upload/v1753180557/demo_frrm5i.mp4" type="video/mp4" />
                       </video>
                     ) : null}
 
