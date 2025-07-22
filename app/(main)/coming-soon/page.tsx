@@ -136,7 +136,7 @@ export default function ModernComingSoonPage() {
 
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://edumategh.com/" />
+       <meta property="og:url" content="https://edumategh.com/coming-soon" />
         <meta property="og:title" content="EduMate Ghana - AI-Powered Learning Platform Coming Soon 🇬🇭" />
         <meta property="og:description" content="Revolutionary AI-powered e-learning platform for Ghanaian students and teachers. Master BECE & WASSCE prep, generate lesson notes instantly, and learn in Twi, Ewe & Hausa. Students can take lessons and quizzes aligned with the GES curriculum, structured under each strand. Join 3,200+ educators waiting for launch!" />
         <meta property="og:image" content="https://edumategh.com/og-image.png" />
@@ -145,10 +145,10 @@ export default function ModernComingSoonPage() {
         <meta property="og:image:alt" content="EduMate Ghana - AI-Powered Learning Platform Coming Soon" />
         <meta property="og:site_name" content="EduMate Ghana" />
         <meta property="og:locale" content="en_US" />
-
+<link rel="canonical" href="https://edumategh.com/coming-soon" />
         {/* Twitter */}
         <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:url" content="https://edumategh.com/" />
+        <meta property="twitter:url" content="https://edumategh.com/coming-soon" />
         <meta property="twitter:title" content="EduMate Ghana - AI-Powered Learning Platform Coming Soon 🇬🇭" />
         <meta property="twitter:description" content="Revolutionary AI-powered e-learning platform for Ghanaian students and teachers. Master BECE & WASSCE prep, generate lesson notes instantly, and learn in Twi, Ewe & Hausa." />
         <meta property="twitter:image" content="https://edumategh.com/og-image.png" />
@@ -158,7 +158,7 @@ export default function ModernComingSoonPage() {
         <meta name="theme-color" content="#10b981" />
 
         {/* Additional Meta Tags */}
-        <link rel="canonical" href="https://edumategh.com/" />
+     
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         
         {/* Favicon */}
