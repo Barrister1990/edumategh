@@ -424,38 +424,40 @@ fetchLessons: async (page = 1, filters = {}) => {
   },
 
   // Data Fetching
-  fetchSubjects: async (level?: string, course?: string) => {
-    set({ isLoading: true, error: null });
-    try {
-      let query = supabase
-        .from('subjects')
-        .select('*')
-        .eq('level', level)
-        .order('name');
+fetchSubjects: async (level?: string, course?: string) => {
+  set({ isLoading: true, error: null });
 
+  try {
+    let query = supabase
+      .from('subjects')
+      .select('*')
+      .order('name');
 
-
-
-
-      const { data, error } = await query;
-
-      if (error) throw error;
-
-      set({
-        subjects: data || [],
-        isLoading: false,
-      });
-
-      console.log(`Fetched ${data?.length || 0} subjects`);
-    } catch (error: any) {
-      console.error('Error fetching subjects:', error);
-      set({
-        subjects: [],
-        error: error.message || 'Failed to fetch subjects',
-        isLoading: false,
-      });
+    if (level) {
+      query = query.eq('level', level);
     }
-  },
+
+
+    const { data, error } = await query;
+
+    if (error) throw error;
+
+    set({
+      subjects: data || [],
+      isLoading: false,
+    });
+
+    console.log(`Fetched ${data?.length || 0} subjects`);
+  } catch (error: any) {
+    console.error('Error fetching subjects:', error);
+    set({
+      subjects: [],
+      error: error.message || 'Failed to fetch subjects',
+      isLoading: false,
+    });
+  }
+},
+
 
 fetchSubStrands: async (subjectId: string, classFilter?: string) => {
   set({ isLoading: true, error: null });

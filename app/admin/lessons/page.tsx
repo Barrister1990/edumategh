@@ -314,6 +314,7 @@ const getFilteredSubjects = () => {
                     className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                   >
                     <option value="">All Levels</option>
+                    <option value="Basic">Upper Primary</option>
                     <option value="JHS">JHS</option>
                     <option value="SHS">SHS</option>
                   </select>
@@ -359,6 +360,12 @@ const getFilteredSubjects = () => {
                         <option value="SHS 2">SHS 2</option>
                         <option value="SHS 3">SHS 3</option>
                       </>
+                    )  : filters.level === 'Basic' ? (
+                      <>
+                        <option value="Basic 4">Basic 4</option>
+                        <option value="Basic 5">Basic 5</option>
+                        <option value="Basic 6">Basic 6</option>
+                      </>
                     ) : (
                       <>
                         <option value="JHS 1">JHS 1</option>
@@ -368,7 +375,7 @@ const getFilteredSubjects = () => {
                         <option value="SHS 2">SHS 2</option>
                         <option value="SHS 3">SHS 3</option>
                       </>
-                    )}
+                    ) }
                   </select>
                 </div>
                 
