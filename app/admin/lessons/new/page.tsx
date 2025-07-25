@@ -5,7 +5,6 @@ import { useAdminLessonStore } from '@/stores/adminLessonStore';
 import { Eye, FileText, HelpCircle, Image, Move, Save, Trash2, Video, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-
 interface FormData {
   title: string;
   level: string;
@@ -72,9 +71,11 @@ const [formData, setFormData] = useState<FormData>({
   const [showMathToolbar, setShowMathToolbar] = useState(false);
   const [previewMode, setPreviewMode] = useState(false);
 const [activeTextEditor, setActiveTextEditor] = useState<number | string | null>(null);
+  
   // Course options for SHS
   const shsCourses = [
     'General Science',
+    'Core Subject',
     'General Arts',
     'Business',
     'Visual Arts',
@@ -82,16 +83,16 @@ const [activeTextEditor, setActiveTextEditor] = useState<number | string | null>
     'Technical',
     'Agricultural Science'
   ];
-
+console.log(subjects)
   // Class options
   const jhsClasses = ['JHS 1', 'JHS 2', 'JHS 3'];
   const shsClasses = ['SHS 1', 'SHS 2', 'SHS 3'];
   const basicClasses = ['Basic 4', 'Basic 5', 'Basic 6'];
 
-
-
+// Initial setup
 useEffect(() => {
-  fetchSubjects();
+  // Fetch initial subjects based on default level
+  fetchSubjects(formData.level);
   // Initialize empty lesson
   setCurrentLesson({
     title: '',
@@ -100,43 +101,77 @@ useEffect(() => {
     substrand:'',
     subject:'',
     course:'',
-    level: 'JHS',
+    level: 'Basic',
     class: '',
     content: [],
     description: '',
     duration_minutes: 45,
     difficulty: 'medium'
   });
-}, [fetchSubjects, setCurrentLesson]);
+}, [fetchSubjects, setCurrentLesson]); // Remove formData.level from dependency
 
+// Handle level changes
 useEffect(() => {
-  if (formData.level === 'JHS') {
-    fetchSubjects('JHS');
-    setFormData(prev => ({ ...prev, course: '', subject: '', sub_strand: '' }));
+  console.log('Level changed to:', formData.level);
+  
+  // Fetch subjects for the new level
+  if (formData.level === 'JHS' || formData.level === 'Basic') {
+    fetchSubjects(formData.level);
+    // Clear course, subject, and sub_strand when switching to JHS/Basic
+    setFormData(prev => ({ 
+      ...prev, 
+      course: '', 
+      subject: '', 
+      sub_strand: '',
+      subject_id: '',
+      substrand_id: ''
+    }));
+  } else if (formData.level === 'SHS') {
+    // For SHS, we need to wait for course selection
+    setFormData(prev => ({ 
+      ...prev, 
+      subject: '', 
+      sub_strand: '',
+      subject_id: '',
+      substrand_id: ''
+    }));
   }
-}, [formData.level, formData.class, fetchSubjects]);
+}, [formData.level, fetchSubjects]);
 
+// Handle SHS course changes
 useEffect(() => {
-  if (formData.level === 'Basic') {
-    fetchSubjects('Basic');
-    setFormData(prev => ({ ...prev, course: '', subject: '', sub_strand: '' }));
-  }
-}, [formData.level, formData.class, fetchSubjects]);
-
-useEffect(() => {
-  if (formData.course && formData.level === 'SHS') {
+  if (formData.level === 'SHS' && formData.course) {
+    console.log('Fetching SHS subjects for course:', formData.course);
+    
+    // Check if your fetchSubjects function accepts a course parameter
+    // If it does, use this:
+    // fetchSubjects('SHS', formData.course);
+    
+    // If it doesn't, you might need to call it like this:
     fetchSubjects('SHS');
-    setFormData(prev => ({ ...prev, subject: '', sub_strand: '' }));
+    
+    // Clear dependent fields
+    setFormData(prev => ({ 
+      ...prev, 
+      subject: '', 
+      sub_strand: '',
+      subject_id: '',
+      substrand_id: ''
+    }));
   }
 }, [formData.course, formData.level, fetchSubjects]);
 
+// Handle subject changes for fetching substrands
 useEffect(() => {
   if (formData.subject_id && formData.class) {
+    console.log('Fetching substrands for subject:', formData.subject_id, 'class:', formData.class);
     fetchSubStrands(formData.subject_id, formData.class);
   }
 }, [formData.subject_id, formData.class, fetchSubStrands]);
 
 const handleInputChange = (field: keyof FormData, value: string | number) => {
+  console.log(`Changing ${field} to:`, value);
+  
   if (field === 'subject_id') {
     // When subject_id changes, also update the subject name and clear substrand
     const selectedSubject = getAvailableSubjects().find(s => s.id === value);
@@ -311,13 +346,30 @@ const renderContentPreview = (content: ContentSection) => {
   );
 };
 
-  const getAvailableSubjects = () => {
-    if (formData.level === 'JHS') {
-      return subjects.filter(s => s.level === 'JHS');
-    } else {
-      return subjects.filter(s => s.level === 'SHS' && (!formData.course || s.course === formData.course));
-    }
-  };
+const getAvailableSubjects = () => {
+  console.log('Getting available subjects for level:', formData.level, 'course:', formData.course);
+  console.log('All subjects:', subjects);
+  
+  if (formData.level === 'Basic') {
+    const filtered = subjects.filter(s => s.level === 'Basic');
+    console.log('Filtered Basic subjects:', filtered);
+    return filtered;
+  } else if (formData.level === 'JHS') {
+    const filtered = subjects.filter(s => s.level === 'JHS');
+    console.log('Filtered JHS subjects:', filtered);
+    return filtered;
+  } else if (formData.level === 'SHS') {
+    // Make sure the filtering logic matches your data structure
+    const filtered = subjects.filter(s => {
+      console.log('Checking subject:', s, 'against level:', s.level, 'course:', s.course);
+      return s.level === 'SHS' && (!formData.course || s.course === formData.course);
+    });
+    console.log('Filtered SHS subjects for course', formData.course, ':', filtered);
+    return filtered;
+  }
+  
+  return [];
+};
 
   return (
     <div className="min-h-screen bg-gray-50">

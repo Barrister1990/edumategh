@@ -104,7 +104,7 @@ interface AdminLessonState {
   reorderContentSections: (fromIndex: number, toIndex: number) => void;
   
   // Actions - Data Fetching
-  fetchSubjects: (level?: string, classFilter?: string) => Promise<void>;
+  fetchSubjects: (level?: string, course?: string) => Promise<void>;
    fetchSubStrands: (subjectId: string, classFilter?: string) => Promise<void>;
   
   // Actions - UI State
@@ -424,17 +424,16 @@ fetchLessons: async (page = 1, filters = {}) => {
   },
 
   // Data Fetching
-  fetchSubjects: async (level?: string, classFilter?: string) => {
+  fetchSubjects: async (level?: string, course?: string) => {
     set({ isLoading: true, error: null });
     try {
       let query = supabase
         .from('subjects')
         .select('*')
+        .eq('level', level)
         .order('name');
 
-      if (level) {
-        query = query.eq('level', level);
-      }
+
 
 
 
