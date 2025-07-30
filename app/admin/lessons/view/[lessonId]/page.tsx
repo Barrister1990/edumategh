@@ -1,5 +1,6 @@
 "use client";
 import MathToolbar, { MathButton } from '@/components/MathToolbar';
+import TextEditor from '@/components/TextEditor';
 import { useAdminLessonStore } from '@/stores/adminLessonStore';
 import { ArrowLeft, Edit, Eye, FileText, HelpCircle, Image, Move, Save, Trash2, Video, X } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
@@ -54,7 +55,8 @@ const lessonId = params?.lessonId as string;
     updateContentSection,
     deleteContentSection,
     reorderContentSections,
-    clearError
+    clearError,
+    addContentSectionAtIndex
   } = useAdminLessonStore();
 
   const [formData, setFormData] = useState<FormData>({
@@ -75,6 +77,7 @@ const lessonId = params?.lessonId as string;
   const [showMathToolbar, setShowMathToolbar] = useState(false);
   const [previewMode, setPreviewMode] = useState(true); // Start in preview mode
   const [editMode, setEditMode] = useState(false);
+  const [activeTextEditor, setActiveTextEditor] = useState<number | string | null>(null);
 
   // Course options for SHS
   const shsCourses = [
@@ -149,22 +152,26 @@ const lessonId = params?.lessonId as string;
     }
   };
 
-  const addNewContentSection = (type: 'text' | 'image' | 'video' | 'quiz') => {
-    const newContent = {
-      type,
-      content: type === 'quiz' ? 'New Quiz Question' : `New ${type} content`,
-      explanation: '',
-      ...(type === 'quiz' && {
-        quiz: {
-          question: '',
-          options: ['', '', '', ''],
-          correctAnswer: 0,
-          explanation: ''
-        }
-      })
-    };
-    addContentSection(newContent);
+const addNewContentSection = (type: 'text' | 'image' | 'video' | 'quiz', index?: number) => {
+  const newContent = {
+    type,
+    content: type === 'quiz' ? 'New Quiz Question' : `New ${type} content`,
+    explanation: '',
+    ...(type === 'quiz' && {
+      quiz: {
+        question: '',
+        options: ['', '', '', ''],
+        correctAnswer: 0,
+        explanation: ''
+      }
+    })
   };
+  if (index !== undefined) {
+    addContentSectionAtIndex(newContent, index);
+  } else {
+    addContentSection(newContent);
+  }
+};
 
   const updateContent = (sectionId: number, field: string, value: string) => {
     updateContentSection(sectionId, { [field]: value });
@@ -192,18 +199,6 @@ const lessonId = params?.lessonId as string;
         textarea.focus();
         textarea.setSelectionRange(start + latex.length + 2, start + latex.length + 2);
       }, 0);
-    }
-  };
-
-  const handleImageUpload = (contentId: number, event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const imageContent = `![Image](${e.target?.result})`;
-        updateContent(contentId, 'content', imageContent);
-      };
-      reader.readAsDataURL(file);
     }
   };
 
@@ -569,26 +564,6 @@ const getAvailableSubjects = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
-                  Duration (minutes)
-                </label>
-                {editMode ? (
-                  <input
-                    type="number"
-                    value={formData.duration_minutes}
-                    onChange={(e) => handleInputChange('duration_minutes', parseInt(e.target.value) || 45)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    min="1"
-                    max="180"
-                  />
-                ) : (
-                  <div className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900">
-                    {formData.duration_minutes} minutes
-                  </div>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                   Difficulty
                 </label>
                 {editMode ? (
@@ -689,27 +664,33 @@ const getAvailableSubjects = () => {
               {/* Content Sections */}
               <div className="space-y-4 sm:space-y-6">
                 {currentLesson?.content?.map((section, index) => (
-                  <div key={section.id} className="bg-gray-50 border border-gray-200 rounded-lg p-4 sm:p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center space-x-2">
-                        <div className="flex items-center space-x-1">
-                          {editMode && index > 0 && (
+                  <div key={section.id}>
+                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 sm:p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center space-x-2">
+                          <div className="flex items-center space-x-1">
                             <button
                               type="button"
                               onClick={() => reorderContentSections(index, index - 1)}
-                              className="p-1 text-gray-400 hover:text-gray-600"
+                              className={`p-1 text-gray-400 hover:text-gray-600 ${index === 0 ? 'invisible' : ''}`}
+                            >
+                              <Move className="w-4 h-4 transform rotate-180" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => reorderContentSections(index, index + 1)}
+                              className={`p-1 text-gray-400 hover:text-gray-600 ${index === currentLesson.content.length - 1 ? 'invisible' : ''}`}
                             >
                               <Move className="w-4 h-4" />
                             </button>
-                          )}
-                          <span className="text-sm font-medium text-gray-500">Section {index + 1}</span>
-                        </div>
-                        <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                          section.type === 'text' ? 'bg-blue-100 text-blue-800' :
-                          section.type === 'image' ? 'bg-green-100 text-green-800' :
-                          section.type === 'video' ? 'bg-purple-100 text-purple-800' :
-                          'bg-orange-100 text-orange-800'
-                        }`}>
+                            <span className="text-sm font-medium text-gray-500">Section {index + 1}</span>
+                          </div>
+                          <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                            section.type === 'text' ? 'bg-blue-100 text-blue-800' :
+                            section.type === 'image' ? 'bg-green-100 text-green-800' :
+                            section.type === 'video' ? 'bg-purple-100 text-purple-800' :
+                            'bg-orange-100 text-orange-800'
+                          }`}>
                           {section.type}
                         </span>
                       </div>
@@ -823,7 +804,28 @@ const getAvailableSubjects = () => {
                               )}
                             </div>
                           </div>
-                        ) : (
+                        ) : section.type === 'text' || section.type === 'image' ? (
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                              Content
+                            </label>
+                            {editMode ? (
+                              <TextEditor
+                                value={section.content}
+                                onChange={(value) => updateContent(section.id, 'content', value)}
+                                placeholder="Enter your content here..."
+                                contentId={section.id.toString()}
+                                isVisible={true}
+                                onClose={() => {}}
+                                rows={8}
+                              />
+                            ) : (
+                              <div className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg font-mono text-sm">
+                                {section.content || 'No content'}
+                              </div>
+                            )}
+                          </div>
+                        ) : ( // Video
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
                               Content
@@ -838,19 +840,6 @@ const getAvailableSubjects = () => {
                                   rows={6}
                                   placeholder={`Enter ${section.type} content...`}
                                 />
-                                {section.type === 'image' && (
-                                  <div>
-                                    <input
-                                      type="file"
-                                      accept="image/*"
-                                      onChange={(e) => handleImageUpload(section.id, e)}
-                                      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                                    />
-                                    <p className="text-xs text-gray-500 mt-1">
-                                      Upload an image or use markdown syntax: ![Alt text](image-url)
-                                    </p>
-                                  </div>
-                                )}
                                 {section.type === 'video' && (
                                   <div>
                                     <input
@@ -860,7 +849,7 @@ const getAvailableSubjects = () => {
                                       className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
                                     />
                                     <p className="text-xs text-gray-500 mt-1">
-                                      Upload a video or use HTML syntax: &lt;video controls src= &apos;video-url &apos;&gt;&lt;/video&gt;
+                                      Upload a video or use HTML syntax: <video controls src= 'video-url '></video>
                                     </p>
                                   </div>
                                 )}
@@ -893,6 +882,43 @@ const getAvailableSubjects = () => {
                             )}
                           </div>
                         )}
+                      </div>
+                    )}
+                    </div>
+                    {editMode && (
+                      <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 mt-4">
+                        <button
+                          type="button"
+                          onClick={() => addNewContentSection('text', index + 1)}
+                          className="flex items-center justify-center px-3 py-2 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+                        >
+                          <FileText className="w-4 h-4 mr-1 sm:mr-2" />
+                          <span>Text</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => addNewContentSection('image', index + 1)}
+                          className="flex items-center justify-center px-3 py-2 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors"
+                        >
+                          <Image className="w-4 h-4 mr-1 sm:mr-2" />
+                          <span>Image</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => addNewContentSection('video', index + 1)}
+                          className="flex items-center justify-center px-3 py-2 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700 transition-colors"
+                        >
+                          <Video className="w-4 h-4 mr-1 sm:mr-2" />
+                          <span>Video</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => addNewContentSection('quiz', index + 1)}
+                          className="flex items-center justify-center px-3 py-2 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium text-white bg-orange-600 rounded-lg hover:bg-orange-700 transition-colors"
+                        >
+                          <HelpCircle className="w-4 h-4 mr-2" />
+                          Add Quiz
+                        </button>
                       </div>
                     )}
                   </div>

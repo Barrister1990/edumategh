@@ -7,6 +7,7 @@ import {
   Heading1,
   Heading2,
   Heading3,
+  Image as ImageIcon,
   Italic,
   Link,
   List,
@@ -18,6 +19,7 @@ import {
 } from 'lucide-react';
 import React, { useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
+import ImageUploadModal from './ImageUploadModal';
 
 interface TextEditorProps {
   value: string;
@@ -40,6 +42,7 @@ const TextEditor: React.FC<TextEditorProps> = ({
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [showPreview, setShowPreview] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const insertFormatting = (before: string, after: string = '', placeholder: string = '') => {
     const textarea = textareaRef.current;
@@ -162,6 +165,11 @@ const TextEditor: React.FC<TextEditorProps> = ({
     }
   ];
 
+  const handleInsertImage = (altText: string, url: string) => {
+    const markdown = `![${altText}](${url})`;
+    insertFormatting(markdown, '', '');
+  };
+
   const insertCodeBlock = () => {
     insertFormatting('\n```\n', '\n```\n', 'code block');
   };
@@ -272,6 +280,13 @@ const TextEditor: React.FC<TextEditorProps> = ({
               <Link className="w-4 h-4" />
             </button>
             <button
+              onClick={() => setIsModalOpen(true)}
+              className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors"
+              title="Insert Image"
+            >
+              <ImageIcon className="w-4 h-4" />
+            </button>
+            <button
               onClick={insertCodeBlock}
               className="px-3 py-2 text-xs font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors"
               title="Code Block"
@@ -321,6 +336,11 @@ const TextEditor: React.FC<TextEditorProps> = ({
           <span>{value.length} characters</span>
         </div>
       </div>
+      <ImageUploadModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onInsert={handleInsertImage}
+      />
     </div>
   );
 };

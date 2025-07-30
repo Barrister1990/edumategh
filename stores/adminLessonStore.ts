@@ -99,6 +99,7 @@ interface AdminLessonState {
   
   // Actions - Content Management
   addContentSection: (content: Omit<LessonContent, 'id'>) => void;
+  addContentSectionAtIndex: (content: Omit<LessonContent, 'id'>, index: number) => void;
   updateContentSection: (sectionId: number, content: Partial<LessonContent>) => void;
   deleteContentSection: (sectionId: number) => void;
   reorderContentSections: (fromIndex: number, toIndex: number) => void;
@@ -373,6 +374,25 @@ fetchLessons: async (page = 1, filters = {}) => {
         currentLesson: {
           ...state.currentLesson,
           content: [...state.currentLesson.content, newContent],
+        },
+      };
+    });
+  },
+
+  addContentSectionAtIndex: (content, index) => {
+    set((state) => {
+      if (!state.currentLesson) return state;
+
+      const newId = Math.max(0, ...state.currentLesson.content.map(c => c.id)) + 1;
+      const newContent = { ...content, id: newId };
+
+      const updatedContent = [...state.currentLesson.content];
+      updatedContent.splice(index, 0, newContent);
+
+      return {
+        currentLesson: {
+          ...state.currentLesson,
+          content: updatedContent,
         },
       };
     });

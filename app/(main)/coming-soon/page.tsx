@@ -13,7 +13,7 @@ export default function ModernComingSoonPage() {
   const [videoError, setVideoError] = useState(false);
 
   // Set your launch date here
-  const launchDate = new Date('2025-08-10T12:00:00Z');
+  const launchDate = new Date('2025-08-20T12:00:00Z');
 
   useEffect(() => {
     const timer = setInterval(() => {
