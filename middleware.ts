@@ -14,7 +14,11 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-    if (url.pathname === '/coming-soon') {
+    if (url.pathname === '/privacy-policy') {
+    return NextResponse.next();
+  }
+
+      if (url.pathname === '/delete-account') {
     return NextResponse.next();
   }
 
