@@ -14,6 +14,10 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+    if (url.pathname === '/coming-soon') {
+    return NextResponse.next();
+  }
+
   // Redirect everything else to /coming-soon
   return NextResponse.redirect(new URL('/coming-soon', request.url));
 }

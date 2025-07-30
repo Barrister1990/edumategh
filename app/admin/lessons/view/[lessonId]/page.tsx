@@ -275,13 +275,20 @@ const lessonId = params?.lessonId as string;
     );
   };
 
-  const getAvailableSubjects = () => {
-    if (formData.level === 'JHS') {
-      return subjects.filter(s => s.level === 'JHS');
-    } else {
-      return subjects.filter(s => s.level === 'SHS' && (!formData.course || s.course === formData.course));
-    }
-  };
+const getAvailableSubjects = () => {
+  const level = formData.level;
+  const course = formData.course;
+
+  if (level === 'Basic' || level === 'JHS') {
+    return subjects.filter(s => s.level === level);
+  }
+
+  // Default to SHS logic
+  return subjects.filter(
+    s => s.level === 'SHS' && (!course || s.course === course)
+  );
+};
+
 
   if (isLoading) {
     return (
