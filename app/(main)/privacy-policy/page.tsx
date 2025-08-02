@@ -140,7 +140,7 @@ export default function PrivacyPolicyPage() {
     }
   ];
 
-  const lastUpdated = "January 15, 2025";
+  const lastUpdated = "July 15, 2025";
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50">
