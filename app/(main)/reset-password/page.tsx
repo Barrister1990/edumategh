@@ -17,6 +17,20 @@ export default function ResetPasswordPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+
+
+    useEffect(() => {
+    const { data: listener } = supabase.auth.onAuthStateChange(async (event) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        console.log('Password recovery mode');
+      }
+    });
+
+    return () => {
+      listener.subscription.unsubscribe();
+    };
+  }, []);
+  
   const openApp = () => {
     // This will try to open the app
     window.location.href = 'edumate-gh://';
