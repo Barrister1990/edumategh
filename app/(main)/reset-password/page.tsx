@@ -16,21 +16,36 @@ export default function ResetPasswordPage() {
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [sessionRestored, setSessionRestored] = useState(false);
+  const [verifying, setVerifying] = useState(true);
 
+  useEffect(() => {
+    // Parse tokens from URL hash fragment
+    const hash = window.location.hash;
+    const params = new URLSearchParams(hash.replace('#', '?'));
 
+    const access_token = params.get('access_token');
+    const refresh_token = params.get('refresh_token');
 
-    useEffect(() => {
-    const { data: listener } = supabase.auth.onAuthStateChange(async (event) => {
-      if (event === 'PASSWORD_RECOVERY') {
-        console.log('Password recovery mode');
-      }
-    });
-
-    return () => {
-      listener.subscription.unsubscribe();
-    };
+    if (access_token && refresh_token) {
+      supabase.auth
+        .setSession({ access_token, refresh_token })
+        .then(({ error }) => {
+          setVerifying(false);
+          if (error) {
+            console.error('Session restore failed:', error.message);
+            setError('This password reset link is invalid or has expired.');
+          } else {
+            console.log('Session restored');
+            setSessionRestored(true);
+          }
+        });
+    } else {
+      setVerifying(false);
+      setError('Missing reset token. Please request a new link.');
+    }
   }, []);
-  
+
   const openApp = () => {
     // This will try to open the app
     window.location.href = 'edumate-gh://';
@@ -166,6 +181,76 @@ export default function ResetPasswordPage() {
       }}
     />
   ));
+
+  // Show verification screen while checking the reset link
+  if (verifying) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4 py-8 bg-gradient-to-br from-slate-50 via-blue-50/20 to-teal-50/30 dark:from-slate-950 dark:via-blue-950/10 dark:to-teal-950/20 relative overflow-hidden">
+        {/* Dynamic background */}
+        <div 
+          className="absolute inset-0 opacity-20 lg:opacity-30 transition-opacity duration-1000"
+          style={{
+            background: `radial-gradient(400px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(59, 130, 246, 0.1), transparent 40%)`,
+          }}
+        />
+        
+        {/* Animated background elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+            className="absolute -top-20 -right-20 w-40 h-40 lg:w-80 lg:h-80 bg-gradient-to-br from-blue-400/10 to-teal-400/10 lg:from-blue-400/20 lg:to-teal-400/20 rounded-full blur-2xl lg:blur-3xl"
+          />
+          <motion.div
+            animate={{ rotate: -360 }}
+            transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
+            className="absolute -bottom-20 -left-20 w-48 h-48 lg:w-96 lg:h-96 bg-gradient-to-tr from-teal-400/10 to-blue-400/10 lg:from-teal-400/20 lg:to-blue-400/20 rounded-full blur-2xl lg:blur-3xl"
+          />
+          
+          {/* Floating Particles */}
+          {floatingParticles}
+        </div>
+
+        {/* Verification Content */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="relative z-10 max-w-sm sm:max-w-md lg:max-w-lg mx-auto text-center"
+        >
+          {/* App Logo */}
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: "spring", stiffness: 200, damping: 15 }}
+            className="relative z-10 w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-blue-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-xl lg:shadow-2xl mx-auto mb-6 overflow-hidden"
+          >
+            <Image
+              src="/icon.png"
+              alt="EduMate GH Logo"
+              width={32}
+              height={32}
+              className="lg:w-10 lg:h-10 object-contain"
+              priority
+            />
+          </motion.div>
+
+          {/* Loading spinner */}
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+            className="w-8 h-8 border-2 border-blue-200 border-t-blue-600 rounded-full mx-auto mb-4"
+          />
+
+          <h2 className="text-xl lg:text-2xl font-bold text-slate-800 dark:text-white mb-2">
+            Verifying Reset Link
+          </h2>
+          <p className="text-slate-600 dark:text-slate-400">
+            Please wait while we verify your password reset link...
+          </p>
+        </motion.div>
+      </div>
+    );
+  }
 
   if (success) {
     return (
@@ -333,6 +418,72 @@ export default function ResetPasswordPage() {
     );
   }
 
+  // Show error screen if verification failed
+  if (error && !sessionRestored) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4 py-8 bg-gradient-to-br from-slate-50 via-blue-50/20 to-teal-50/30 dark:from-slate-950 dark:via-blue-950/10 dark:to-teal-950/20 relative overflow-hidden">
+        {/* Dynamic background */}
+        <div 
+          className="absolute inset-0 opacity-20 lg:opacity-30 transition-opacity duration-1000"
+          style={{
+            background: `radial-gradient(400px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(59, 130, 246, 0.1), transparent 40%)`,
+          }}
+        />
+        
+        {/* Animated background elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+            className="absolute -top-20 -right-20 w-40 h-40 lg:w-80 lg:h-80 bg-gradient-to-br from-blue-400/10 to-teal-400/10 lg:from-blue-400/20 lg:to-teal-400/20 rounded-full blur-2xl lg:blur-3xl"
+          />
+          <motion.div
+            animate={{ rotate: -360 }}
+            transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
+            className="absolute -bottom-20 -left-20 w-48 h-48 lg:w-96 lg:h-96 bg-gradient-to-tr from-teal-400/10 to-blue-400/10 lg:from-teal-400/20 lg:to-blue-400/20 rounded-full blur-2xl lg:blur-3xl"
+          />
+          
+          {/* Floating Particles */}
+          {floatingParticles}
+        </div>
+
+        {/* Error Content */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="relative z-10 max-w-sm sm:max-w-md lg:max-w-lg mx-auto text-center"
+        >
+          {/* App Logo */}
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: "spring", stiffness: 200, damping: 15 }}
+            className="relative z-10 w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-red-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-xl lg:shadow-2xl mx-auto mb-6 overflow-hidden"
+          >
+            <Shield className="w-8 h-8 lg:w-10 lg:h-10 text-white" />
+          </motion.div>
+
+          <h2 className="text-xl lg:text-2xl font-bold text-slate-800 dark:text-white mb-4">
+            Invalid Reset Link
+          </h2>
+          <div className="mb-6 p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800/30 rounded-lg">
+            <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+          </div>
+          <p className="text-slate-600 dark:text-slate-400 mb-6">
+            Please request a new password reset link from the app or website.
+          </p>
+          
+          <Button 
+            onClick={() => window.location.href = '/'}
+            className="bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white"
+          >
+            Go to Homepage
+          </Button>
+        </motion.div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-8 bg-gradient-to-br from-slate-50 via-blue-50/20 to-teal-50/30 dark:from-slate-950 dark:via-blue-950/10 dark:to-teal-950/20 relative overflow-hidden">
       {/* Dynamic background */}
@@ -397,7 +548,7 @@ export default function ResetPasswordPage() {
         </motion.div>
 
         {/* Error Message */}
-        {error && (
+        {error && sessionRestored && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
