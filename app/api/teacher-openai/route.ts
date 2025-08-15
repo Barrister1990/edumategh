@@ -5,6 +5,8 @@ import { NextResponse } from 'next/server';
 // Initialize Gemini client
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
+
+
 // Handle GET requests for browser access or debugging
 export async function GET() {
   return NextResponse.json(

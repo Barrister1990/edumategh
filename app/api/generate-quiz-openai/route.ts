@@ -2,6 +2,12 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
+
+export async function GET() {
+  return NextResponse.json({ 
+    message: 'This endpoint only accepts POST requests with a prompt in the body.' 
+  }, { status: 405 });
+}
 export async function POST(req: NextRequest) {
   try {
     const { prompt } = await req.json();
