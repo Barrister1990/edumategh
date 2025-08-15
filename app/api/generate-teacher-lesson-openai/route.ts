@@ -1,3 +1,4 @@
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
@@ -9,19 +10,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'Prompt is required.' }, { status: 400 });
     }
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
-        temperature: 0.7,
-        messages: [
-          {
-            role: 'system',
-            content: `You are EduMate GH AI, a Ghanaian AI tutor who creates GES-aligned teacher lesson notes.
+    // Initialize Gemini AI
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+
+    // System prompt for EduMate GH AI
+    const systemPrompt = `You are EduMate GH AI, a Ghanaian AI tutor who creates GES-aligned teacher lesson notes.
 
 Use the official NaCCA teacher lesson format and include:
 - Week, Strand, Sub-strand, Content Standard, Indicator
@@ -45,27 +39,37 @@ Definitions for context:
 - **Content Standard**: Learning goals for the topic.
 - **Indicator**: Specific performance targets.
 
-All outputs must be formatted in markdown with clear headings (**#**, **##**) and bold section labels.`,
-          },
-          {
-            role: 'user',
-            content: prompt,
-          },
-        ],
-      }),
-    });
+All outputs must be formatted in markdown with clear headings (**#**, **##**) and bold section labels.`;
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      return NextResponse.json({ message: errorData.error?.message || 'Lesson generation failed.' }, { status: 500 });
-    }
+    // Combine system prompt with user prompt
+    const fullPrompt = `${systemPrompt}\n\nUser Request: ${prompt}`;
 
-    const data = await response.json();
-    const content = data.choices[0]?.message?.content;
+    // Generate content with Gemini
+    const result = await model.generateContent(fullPrompt);
+    const response = await result.response;
+    const content = response.text();
 
     return NextResponse.json({ message: content });
+
   } catch (error) {
-    console.error('Teacher lesson generation error (OpenAI):', error);
-    return NextResponse.json({ message: 'Internal server error while generating lesson note.' }, { status: 500 });
+    console.error('Teacher lesson generation error (Gemini):', error);
+    
+    // Handle specific Gemini API errors
+    if (error instanceof Error) {
+      if (error.message.includes('API key')) {
+        return NextResponse.json({ 
+          message: 'Invalid API key. Please check your Gemini API configuration.' 
+        }, { status: 401 });
+      }
+      if (error.message.includes('quota')) {
+        return NextResponse.json({ 
+          message: 'API quota exceeded. Please try again later.' 
+        }, { status: 429 });
+      }
+    }
+
+    return NextResponse.json({ 
+      message: 'Internal server error while generating lesson note.' 
+    }, { status: 500 });
   }
 }
