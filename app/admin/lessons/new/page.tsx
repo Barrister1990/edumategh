@@ -261,6 +261,7 @@ const handleVideoUpload = (contentId: number, event: React.ChangeEvent<HTMLInput
 
 const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();
+  e.stopPropagation();
   
   if (!currentLesson?.content || currentLesson.content.length === 0) {
     alert('Please add at least one content section');
@@ -413,6 +414,17 @@ const getAvailableSubjects = () => {
                   type="text"
                   value={formData.title}
                   onChange={(e) => handleInputChange('title', e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && e.ctrlKey) {
+                      // Allow Ctrl+Enter for new lines
+                      return;
+                    }
+                    if (e.key === 'Enter' && (e.target as HTMLInputElement).form) {
+                      // Prevent form submission on Enter key
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }
+                  }}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter lesson title..."
                   required
@@ -520,6 +532,17 @@ const getAvailableSubjects = () => {
                   type="number"
                   value={formData.duration_minutes}
                   onChange={(e) => handleInputChange('duration_minutes', parseInt(e.target.value) || 45)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && e.ctrlKey) {
+                      // Allow Ctrl+Enter for new lines
+                      return;
+                    }
+                    if (e.key === 'Enter' && (e.target as HTMLInputElement).form) {
+                      // Prevent form submission on Enter key
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }
+                  }}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   min="1"
                   max="180"
@@ -548,6 +571,17 @@ const getAvailableSubjects = () => {
                 <textarea
                   value={formData.description}
                   onChange={(e) => handleInputChange('description', e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && e.ctrlKey) {
+                      // Allow Ctrl+Enter for new lines
+                      return;
+                    }
+                    if (e.key === 'Enter' && (e.target as HTMLTextAreaElement).form) {
+                      // Prevent form submission on Enter key
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }
+                  }}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   rows={3}
                   placeholder="Brief description of the lesson..."
@@ -661,7 +695,7 @@ const getAvailableSubjects = () => {
                         <button
                           type="button"
                           onClick={() => deleteContentSection(section.id)}
-                          className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded"
+                          className="p-1 text-red-400 hover:text-red-600 hover:bg-red-50 rounded"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -708,6 +742,17 @@ const getAvailableSubjects = () => {
                                   value={section.content}
                                   onChange={(e) => updateContent(section.id, 'content', e.target.value)}
                                   onFocus={() => setActiveContentEditor(section.id)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && e.ctrlKey) {
+                                      // Allow Ctrl+Enter for new lines
+                                      return;
+                                    }
+                                    if (e.key === 'Enter' && (e.target as HTMLTextAreaElement).form) {
+                                      // Prevent form submission on Enter key
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                    }
+                                  }}
                                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm"
                                   rows={8}
                                   placeholder="Enter your content here... Use $LaTeX$ for math equations"
@@ -745,6 +790,17 @@ const getAvailableSubjects = () => {
                                 <textarea
                                   value={section.explanation || ''}
                                   onChange={(e) => updateContent(section.id, 'explanation', e.target.value)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && e.ctrlKey) {
+                                      // Allow Ctrl+Enter for new lines
+                                      return;
+                                    }
+                                    if (e.key === 'Enter' && (e.target as HTMLTextAreaElement).form) {
+                                      // Prevent form submission on Enter key
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                    }
+                                  }}
                                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                   rows={3}
                                   placeholder="Additional explanation for this section..."
@@ -789,6 +845,17 @@ const getAvailableSubjects = () => {
                                 type="url"
                                 value={section.content}
                                 onChange={(e) => updateContent(section.id, 'content', e.target.value)}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter' && e.ctrlKey) {
+                                    // Allow Ctrl+Enter for new lines
+                                    return;
+                                  }
+                                  if (e.key === 'Enter' && (e.target as HTMLInputElement).form) {
+                                    // Prevent form submission on Enter key
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                  }
+                                }}
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 placeholder="Or enter video URL (YouTube, Vimeo, etc.)"
                               />
@@ -805,6 +872,17 @@ const getAvailableSubjects = () => {
                               <textarea
                                 value={section.quiz?.question || ''}
                                 onChange={(e) => updateQuizContent(section.id, 'question', e.target.value)}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter' && e.ctrlKey) {
+                                    // Allow Ctrl+Enter for new lines
+                                    return;
+                                  }
+                                  if (e.key === 'Enter' && (e.target as HTMLTextAreaElement).form) {
+                                    // Prevent form submission on Enter key
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                  }
+                                }}
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 rows={3}
                                 placeholder="Enter quiz question..."
@@ -836,6 +914,17 @@ const getAvailableSubjects = () => {
                                         newOptions[idx] = e.target.value;
                                         updateQuizContent(section.id, 'options', newOptions);
                                       }}
+                                      onKeyDown={(e) => {
+                                        if (e.key === 'Enter' && e.ctrlKey) {
+                                          // Allow Ctrl+Enter for new lines
+                                          return;
+                                        }
+                                        if (e.key === 'Enter' && (e.target as HTMLInputElement).form) {
+                                          // Prevent form submission on Enter key
+                                          e.preventDefault();
+                                          e.stopPropagation();
+                                        }
+                                      }}
                                       className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                       placeholder={`Option ${String.fromCharCode(65 + idx)}`}
                                     />
@@ -851,6 +940,17 @@ const getAvailableSubjects = () => {
                               <textarea
                                 value={section.quiz?.explanation || ''}
                                 onChange={(e) => updateQuizContent(section.id, 'explanation', e.target.value)}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter' && e.ctrlKey) {
+                                    // Allow Ctrl+Enter for new lines
+                                    return;
+                                  }
+                                  if (e.key === 'Enter' && (e.target as HTMLTextAreaElement).form) {
+                                    // Prevent form submission on Enter key
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                  }
+                                }}
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 rows={3}
                                 placeholder="Explain why this is the correct answer..."

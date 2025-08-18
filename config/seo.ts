@@ -17,20 +17,33 @@ export const seoConfig: Metadata = {
   },
   description: 'EduMate GH is Ghana\'s leading AI-powered education app with 50,000+ quiz questions, voice learning, offline access, and GES curriculum alignment. Join 50K+ students and 2K+ teachers improving grades by 95%. Download for iOS & Android.',
   keywords: [
-    // Primary Keywords
+    // Primary Keywords - High Ranking
+    'remedial education Ghana', 'BECE past questions', 'WASSCE past questions', 'NOVDEC past questions', 'GES curriculum Ghana',
     'Ghana education app', 'AI education Ghana', 'GES curriculum app', 'BECE preparation app', 'WASSCE preparation Ghana',
-    // Student-focused
+    
+    // Student-focused - High Search Volume
     'Ghana student app', 'learn offline Ghana', 'voice learning app', 'AI tutor Ghana', 'quiz app Ghana',
-    // Teacher-focused  
+    'remedial learning Ghana', 'past questions Ghana', 'lesson app Ghana', 'study app Ghana',
+    
+    // Teacher-focused - Professional Keywords
     'teacher resources Ghana', 'lesson plan generator', 'exam questions generator', 'Ghana teacher app',
-    // Curriculum specific
+    'GES lesson plans', 'curriculum resources Ghana', 'teacher tools Ghana',
+    
+    // Curriculum specific - GES Focus
     'Basic education Ghana', 'Senior High School Ghana', 'curriculum aligned learning', 'Ghana syllabus app',
-    // Technology
+    'GES aligned lessons', 'Ghana curriculum app', 'educational standards Ghana',
+    
+    // Technology - Modern Learning
     'educational technology Ghana', 'EdTech Ghana', 'personalized learning', 'adaptive learning',
-    // Local SEO
+    'AI learning Ghana', 'smart education Ghana', 'digital learning Ghana',
+    
+    // Local SEO - Geographic Targeting
     'education app Accra', 'learning app Kumasi', 'student app Tamale', 'Ghana EdTech',
-    // Competition
-    'best education app Ghana', 'top learning app West Africa', 'Ghana e-learning platform'
+    'Ghana learning platform', 'West Africa education app', 'African EdTech',
+    
+    // Competition - Market Positioning
+    'best education app Ghana', 'top learning app West Africa', 'Ghana e-learning platform',
+    '#1 education app Ghana', 'leading learning platform Ghana'
   ],
   authors: [
     { name: 'EduMate GH Development Team', url: 'https://edumategh.com/about' },
@@ -56,25 +69,11 @@ export const seoConfig: Metadata = {
     description: 'Join Ghana\'s #1 AI education platform. 50,000+ quiz questions, voice learning, offline access, and GES curriculum alignment. Trusted by 50K+ students and 2K+ teachers.',
     images: [
       {
-        url: 'https://edumategh.com/images/og-home.jpg',
+        url: 'https://edumategh.com/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'EduMate GH - AI-Powered Education App for Ghana Students',
-        type: 'image/jpeg',
-      },
-      {
-        url: 'https://edumategh.com/images/og-features.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'EduMate GH Features - Voice Learning, AI Tutor, Offline Access',
-        type: 'image/jpeg',
-      },
-      {
-        url: 'https://edumategh.com/images/og-app-preview.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'EduMate GH Mobile App Interface - Student Dashboard',
-        type: 'image/jpeg',
+        alt: 'EduMate GH - AI-Powered Education App for Ghana Students | BECE, WASSCE, NOVDEC Preparation',
+        type: 'image/png',
       }
     ],
   },
@@ -84,7 +83,7 @@ export const seoConfig: Metadata = {
     description: '🇬🇭 Transform your education with AI! 50K+ quiz questions, voice learning, offline access. GES curriculum aligned. Join 50K+ students improving grades by 95%! 📚✨',
     creator: '@edumate_gh',
     site: '@edumate_gh',
-    images: ['https://edumategh.com/images/twitter-card.jpg'],
+    images: ['https://edumategh.com/og-image.png'],
   },
   robots: {
     index: true,
@@ -159,7 +158,7 @@ export const pageConfigs = {
       title: 'EduMate GH - Transform Ghana Education with AI | Trusted by 50K+ Students',
       description: 'Join Ghana\'s #1 AI education platform with 50K+ quiz questions, voice learning, and 95% grade improvement rate. GES curriculum aligned. Download for iOS & Android.',
       url: 'https://edumategh.com',
-      images: [{ url: 'https://edumategh.com/images/og-home.jpg', width: 1200, height: 630 }]
+      images: [{ url: 'https://edumategh.com/og-image.png', width: 1200, height: 630 }]
     }
   },
   
@@ -171,7 +170,7 @@ export const pageConfigs = {
       title: 'EduMate GH Features - AI Tutor, Voice Learning & Teacher Resources',
       description: 'Explore comprehensive features: 24/7 AI tutor, 50K+ quiz questions, voice learning, offline access, and teacher tools. All aligned with Ghana\'s GES curriculum.',
       url: 'https://edumategh.com/features',
-      images: [{ url: 'https://edumategh.com/images/og-features.jpg', width: 1200, height: 630 }]
+      images: [{ url: 'https://edumategh.com/og-image.png', width: 1200, height: 630 }]
     }
   },
   
@@ -183,19 +182,43 @@ export const pageConfigs = {
       title: 'Download EduMate GH - Free on iOS & Android | Start Learning Today',
       description: 'Get EduMate GH free on App Store and Google Play. AI-powered education with voice learning and offline access. Join 50K+ students in Ghana.',
       url: 'https://edumategh.com/download',
-      images: [{ url: 'https://edumategh.com/images/og-download.jpg', width: 1200, height: 630 }]
+      images: [{ url: 'https://edumategh.com/og-image.png', width: 1200, height: 630 }]
     }
   },
   
   contact: {
     title: 'Contact EduMate GH - Support, Partnership & Feedback | Ghana EdTech',
-    description: 'Get in touch with EduMate GH team. Email: hello@edumate.gh | Phone: +233 20 123 4567 | Visit us in Accra, Ghana. Support hours: Mon-Fri 8AM-5PM, Sat 9AM-1PM.',
-    keywords: 'contact EduMate GH, Ghana education support, EdTech contact, customer service Ghana, partnership inquiries',
+    description: 'Get in touch with EduMate GH team. Email: edumategh@gmail.com | Phone: +233241940783 | Visit us in Accra, Ghana. Support hours: Mon-Fri 8AM-5PM, Sat 9AM-1PM.',
+    keywords: 'contact EduMate GH, Ghana education support, EdTech contact, customer service Ghana, partnership inquiries, remedial education support, BECE help, WASSCE assistance',
     openGraph: {
       title: 'Contact EduMate GH - Customer Support & Partnership Inquiries',  
       description: 'Reach out to EduMate GH for support, partnerships, or feedback. Located in Accra, Ghana. Available Mon-Fri 8AM-5PM.',
       url: 'https://edumategh.com/contact',
-      images: [{ url: 'https://edumategh.com/images/og-contact.jpg', width: 1200, height: 630 }]
+      images: [{ url: 'https://edumategh.com/og-image.png', width: 1200, height: 630 }]
+    }
+  },
+  
+  terms: {
+    title: 'Terms of Service - EduMate GH | Ghana Education App Terms & Conditions',
+    description: 'Read EduMate GH terms of service, user agreement, and privacy policy. Learn about our educational app usage terms, data protection, and user rights in Ghana.',
+    keywords: 'EduMate GH terms, Ghana education app terms, user agreement, privacy policy, educational app terms, Ghana EdTech terms',
+    openGraph: {
+      title: 'Terms of Service - EduMate GH Educational App',
+      description: 'EduMate GH terms of service and user agreement for our Ghana education app. Read about usage terms and user rights.',
+      url: 'https://edumategh.com/terms',
+      images: [{ url: 'https://edumategh.com/og-image.png', width: 1200, height: 630 }]
+    }
+  },
+  
+  privacy: {
+    title: 'Privacy Policy - EduMate GH | Data Protection & User Privacy Ghana',
+    description: 'EduMate GH privacy policy and data protection practices. Learn how we protect student and teacher data in our Ghana education app.',
+    keywords: 'EduMate GH privacy, Ghana education app privacy, data protection, student privacy, teacher data security, Ghana EdTech privacy',
+    openGraph: {
+      title: 'Privacy Policy - EduMate GH Educational App',
+      description: 'Learn about EduMate GH data protection practices and how we safeguard student and teacher information in Ghana.',
+      url: 'https://edumategh.com/privacy',
+      images: [{ url: 'https://edumategh.com/og-image.png', width: 1200, height: 630 }]
     }
   }
 };
@@ -223,7 +246,7 @@ export const structuredData = {
     "contactPoint": [
       {
         "@type": "ContactPoint",
-        "telephone": "+233-20-123-4567",
+        "telephone": "+233-241-940-783",
         "contactType": "customer service",
         "availableLanguage": ["English"],
         "hoursAvailable": {
@@ -235,7 +258,7 @@ export const structuredData = {
       },
       {
         "@type": "ContactPoint",
-        "email": "hello@edumate.gh",
+        "email": "edumategh@gmail.com",
         "contactType": "customer service"
       }
     ],
@@ -462,12 +485,16 @@ export const sitemapConfig = {
     '/': 'daily',
     '/features': 'weekly', 
     '/download': 'weekly',
-    '/contact': 'monthly'
+    '/contact': 'monthly',
+    '/terms': 'yearly',
+    '/privacy': 'yearly'
   },
   priority: {
     '/': 1.0,
     '/features': 0.8,
     '/download': 0.9,
-    '/contact': 0.6
+    '/contact': 0.6,
+    '/terms': 0.3,
+    '/privacy': 0.3
   }
 };

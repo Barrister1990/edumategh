@@ -1,26 +1,26 @@
 'use client';
 
-import { HeroSection } from "@/components/HeroSection";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import {
-    ArrowRight,
-    ArrowUpRight,
-    CheckCircle,
-    Download,
-    Globe,
-    Play,
-    Star,
-    Zap
+  ArrowRight,
+  ArrowUpRight,
+  CheckCircle,
+  Download,
+  Globe,
+  Play,
+  Star,
+  Zap
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { HeroSection } from "../../components/HeroSection";
 
 interface Feature {
   icon: React.ReactNode;
   title: string;
   description: string;
-  gradient: string;
+  color: string;
 }
 
 interface Benefit {
@@ -74,8 +74,8 @@ export default function HomePageClient({ features, benefits, testimonials, stats
                 transition={{ delay: index * 0.1 }}
                 className="text-center group"
               >
-                <div className="inline-flex items-center justify-center w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-purple-100 to-indigo-100 dark:from-purple-900/30 dark:to-indigo-900/30 rounded-xl lg:rounded-2xl mb-2 lg:mb-3 group-hover:scale-110 transition-transform duration-300">
-                  <div className="text-purple-600 dark:text-purple-400">
+                <div className="inline-flex items-center justify-center w-10 h-10 lg:w-12 lg:h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl lg:rounded-2xl mb-2 lg:mb-3 group-hover:scale-110 transition-transform duration-300">
+                  <div className="text-blue-600 dark:text-blue-400">
                     {stat.icon}
                   </div>
                 </div>
@@ -92,7 +92,7 @@ export default function HomePageClient({ features, benefits, testimonials, stats
       </section>
       
       {/* Features Section */}
-      <section id="features" className="py-12 md:py-20 bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30 dark:from-slate-950 dark:via-purple-950/20 dark:to-indigo-950/20">
+      <section id="features" className="py-12 md:py-20 bg-slate-50 dark:bg-slate-950">
         <div className="container mx-auto px-4 md:px-6">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
@@ -100,12 +100,12 @@ export default function HomePageClient({ features, benefits, testimonials, stats
             viewport={{ once: true }}
             className="text-center max-w-4xl mx-auto mb-12 md:mb-16"
           >
-            <div className="inline-flex items-center px-3 py-1.5 lg:px-4 lg:py-2 rounded-full bg-gradient-to-r from-purple-100 to-indigo-100 dark:from-purple-900/30 dark:to-indigo-900/30 text-sm font-medium text-purple-700 dark:text-purple-300 mb-4 lg:mb-6">
+            <div className="inline-flex items-center px-3 py-1.5 lg:px-4 lg:py-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-sm font-medium text-blue-700 dark:text-blue-300 mb-4 lg:mb-6">
               <Zap className="w-4 h-4 mr-2" />
               Powered by Advanced AI
             </div>
             <h2 className="text-2xl md:text-4xl lg:text-5xl font-black mb-4 lg:mb-6">
-              <span className="bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-800 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-blue-600 via-blue-500 to-blue-800 bg-clip-text text-transparent">
                 Revolutionary Features
               </span>
               <br />
@@ -132,13 +132,13 @@ export default function HomePageClient({ features, benefits, testimonials, stats
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 
-                <div className={`inline-flex items-center justify-center w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 bg-gradient-to-br ${feature.gradient} rounded-lg md:rounded-xl lg:rounded-2xl mb-2 md:mb-3 lg:mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                <div className={`inline-flex items-center justify-center w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 ${feature.color} rounded-lg md:rounded-xl lg:rounded-2xl mb-2 md:mb-3 lg:mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
                   <div className="text-white">
                     {feature.icon}
                   </div>
                 </div>
                 
-                <h3 className="text-sm md:text-lg lg:text-xl font-bold text-slate-900 dark:text-white mb-1 md:mb-2 lg:mb-3 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300 leading-tight">
+                <h3 className="text-sm md:text-lg lg:text-xl font-bold text-slate-900 dark:text-white mb-1 md:mb-2 lg:mb-3 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300 leading-tight">
                   {feature.title}
                 </h3>
                 
@@ -147,7 +147,7 @@ export default function HomePageClient({ features, benefits, testimonials, stats
                 </p>
                 
                 <div className="absolute top-2 md:top-4 right-2 md:right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <ArrowUpRight className="h-3 w-3 md:h-4 md:w-4 lg:h-5 lg:w-5 text-purple-500" />
+                  <ArrowUpRight className="h-3 w-3 md:h-4 md:w-4 lg:h-5 lg:w-5 text-blue-500" />
                 </div>
               </motion.div>
             ))}
@@ -160,7 +160,7 @@ export default function HomePageClient({ features, benefits, testimonials, stats
             className="mt-8 lg:mt-12 text-center"
           >
             <Link href="/features">
-              <Button variant="outline" className="group border-2 border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 px-6 py-3 lg:px-8 lg:py-4 text-sm lg:text-base font-semibold hover:bg-purple-50 dark:hover:bg-purple-950/50 transition-all duration-300">
+              <Button variant="outline" className="group border-2 border-blue-200 dark:border-blue-800 hover:border-blue-400 dark:hover:border-blue-600 px-6 py-3 lg:px-8 lg:py-4 text-sm lg:text-base font-semibold hover:bg-blue-50 dark:hover:bg-blue-950/50 transition-all duration-300">
                 Explore All Features
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
@@ -179,13 +179,13 @@ export default function HomePageClient({ features, benefits, testimonials, stats
               viewport={{ once: true }}
               className="order-2 lg:order-1"
             >
-              <div className="inline-flex items-center px-3 py-1.5 lg:px-4 lg:py-2 rounded-full bg-gradient-to-r from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30 text-sm font-medium text-indigo-700 dark:text-indigo-300 mb-4 lg:mb-6">
+              <div className="inline-flex items-center px-3 py-1.5 lg:px-4 lg:py-2 rounded-full bg-gradient-to-r from-indigo-100 to-blue-100 dark:from-indigo-900/30 dark:to-blue-900/30 text-sm font-medium text-indigo-700 dark:text-indigo-300 mb-4 lg:mb-6">
                 <Globe className="w-4 h-4 mr-2" />
                 Made for Ghana
               </div>
               
               <h2 className="text-2xl md:text-4xl lg:text-5xl font-black mb-6 lg:mb-8">
-                Why <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-800 bg-clip-text text-transparent">EduMate GH</span>
+                Why <span className="text-blue-500">EduMate GH</span>
                 <br />
                 <span className="text-slate-900 dark:text-white">Works So Well</span>
               </h2>
@@ -201,16 +201,16 @@ export default function HomePageClient({ features, benefits, testimonials, stats
                     className="group flex items-start space-x-4 lg:space-x-6"
                   >
                     <div className="flex-shrink-0">
-                      <div className="w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl lg:rounded-3xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                      <div className="w-12 h-12 lg:w-16 lg:h-16 bg-blue-500 rounded-2xl lg:rounded-3xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
                         <span className="text-white text-lg lg:text-xl font-black">{benefit.number}</span>
                       </div>
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2 lg:mb-3">
-                        <h3 className="text-lg lg:text-2xl font-bold text-slate-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300">
+                        <h3 className="text-lg lg:text-2xl font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
                           {benefit.title}
                         </h3>
-                        <span className="px-2 py-1 lg:px-3 lg:py-1.5 bg-gradient-to-r from-purple-100 to-indigo-100 dark:from-purple-900/30 dark:to-indigo-900/30 text-xs lg:text-sm font-medium text-purple-700 dark:text-purple-300 rounded-full">
+                        <span className="px-2 py-1 lg:px-3 lg:py-1.5 bg-blue-100 dark:bg-blue-900/30 text-xs lg:text-sm font-medium text-blue-700 dark:text-blue-300 rounded-full">
                           {benefit.highlight}
                         </span>
                       </div>
@@ -236,19 +236,19 @@ export default function HomePageClient({ features, benefits, testimonials, stats
                   height={400}
                   className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-purple-900/20 to-transparent" />
+                <div className="absolute inset-0 bg-blue-900/20" />
               </div>
               
               {/* Floating elements */}
               <motion.div
                 animate={{ y: ["-10px", "10px", "-10px"] }}
                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -top-4 lg:-top-6 -right-4 lg:-right-6 w-20 h-20 lg:w-32 lg:h-32 bg-gradient-to-br from-purple-400/20 to-indigo-400/20 rounded-full blur-xl lg:blur-2xl"
+                className="absolute -top-4 lg:-top-6 -right-4 lg:-right-6 w-20 h-20 lg:w-32 lg:h-32 bg-blue-400/20 rounded-full blur-xl lg:blur-2xl"
               />
               <motion.div
                 animate={{ y: ["10px", "-10px", "10px"] }}
                 transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -bottom-4 lg:-bottom-6 -left-4 lg:-left-6 w-24 h-24 lg:w-40 lg:h-40 bg-gradient-to-tr from-indigo-400/20 to-purple-400/20 rounded-full blur-xl lg:blur-2xl"
+                className="absolute -bottom-4 lg:-bottom-6 -left-4 lg:-left-6 w-24 h-24 lg:w-40 lg:h-40 bg-indigo-400/20 rounded-full blur-xl lg:blur-2xl"
               />
             </motion.div>
           </div>
@@ -256,7 +256,7 @@ export default function HomePageClient({ features, benefits, testimonials, stats
       </section>
       
       {/* Testimonials Section */}
-      <section className="py-12 md:py-20 bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30 dark:from-slate-950 dark:via-purple-950/20 dark:to-indigo-950/20">
+      <section className="py-12 md:py-20 bg-slate-50 dark:bg-slate-950">
         <div className="container mx-auto px-4 md:px-6">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
@@ -264,14 +264,14 @@ export default function HomePageClient({ features, benefits, testimonials, stats
             viewport={{ once: true }}
             className="text-center max-w-4xl mx-auto mb-12 md:mb-16"
           >
-            <div className="inline-flex items-center px-3 py-1.5 lg:px-4 lg:py-2 rounded-full bg-gradient-to-r from-purple-100 to-indigo-100 dark:from-purple-900/30 dark:to-indigo-900/30 text-sm font-medium text-purple-700 dark:text-purple-300 mb-4 lg:mb-6">
+            <div className="inline-flex items-center px-3 py-1.5 lg:px-4 lg:py-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-sm font-medium text-blue-700 dark:text-blue-300 mb-4 lg:mb-6">
               <Star className="w-4 h-4 mr-2 fill-current" />
               5-Star Rated
             </div>
             <h2 className="text-2xl md:text-4xl lg:text-5xl font-black mb-4 lg:mb-6">
               <span className="text-slate-900 dark:text-white">Real Stories from</span>
               <br />
-              <span className="bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-800 bg-clip-text text-transparent">
+              <span className="text-blue-600">
                 Ghana&apos;s Educators
               </span>
             </h2>
@@ -309,7 +309,7 @@ export default function HomePageClient({ features, benefits, testimonials, stats
                     alt={testimonial.author}
                     width={48}
                     height={48}
-                    className="w-10 h-10 lg:w-12 lg:h-12 rounded-full object-cover border-2 border-purple-200 dark:border-purple-800"
+                    className="w-10 h-10 lg:w-12 lg:h-12 rounded-full object-cover border-2 border-blue-200 dark:border-blue-800"
                   />
                   <div>
                     <div className="font-bold text-slate-900 dark:text-white text-sm lg:text-base">
@@ -327,7 +327,7 @@ export default function HomePageClient({ features, benefits, testimonials, stats
       </section>
       
       {/* Final CTA Section */}
-      <section className="py-12 md:py-20 bg-gradient-to-br from-purple-600 via-indigo-600 to-purple-700 relative overflow-hidden">
+      <section className="py-12 md:py-20 bg-blue-600 relative overflow-hidden">
         <div 
           className="absolute inset-0 opacity-20"
           style={{
@@ -345,12 +345,12 @@ export default function HomePageClient({ features, benefits, testimonials, stats
             <h2 className="text-2xl md:text-4xl lg:text-6xl font-black text-white mb-4 lg:mb-6">
               Ready to Transform
               <br />
-              <span className="bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent">
+              <span className="text-yellow-300">
                 Your Education?
               </span>
             </h2>
             
-            <p className="text-base lg:text-xl text-purple-100 mb-6 lg:mb-8 leading-relaxed max-w-2xl mx-auto">
+            <p className="text-base lg:text-xl text-blue-100 mb-6 lg:mb-8 leading-relaxed max-w-2xl mx-auto">
               Join thousands of Ghanaian students and teachers who are already experiencing the future of education
             </p>
             
@@ -358,7 +358,7 @@ export default function HomePageClient({ features, benefits, testimonials, stats
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button 
                   size="lg"
-                  className="bg-white text-purple-600 hover:bg-gray-100 px-6 py-3 lg:px-8 lg:py-4 text-sm lg:text-lg font-bold shadow-xl hover:shadow-2xl transition-all duration-300 w-full sm:w-auto"
+                  className="bg-white text-blue-600 hover:bg-gray-100 px-6 py-3 lg:px-8 lg:py-4 text-sm lg:text-lg font-bold shadow-xl hover:shadow-2xl transition-all duration-300 w-full sm:w-auto"
                 >
                   <Download className="mr-2 lg:mr-3 h-4 w-4 lg:h-6 lg:w-6" />
                   Download Free Now
@@ -369,15 +369,15 @@ export default function HomePageClient({ features, benefits, testimonials, stats
                 <Button 
                   variant="outline"
                   size="lg"
-                  className="border-2 border-white/30 text-white hover:bg-white/10 px-6 py-3 lg:px-8 lg:py-4 text-sm lg:text-lg font-bold transition-all duration-300 w-full sm:w-auto"
-                >
+                  className="border-2 border-white/30 text-white hover:bg-white/10 px-6 lg:px-8 py-3 lg:py-4 text-base lg:text-lg font-bold rounded-xl lg:rounded-2xl transition-all duration-300 flex items-center w-full sm:w-auto justify-center"
+                  >
                   <Play className="mr-2 lg:mr-3 h-4 w-4 lg:h-6 lg:w-6" />
                   Watch Demo
                 </Button>
               </motion.div>
             </div>
             
-            <div className="flex flex-wrap justify-center items-center gap-4 lg:gap-8 text-purple-100">
+            <div className="flex flex-wrap justify-center items-center gap-4 lg:gap-8 text-blue-100">
               <div className="flex items-center space-x-2">
                 <CheckCircle className="h-4 w-4 lg:h-5 lg:w-5 text-green-300" />
                 <span className="text-sm lg:text-base">Free to download</span>

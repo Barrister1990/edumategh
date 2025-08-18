@@ -5,8 +5,6 @@ import { NextResponse } from 'next/server';
 // Initialize Gemini client
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
-
-
 // Handle GET requests for browser access or debugging
 export async function GET() {
   return NextResponse.json(
@@ -18,15 +16,15 @@ export async function GET() {
 // Handle POST requests from your Expo app
 export async function POST(req: NextRequest) {
   try {
-    const { prompt, context = '', image } = await req.json();
+    const { prompt, context = '' } = await req.json();
 
     if (!prompt || typeof prompt !== 'string') {
       return NextResponse.json({ message: 'Prompt is required.' }, { status: 400 });
     }
 
-    // Use gemini-1.5-pro for image support, gemini-1.5-flash for text-only
+    // Use gemini-1.5-flash for text-only (faster & cheaper)
     const model = genAI.getGenerativeModel({
-      model: image ? 'gemini-1.5-pro' : 'gemini-1.5-flash',
+      model: 'gemini-1.5-flash',
       systemInstruction:
         'You are EduMate GH AI, an AI assistant for Ghanaian teachers. You provide professional support including lesson planning, curriculum guidance, assessment strategies, classroom management tips, and educational resources. Your responses should be practical, evidence-based, and aligned with Ghanaian educational standards. You can help with creating teaching materials, explaining pedagogical concepts, and providing administrative support. If you do not know something, say so honestly.',
       generationConfig: {
@@ -46,22 +44,7 @@ export async function POST(req: NextRequest) {
     // Add text prompt
     contentParts.push(prompt);
 
-    // Add image if provided
-    if (image) {
-      // Assuming image is provided as base64 string with data URL format
-      // e.g., "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ..."
-      const imageData = image.split(',')[1]; // Remove data URL prefix
-      const mimeType = image.split(';')[0].split(':')[1]; // Extract MIME type
-
-      contentParts.push({
-        inlineData: {
-          data: imageData,
-          mimeType: mimeType,
-        },
-      });
-    }
-
-    const result = await model.generateContent(contentParts);
+    const result = await model.generateContent(contentParts.join('\n\n'));
     const response = await result.response;
     const aiMessage = response.text() || 'No response generated.';
 
@@ -85,11 +68,6 @@ export async function POST(req: NextRequest) {
       if (error.message.includes('safety')) {
         return NextResponse.json({ 
           message: 'Content filtered by safety settings. Please try rephrasing your request.' 
-        }, { status: 400 });
-      }
-      if (error.message.includes('image')) {
-        return NextResponse.json({ 
-          message: 'Image processing failed. Please ensure the image is in a supported format (JPEG, PNG, WebP, HEIC, HEIF).' 
         }, { status: 400 });
       }
     }

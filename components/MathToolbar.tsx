@@ -332,6 +332,17 @@ const MathToolbar: React.FC<MathToolbarProps> = ({
           placeholder="Search symbols, functions, or templates..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && e.ctrlKey) {
+              // Allow Ctrl+Enter for new lines
+              return;
+            }
+            if (e.key === 'Enter' && (e.target as HTMLInputElement).form) {
+              // Prevent form submission on Enter key
+              e.preventDefault();
+              e.stopPropagation();
+            }
+          }}
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
       </div>
@@ -341,6 +352,7 @@ const MathToolbar: React.FC<MathToolbarProps> = ({
         {tabCategories.map((tab: TabCategory) => (
           <button
             key={tab.key}
+            type="button"
             onClick={() => setCurrentTab(tab.key)}
             className={`px-3 py-2 text-xs font-medium rounded-t-lg transition-colors ${
               currentTab === tab.key
@@ -353,6 +365,7 @@ const MathToolbar: React.FC<MathToolbarProps> = ({
           </button>
         ))}
         <button
+          type="button"
           onClick={() => setCurrentTab('templates')}
           className={`px-3 py-2 text-xs font-medium rounded-t-lg transition-colors ${
             currentTab === 'templates'
@@ -363,6 +376,7 @@ const MathToolbar: React.FC<MathToolbarProps> = ({
           📐 Templates
         </button>
         <button
+          type="button"
           onClick={() => setCurrentTab('tables')}
           className={`px-3 py-2 text-xs font-medium rounded-t-lg transition-colors ${
             currentTab === 'tables'
@@ -405,6 +419,7 @@ const MathToolbar: React.FC<MathToolbarProps> = ({
               <h5 className="font-medium text-green-800 mb-2">Quick Insert: Statistical Table</h5>
               <p className="text-sm text-green-700 mb-3">Insert a pre-formatted frequency distribution table</p>
               <button
+                type="button"
                 onClick={generateStatisticalTable}
                 className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
               >
@@ -427,6 +442,17 @@ const MathToolbar: React.FC<MathToolbarProps> = ({
                     max="20"
                     value={tableRows}
                     onChange={(e) => setTableRows(Math.max(1, parseInt(e.target.value) || 1))}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && e.ctrlKey) {
+                        // Allow Ctrl+Enter for new lines
+                        return;
+                      }
+                      if (e.key === 'Enter' && (e.target as HTMLInputElement).form) {
+                        // Prevent form submission on Enter key
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }
+                    }}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   />
                 </div>
@@ -441,6 +467,17 @@ const MathToolbar: React.FC<MathToolbarProps> = ({
                     max="10"
                     value={tableCols}
                     onChange={(e) => setTableCols(Math.max(1, parseInt(e.target.value) || 1))}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && e.ctrlKey) {
+                        // Allow Ctrl+Enter for new lines
+                        return;
+                      }
+                      if (e.key === 'Enter' && (e.target as HTMLInputElement).form) {
+                        // Prevent form submission on Enter key
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }
+                    }}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   />
                 </div>
@@ -476,6 +513,7 @@ const MathToolbar: React.FC<MathToolbarProps> = ({
                 </div>
                 
                 <button
+                  type="button"
                   onClick={generateTable}
                   className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
                 >
@@ -514,6 +552,17 @@ const MathToolbar: React.FC<MathToolbarProps> = ({
             type="text"
             value={customEquation}
             onChange={(e) => setCustomEquation(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && e.ctrlKey) {
+                // Allow Ctrl+Enter for new lines
+                return;
+              }
+              if (e.key === 'Enter' && (e.target as HTMLInputElement).form) {
+                // Prevent form submission on Enter key
+                e.preventDefault();
+                e.stopPropagation();
+              }
+            }}
             placeholder="Enter LaTeX equation (e.g., \\frac{x^2}{y^2})"
             className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm"
           />

@@ -1,21 +1,21 @@
 // @ts-nocheck
 
 import {
-  Bold,
-  Code,
-  Eye,
-  Heading1,
-  Heading2,
-  Heading3,
-  Image as ImageIcon,
-  Italic,
-  Link,
-  List,
-  ListOrdered,
-  Quote,
-  Strikethrough,
-  Underline,
-  X
+    Bold,
+    Code,
+    Eye,
+    Heading1,
+    Heading2,
+    Heading3,
+    Image as ImageIcon,
+    Italic,
+    Link,
+    List,
+    ListOrdered,
+    Quote,
+    Strikethrough,
+    Underline,
+    X
 } from 'lucide-react';
 import React, { useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
@@ -203,6 +203,7 @@ const TextEditor: React.FC<TextEditorProps> = ({
         <div className="flex items-center space-x-2">
             <h3 className="text-sm font-medium text-gray-700">Text Formatting</h3>
             <button
+                type="button"
                 onClick={() => setShowPreview(!showPreview)}
                 className="p-1 text-gray-600 hover:text-blue-600 rounded"
                 title={showPreview ? "Show Editor" : "Show Preview"}
@@ -211,6 +212,7 @@ const TextEditor: React.FC<TextEditorProps> = ({
             </button>
         </div>
         <button
+          type="button"
           onClick={onClose}
           className="p-1 text-gray-400 hover:text-gray-600 rounded"
         >
@@ -226,6 +228,7 @@ const TextEditor: React.FC<TextEditorProps> = ({
             {formatButtons.filter(btn => btn.category === 'heading').map((button, index) => (
               <button
                 key={index}
+                type="button"
                 onClick={button.action}
                 className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors"
                 title={button.label}
@@ -240,6 +243,7 @@ const TextEditor: React.FC<TextEditorProps> = ({
             {formatButtons.filter(btn => btn.category === 'format' && !['Quote', 'Link'].includes(btn.label)).map((button, index) => (
               <button
                 key={index}
+                type="button"
                 onClick={button.action}
                 className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors"
                 title={button.label}
@@ -254,6 +258,7 @@ const TextEditor: React.FC<TextEditorProps> = ({
             {formatButtons.filter(btn => btn.category === 'list').map((button, index) => (
               <button
                 key={index}
+                type="button"
                 onClick={button.action}
                 className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors"
                 title={button.label}
@@ -266,6 +271,7 @@ const TextEditor: React.FC<TextEditorProps> = ({
           {/* Special Elements */}
           <div className="flex items-center space-x-1">
             <button
+              type="button"
               onClick={() => insertFormatting('> ', '', 'quote text')}
               className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors"
               title="Quote"
@@ -273,6 +279,7 @@ const TextEditor: React.FC<TextEditorProps> = ({
               <Quote className="w-4 h-4" />
             </button>
             <button
+              type="button"
               onClick={() => insertFormatting('[', '](url)', 'link text')}
               className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors"
               title="Link"
@@ -280,6 +287,7 @@ const TextEditor: React.FC<TextEditorProps> = ({
               <Link className="w-4 h-4" />
             </button>
             <button
+              type="button"
               onClick={() => setIsModalOpen(true)}
               className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors"
               title="Insert Image"
@@ -287,6 +295,7 @@ const TextEditor: React.FC<TextEditorProps> = ({
               <ImageIcon className="w-4 h-4" />
             </button>
             <button
+              type="button"
               onClick={insertCodeBlock}
               className="px-3 py-2 text-xs font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors"
               title="Code Block"
@@ -294,6 +303,7 @@ const TextEditor: React.FC<TextEditorProps> = ({
               Code Block
             </button>
             <button
+              type="button"
               onClick={insertTable}
               className="px-3 py-2 text-xs font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors"
               title="Insert Table"
@@ -322,6 +332,17 @@ const TextEditor: React.FC<TextEditorProps> = ({
             ref={textareaRef}
             value={value}
             onChange={(e) => onChange(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && e.ctrlKey) {
+                // Allow Ctrl+Enter for new lines
+                return;
+              }
+              if (e.key === 'Enter' && (e.target as HTMLTextAreaElement).form) {
+                // Prevent form submission on Enter key
+                e.preventDefault();
+                e.stopPropagation();
+              }
+            }}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm resize-none"
             rows={rows}
             placeholder={`${placeholder} Use the toolbar above for formatting or type markdown directly...`}

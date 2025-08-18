@@ -30,7 +30,8 @@ export const metadata: Metadata = {
     canonical: 'https://edumategh.com/features'
   }
 };
-
+const EXAMS = "BECE, WASSCE & NOVDEC";
+const YEARS = "2016–Present";
 const FeaturesPage = () => {
   // Updated comprehensive features matching your description
   const heroFeatures = [
@@ -38,23 +39,31 @@ const FeaturesPage = () => {
       icon: <BookOpen className="h-8 w-8" />,
       title: "50,000+ Quiz Questions",
       description: "Vetted questions across all subjects for Basic and SHS curriculum, perfectly aligned with GES standards",
-      gradient: "from-purple-500 to-indigo-600",
+      color: "bg-purple-500",
       highlight: "50K+ Questions"
     },
     {
       icon: <Brain className="h-8 w-8" />,
       title: "Built-in Tutor AI",
       description: "Personal AI tutor available 24/7 to help students understand lessons and solve problems",
-      gradient: "from-indigo-500 to-purple-600",
+      color: "bg-indigo-500",
       highlight: "AI Powered"
     },
     {
       icon: <School className="h-8 w-8" />,
       title: "Curriculum-Aligned Lessons",
       description: "Real-life crafted lessons organized by strand, sub-strand, content standards & indicators",
-      gradient: "from-purple-600 to-pink-600",
+      color: "bg-pink-500",
       highlight: "GES Aligned"
-    }
+    },
+    {
+      icon: <BookOpen className="h-4 w-4 md:h-5 md:w-5 lg:h-6 lg:w-6" />,
+      title: "Past Questions & Solutions",
+      description:
+        `${EXAMS} past questions for all subjects (${YEARS}) with detailed, step-by-step AI solutions and examiner-style marking hints.`,
+      color: "bg-teal-500",
+      highlight: "Past Questions"
+    },
   ];
 
   const studentFeatures = [
@@ -140,25 +149,25 @@ const FeaturesPage = () => {
       icon: <Download className="h-6 w-6" />,
       title: "Offline Access",
       description: "Download lessons, quizzes, and resources for offline use when internet connectivity is limited.",
-      gradient: "from-green-500 to-emerald-600"
+      color: "bg-green-500"
     },
     {
       icon: <Globe className="h-6 w-6" />,
       title: "Multilingual Support",
       description: "Access content in English and major Ghanaian languages for enhanced comprehension.",
-      gradient: "from-blue-500 to-cyan-600"
+      color: "bg-blue-500"
     },
     {
       icon: <Share2 className="h-6 w-6" />,
       title: "Collaborative Learning",
       description: "Form study groups, share notes, and collaborate on assignments with classmates.",
-      gradient: "from-orange-500 to-red-600"
+      color: "bg-orange-500"
     },
     {
       icon: <BadgeCheck className="h-6 w-6" />,
       title: "Quality Assurance",
       description: "All content is vetted by education experts and aligned with Ghana Education Service goals.",
-      gradient: "from-purple-500 to-indigo-600"
+      color: "bg-purple-500"
     }
   ];
 

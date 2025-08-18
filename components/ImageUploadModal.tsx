@@ -55,6 +55,17 @@ const ImageUploadModal: React.FC<ImageUploadModalProps> = ({ isOpen, onClose, on
               id="alt-text"
               value={altText}
               onChange={(e) => setAltText(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && e.ctrlKey) {
+                  // Allow Ctrl+Enter for new lines
+                  return;
+                }
+                if (e.key === 'Enter' && (e.target as HTMLInputElement).form) {
+                  // Prevent form submission on Enter key
+                  e.preventDefault();
+                  e.stopPropagation();
+                }
+              }}
               placeholder="Descriptive text for the image"
             />
           </div>
@@ -64,6 +75,17 @@ const ImageUploadModal: React.FC<ImageUploadModalProps> = ({ isOpen, onClose, on
               id="image-url"
               value={imageUrl}
               onChange={(e) => setImageUrl(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && e.ctrlKey) {
+                  // Allow Ctrl+Enter for new lines
+                  return;
+                }
+                if (e.key === 'Enter' && (e.target as HTMLInputElement).form) {
+                  // Prevent form submission on Enter key
+                  e.preventDefault();
+                  e.stopPropagation();
+                }
+              }}
               placeholder="https://example.com/image.jpg"
             />
           </div>

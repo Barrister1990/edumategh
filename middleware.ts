@@ -22,6 +22,8 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  
+
         if (url.pathname === '/reset-password') {
     return NextResponse.next();
   }

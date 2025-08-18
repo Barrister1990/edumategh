@@ -15,7 +15,7 @@ interface HeroFeatures {
   icon: React.ReactNode;
   title: string;
   description: string;
-  gradient: string;
+  color: string;
   highlight: string; // Fixed: Changed from String to string
 }
 
@@ -37,7 +37,7 @@ interface AdditionalFeatures {
   icon: React.ReactNode;
   title: string;
   description: string;
-  gradient: string;
+  color: string;
 }
 
 interface Stat {
@@ -65,7 +65,7 @@ export default function FeaturesPageClient({
   return (
     <div className="min-h-screen bg-white dark:bg-slate-950">
       {/* Hero Section */}
-      <section className="relative pt-24 pb-16 bg-gradient-to-br from-purple-600 via-indigo-600 to-purple-700 overflow-hidden">
+      <section className="relative pt-24 pb-16 bg-blue-600 overflow-hidden">
         <div 
           className="absolute inset-0 opacity-20"
           style={{
@@ -87,12 +87,12 @@ export default function FeaturesPageClient({
             <h1 className="text-3xl md:text-6xl lg:text-7xl font-black text-white mb-6">
               Features That
               <br />
-              <span className="bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent">
+              <span className="text-yellow-300">
                 Transform Education
               </span>
             </h1>
             
-            <p className="text-lg md:text-xl text-purple-100 mb-8 leading-relaxed max-w-3xl mx-auto">
+            <p className="text-lg md:text-xl text-blue-100 mb-8 leading-relaxed max-w-3xl mx-auto">
               Comprehensive AI-powered educational tools designed specifically for Ghana&apos;s curriculum, 
               empowering both students and teachers with cutting-edge technology.
             </p>
@@ -109,7 +109,7 @@ export default function FeaturesPageClient({
                 whileHover={{ y: -5 }}
                 className="group relative overflow-hidden bg-white/10 backdrop-blur-xl rounded-xl md:rounded-2xl p-4 md:p-6 border border-white/20 hover:bg-white/20 transition-all duration-500"
               >
-                <div className={`inline-flex items-center justify-center w-10 h-10 md:w-16 md:h-16 bg-gradient-to-br ${feature.gradient} rounded-xl md:rounded-2xl mb-3 md:mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                <div className={`inline-flex items-center justify-center w-10 h-10 md:w-16 md:h-16 ${feature.color} rounded-xl md:rounded-2xl mb-3 md:mb-4 group-hover:scale-110 transition-transform duration-300`}>
                   <div className="text-white">
                     <div className="md:hidden">
                       {/* Fixed: Properly handle ReactNode cloning */}
@@ -133,7 +133,7 @@ export default function FeaturesPageClient({
                   </span>
                 </div>
                 
-                <p className="text-xs md:text-base text-purple-100 leading-relaxed">
+                <p className="text-xs md:text-base text-blue-100 leading-relaxed">
                   {feature.description}
                 </p>
               </motion.div>
@@ -162,8 +162,8 @@ export default function FeaturesPageClient({
                 transition={{ delay: index * 0.1 }}
                 className="text-center group"
               >
-                <div className="inline-flex items-center justify-center w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-purple-100 to-indigo-100 dark:from-purple-900/30 dark:to-indigo-900/30 rounded-2xl mb-3 group-hover:scale-110 transition-transform duration-300">
-                  <div className="text-purple-600 dark:text-purple-400">
+                <div className="inline-flex items-center justify-center w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-2xl mb-3 group-hover:scale-110 transition-transform duration-300">
+                  <div className="text-blue-600 dark:text-blue-400">
                     {stat.icon}
                   </div>
                 </div>
@@ -180,7 +180,7 @@ export default function FeaturesPageClient({
       </section>
 
       {/* Student Features Section */}
-      <section className="py-20 bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30 dark:from-slate-950 dark:via-purple-950/20 dark:to-indigo-950/20">
+      <section className="py-20 bg-slate-50 dark:bg-slate-950">
         <div className="container mx-auto px-4 md:px-6">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
@@ -188,14 +188,14 @@ export default function FeaturesPageClient({
             viewport={{ once: true }}
             className="text-center max-w-4xl mx-auto mb-16"
           >
-            <div className="inline-flex items-center px-3 py-1.5 rounded-full bg-gradient-to-r from-purple-100 to-indigo-100 dark:from-purple-900/30 dark:to-indigo-900/30 text-xs md:text-sm font-medium text-purple-700 dark:text-purple-300 mb-6">
+            <div className="inline-flex items-center px-3 py-1.5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-xs md:text-sm font-medium text-blue-700 dark:text-blue-300 mb-6">
               <GraduationCap className="w-3 h-3 md:w-4 md:h-4 mr-2" />
               For Students
             </div>
             <h2 className="text-3xl md:text-5xl font-black mb-6">
               <span className="text-slate-900 dark:text-white">Powerful Tools for</span>
               <br />
-              <span className="bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-800 bg-clip-text text-transparent">
+              <span className="text-blue-600">
                 Academic Excellence
               </span>
             </h2>
@@ -215,10 +215,10 @@ export default function FeaturesPageClient({
                 whileHover={{ y: -5 }}
                 className="group relative overflow-hidden bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-xl md:rounded-2xl p-4 md:p-6 shadow-lg hover:shadow-2xl transition-all duration-500 border border-white/20 dark:border-slate-700/50"
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 
                 <div className="flex items-center justify-between mb-3 md:mb-4">
-                  <div className="inline-flex items-center justify-center w-8 h-8 md:w-12 md:h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg md:rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <div className="inline-flex items-center justify-center w-8 h-8 md:w-12 md:h-12 bg-blue-500 rounded-lg md:rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300">
                     <div className="text-white">
                       <div className="md:hidden">
                         {/* Fixed: Properly handle ReactNode cloning */}
@@ -232,12 +232,12 @@ export default function FeaturesPageClient({
                       </div>
                     </div>
                   </div>
-                  <span className="px-1.5 py-0.5 md:px-3 md:py-1 bg-gradient-to-r from-purple-100 to-indigo-100 dark:from-purple-900/30 dark:to-indigo-900/30 text-xs font-medium text-purple-700 dark:text-purple-300 rounded-full">
+                  <span className="px-1.5 py-0.5 md:px-3 md:py-1 bg-blue-100 dark:bg-blue-900/30 text-xs font-medium text-blue-700 dark:text-blue-300 rounded-full">
                     {feature.category}
                   </span>
                 </div>
                 
-                <h3 className="text-sm md:text-xl font-bold text-slate-900 dark:text-white mb-2 md:mb-3 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300">
+                <h3 className="text-sm md:text-xl font-bold text-slate-900 dark:text-white mb-2 md:mb-3 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
                   {feature.title}
                 </h3>
                 
@@ -246,7 +246,7 @@ export default function FeaturesPageClient({
                 </p>
 
                 <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <ArrowUpRight className="h-4 w-4 md:h-5 md:w-5 text-purple-500" />
+                  <ArrowUpRight className="h-4 w-4 md:h-5 md:w-5 text-blue-500" />
                 </div>
               </motion.div>
             ))}
@@ -263,14 +263,14 @@ export default function FeaturesPageClient({
             viewport={{ once: true }}
             className="text-center max-w-4xl mx-auto mb-16"
           >
-            <div className="inline-flex items-center px-3 py-1.5 rounded-full bg-gradient-to-r from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30 text-xs md:text-sm font-medium text-indigo-700 dark:text-indigo-300 mb-6">
+            <div className="inline-flex items-center px-3 py-1.5 rounded-full bg-gradient-to-r from-indigo-100 to-blue-100 dark:from-indigo-900/30 dark:to-blue-900/30 text-xs md:text-sm font-medium text-indigo-700 dark:text-indigo-300 mb-6">
               <Users className="w-3 h-3 md:w-4 md:h-4 mr-2" />
               For Teachers
             </div>
             <h2 className="text-3xl md:text-5xl font-black mb-6">
               <span className="text-slate-900 dark:text-white">AI-Powered Teaching</span>
               <br />
-              <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-800 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-indigo-600 via-blue-600 to-indigo-800 bg-clip-text text-transparent">
                 Assistant & Resources
               </span>
             </h2>
@@ -290,10 +290,10 @@ export default function FeaturesPageClient({
                 whileHover={{ y: -5 }}
                 className="group relative overflow-hidden bg-white dark:bg-slate-800 rounded-xl md:rounded-2xl p-4 md:p-6 shadow-lg hover:shadow-2xl transition-all duration-500 border border-slate-200 dark:border-slate-700"
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/50 to-purple-50/50 dark:from-indigo-950/20 dark:to-purple-950/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/50 to-blue-50/50 dark:from-indigo-950/20 dark:to-blue-950/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 
                 <div className="flex items-center justify-between mb-3 md:mb-4">
-                  <div className="inline-flex items-center justify-center w-8 h-8 md:w-12 md:h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg md:rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <div className="inline-flex items-center justify-center w-8 h-8 md:w-12 md:h-12 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-lg md:rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300">
                     <div className="text-white">
                       <div className="md:hidden">
                         {/* Fixed: Properly handle ReactNode cloning */}
@@ -307,7 +307,7 @@ export default function FeaturesPageClient({
                       </div>
                     </div>
                   </div>
-                  <span className="px-1.5 py-0.5 md:px-3 md:py-1 bg-gradient-to-r from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30 text-xs font-medium text-indigo-700 dark:text-indigo-300 rounded-full">
+                  <span className="px-1.5 py-0.5 md:px-3 md:py-1 bg-gradient-to-r from-indigo-100 to-blue-100 dark:from-indigo-900/30 dark:to-blue-900/30 text-xs font-medium text-indigo-700 dark:text-indigo-300 rounded-full">
                     {feature.category}
                   </span>
                 </div>
@@ -330,7 +330,7 @@ export default function FeaturesPageClient({
       </section>
 
       {/* Additional Features */}
-      <section className="py-20 bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30 dark:from-slate-950 dark:via-purple-950/20 dark:to-indigo-950/20">
+      <section className="py-20 bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/30 dark:from-slate-950 dark:via-blue-950/20 dark:to-indigo-950/20">
         <div className="container mx-auto px-4 md:px-6">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
@@ -341,7 +341,7 @@ export default function FeaturesPageClient({
             <h2 className="text-3xl md:text-5xl font-black mb-6">
               <span className="text-slate-900 dark:text-white">More Amazing</span>
               <br />
-              <span className="bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-800 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-800 bg-clip-text text-transparent">
                 Features & Benefits
               </span>
             </h2>
@@ -358,13 +358,13 @@ export default function FeaturesPageClient({
                 whileHover={{ scale: 1.02 }}
                 className="group relative overflow-hidden bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-lg hover:shadow-2xl transition-all duration-500 border border-white/20 dark:border-slate-700/50"
               >
-                <div className={`inline-flex items-center justify-center w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br ${feature.gradient} rounded-2xl mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300`}>
+                <div className={`inline-flex items-center justify-center w-12 h-12 md:w-16 md:h-16 ${feature.color} rounded-2xl mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300`}>
                   <div className="text-white">
                     {feature.icon}
                   </div>
                 </div>
                 
-                <h3 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white mb-3 md:mb-4 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300">
+                <h3 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white mb-3 md:mb-4 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
                   {feature.title}
                 </h3>
                 
@@ -378,7 +378,7 @@ export default function FeaturesPageClient({
       </section>
 
       {/* Final CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-purple-600 via-indigo-600 to-purple-700 relative overflow-hidden">
+      <section className="py-20 bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-700 relative overflow-hidden">
         <div 
           className="absolute inset-0 opacity-20"
           style={{
@@ -401,7 +401,7 @@ export default function FeaturesPageClient({
               </span>
             </h2>
             
-            <p className="text-lg md:text-xl text-purple-100 mb-8 leading-relaxed max-w-3xl mx-auto">
+            <p className="text-lg md:text-xl text-blue-100 mb-8 leading-relaxed max-w-3xl mx-auto">
               Join thousands of students and teachers who are already transforming their educational experience with EduMate GH
             </p>
             
@@ -409,7 +409,7 @@ export default function FeaturesPageClient({
               <motion.button 
                 whileHover={{ scale: 1.05 }} 
                 whileTap={{ scale: 0.95 }}
-                className="bg-white text-purple-600 hover:bg-gray-100 px-6 py-3 md:px-8 md:py-4 text-base md:text-lg font-bold rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center w-full sm:w-auto justify-center"
+                className="bg-white text-blue-600 hover:bg-gray-100 px-6 py-3 md:px-8 md:py-4 text-base md:text-lg font-bold rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center w-full sm:w-auto justify-center"
               >
                 <Download className="mr-2 md:mr-3 h-5 w-5 md:h-6 md:w-6" />
                 Start Learning Today
@@ -425,7 +425,7 @@ export default function FeaturesPageClient({
               </motion.button>
             </div>
             
-            <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8 text-purple-100">
+            <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8 text-blue-100">
               <div className="flex items-center space-x-2">
                 <CheckCircle className="h-4 w-4 md:h-5 md:w-5 text-green-300" />
                 <span className="text-sm md:text-base">Free to download</span>

@@ -1,0 +1,28 @@
+User-agent: *
+Allow: /
+
+# Main pages to index (high priority)
+Allow: /features
+Allow: /download
+Allow: /contact
+Allow: /terms
+Allow: /privacy
+Allow: /test-og
+
+# Block sensitive/private pages from indexing
+Disallow: /verify
+Disallow: /delete-account
+Disallow: /reset-password
+Disallow: /login
+Disallow: /register
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /api/
+Disallow: /_next/
+Disallow: /static/
+
+# Sitemap location
+Sitemap: https://edumategh.com/sitemap.xml
+
+# Crawl delay (optional - be respectful to server)
+Crawl-delay: 1
