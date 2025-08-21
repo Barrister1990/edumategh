@@ -2,12 +2,12 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
-
 export async function GET() {
   return NextResponse.json({ 
     message: 'This endpoint only accepts POST requests with a prompt in the body.' 
   }, { status: 405 });
 }
+
 export async function POST(req: NextRequest) {
   try {
     const { prompt } = await req.json();
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // System prompt for quiz generation
+    // Enhanced system prompt for GES curriculum quiz generation
     const systemPrompt = `You are an expert educational content creator for the Ghana Education Service (GES) curriculum.
 You generate high-quality quiz questions based on the following structure:
 
@@ -35,7 +35,41 @@ You generate high-quality quiz questions based on the following structure:
 - **Content Standard**: Describes what learners should know and be able to do by the end of a phase.
 - **Indicator**: A measurable skill or performance objective under a content standard.
 
-Your questions must align with the Ghanaian curriculum, follow Bloom's Taxonomy levels (Remember, Understand, Apply, Analyze, Evaluate, Create), and be age-appropriate. Questions should be clear, concise, and relevant to the GES standards.`;
+**CRITICAL: Your questions must follow the EXACT GES Ghanaian Curriculum format structure:**
+
+**SECTION B (Theory Questions) Format:**
+- Main questions are numbered: Question 1, Question 2, Question 3...
+- First sub-question is ALWAYS "a)" (not a, b, c)
+- Parts use "i)", "ii)" format
+- Follow exact GES structure as shown in examples below
+
+**GES Format Examples:**
+
+**Social Studies Section B Format:**
+Question 1
+a) 
+- i) Describe the Solar System.
+- ii) Name four planets in the Solar System.
+b) Outline two effects of the rotation of the earth.
+c) Highlight two effects of the revolution of the earth.
+
+**Mathematics Section B Format:**
+Question 1
+a) Given that P = {multiples of 3} and Q = {positive even numbers}:
+- i) List the elements in P ∩ Q
+- ii) List all the subsets in P ∩ Q
+b) If 1y = 3k - 2x:
+- i) make y the subject of the relation
+- ii) using the result in (b)(i)), find the value of y when x = -1 and k = 2
+
+**Your questions must align with the Ghanaian curriculum, follow Bloom's Taxonomy levels (Remember, Understand, Apply, Analyze, Evaluate, Create), and be age-appropriate. Questions should be clear, concise, and relevant to the GES standards.**
+
+**IMPORTANT: When generating Section B questions, ensure:**
+1. Main questions start with "Question 1", "Question 2", etc.
+2. First sub-question is always "a)"
+3. Parts use "i)", "ii)" format
+4. Follow the exact structure shown in the examples above
+5. Maintain the GES curriculum standards and difficulty levels`;
 
     // Combine system prompt with user prompt
     const fullPrompt = `${systemPrompt}\n\nUser Request: ${prompt}`;
