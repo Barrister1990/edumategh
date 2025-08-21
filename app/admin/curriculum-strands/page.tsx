@@ -73,11 +73,12 @@ const GESCurriculumPage = () => {
     if (subjectFilter !== 'all') {
       const selectedSubject = subjects.find(s => s.id === subjectFilter);
       if (selectedSubject) {
-        const classLevel = classFilter !== 'all' ? classFilter.split(' ')[1] : '1';
+        // Use the full class name (e.g., "Basic 4", "JHS 1") instead of just the number
+        const fullClassName = classFilter !== 'all' ? classFilter : `${selectedSubject.level} 1`;
         fetchStrands(
           subjectFilter, 
           selectedSubject.level, 
-          classLevel, 
+          fullClassName, 
           selectedSubject.course || undefined
         );
       }
@@ -111,9 +112,27 @@ const GESCurriculumPage = () => {
     setViewMode('cards'); // Reset to cards view when changing tabs
   }, [activeTab]);
 
+  // Reset class filter when level filter changes to ensure consistency
+  useEffect(() => {
+    setClassFilter('all');
+  }, [levelFilter]);
+
   const levels = ['all', 'Basic', 'JHS', 'SHS'] as const;
   const courses = ['all', ...shsCourses] as const;
-  const classes = ['all', 'Basic 4', 'Basic 5', 'Basic 6', 'JHS 1', 'JHS 2', 'JHS 3', 'SHS 1', 'SHS 2', 'SHS 3'] as const;
+  
+  // Dynamic classes based on selected level
+  const availableClasses = useMemo(() => {
+    if (levelFilter === 'all') {
+      return ['all', 'Basic 4', 'Basic 5', 'Basic 6', 'JHS 1', 'JHS 2', 'JHS 3', 'SHS 1', 'SHS 2', 'SHS 3'];
+    } else if (levelFilter === 'Basic') {
+      return ['all', 'Basic 4', 'Basic 5', 'Basic 6'];
+    } else if (levelFilter === 'JHS') {
+      return ['all', 'JHS 1', 'JHS 2', 'JHS 3'];
+    } else if (levelFilter === 'SHS') {
+      return ['all', 'SHS 1', 'SHS 2', 'SHS 3'];
+    }
+    return ['all'];
+  }, [levelFilter]);
 
   // RELATIONAL FILTERING - Using IDs to create proper hierarchical relationships
   const filteredData = useMemo(() => {
@@ -276,6 +295,7 @@ const GESCurriculumPage = () => {
     setStrandFilter('all');
     setSubstrandFilter('all');
     setContentStandardFilter('all');
+    setClassFilter('all'); // Reset class filter when level changes
   };
 
   const handleCourseFilterChange = (course: string) => {
@@ -584,7 +604,7 @@ const GESCurriculumPage = () => {
                     onChange={(e) => handleClassFilterChange(e.target.value)}
                     className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
                   >
-                    {classes.map(cls => (
+                    {availableClasses.map(cls => (
                       <option key={cls} value={cls}>
                         {cls === 'all' ? 'All Classes' : cls}
                       </option>
