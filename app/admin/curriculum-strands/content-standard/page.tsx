@@ -105,7 +105,7 @@ const availableSubjects = useMemo(() => {
       strand.subjectId === formData.subjectId &&
       strand.level === formData.level &&
       strand.class === `${formData.level} ${formData.class}` &&
-      (formData.level === 'JHS' || strand.course === formData.course)
+      (formData.level === 'Basic' || formData.level === 'JHS' || strand.course === formData.course)
     );
   }, [formData.subjectId, formData.level, formData.class, formData.course, strands]);
 
@@ -151,9 +151,10 @@ const progressPercentage = useMemo(() => {
       
       // Only fetch strands if we have the required dependencies
       if (formData.subjectId && formData.level && formData.class) {
-        // For JHS, course is not required, for SHS it is
-        if (formData.level === 'JHS' || (formData.level === 'SHS' && formData.course)) {
-          await fetchStrands(formData.subjectId, formData.level, formData.class, formData.course);
+        // For Basic and JHS, course is not required, for SHS it is
+        if (formData.level === 'Basic' || formData.level === 'JHS' || (formData.level === 'SHS' && formData.course)) {
+          const fullClassName = `${formData.level} ${formData.class}`;
+          await fetchStrands(formData.subjectId, formData.level, fullClassName, formData.course);
         }
       }
     } catch (err) {
@@ -180,9 +181,10 @@ const progressPercentage = useMemo(() => {
   // Load strands when dependencies change
   useEffect(() => {
     if (fetchStrands && formData.subjectId && formData.level && formData.class) {
-      // For JHS, course is not required, for SHS it is
-      if (formData.level === 'JHS' || (formData.level === 'SHS' && formData.course)) {
-        fetchStrands(formData.subjectId, formData.level, formData.class, formData.course).catch(err => {
+      // For Basic and JHS, course is not required, for SHS it is
+      if (formData.level === 'Basic' || formData.level === 'JHS' || (formData.level === 'SHS' && formData.course)) {
+        const fullClassName = `${formData.level} ${formData.class}`;
+        fetchStrands(formData.subjectId, formData.level, fullClassName, formData.course).catch(err => {
           console.error('Failed to load strands:', err);
         });
       }

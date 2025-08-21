@@ -397,16 +397,14 @@ if (level === 'SHS' && course) {
 
   fetchStrands: async (subjectId: string, level: string, classLevel: string, course?: string) => {
     set({ isLoadingStrands: true, strandsError: null });
-     
-    const formattedClass = `${level} ${classLevel}`;
-     console.log(level, classLevel, subjectId,course)
+ console.log(classLevel)
     try {
       let query = supabase
         .from('curriculum_strands')
         .select('*')
         .eq('subject_id', subjectId)
         .eq('level', level)
-        .eq('class', formattedClass);
+        .eq('class', classLevel);
       
       
       const { data, error } = await query.order('strand');

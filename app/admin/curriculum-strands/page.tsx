@@ -1,7 +1,7 @@
 "use client";
 
 import { useCurriculumStore } from '@/stores/curriculumStrand';
-import { BookOpen, ChevronDown, FileText, Filter, Layers, Search, Target, Users, X } from 'lucide-react';
+import { BookOpen, CheckSquare, ChevronDown, FileText, Filter, Grid, Layers, List, Search, Square, Target, Trash2, Users, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 // SHS Courses from your store
@@ -20,6 +20,10 @@ const GESCurriculumPage = () => {
   const [activeTab, setActiveTab] = useState('subjects');
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
+  const [viewMode, setViewMode] = useState<'cards' | 'list'>('cards');
+  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
+  const [selectAll, setSelectAll] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   
   // Filter states
   const [levelFilter, setLevelFilter] = useState('all');
@@ -36,7 +40,9 @@ const GESCurriculumPage = () => {
     isLoadingSubjects, isLoadingStrands, isLoadingSubStrands, isLoadingContentStandards, isLoadingIndicators,
     subjectsError, strandsError, subStrandsError, contentStandardsError, indicatorsError,
     fetchAllSubjects, fetchSubjects, fetchStrands, fetchSubStrands, fetchContentStandards, fetchIndicators,
-    clearAllErrors
+    deleteStrand, deleteSubStrand, deleteContentStandard, deleteIndicator,
+    bulkDeleteStrands, bulkDeleteSubStrands, bulkDeleteContentStandards, bulkDeleteIndicators,
+    clearAllErrors, isDeleting
   } = useCurriculumStore();
 
   // Fetch initial data on component mount
@@ -49,6 +55,8 @@ const GESCurriculumPage = () => {
   useEffect(() => {
     if (levelFilter === 'all') {
       fetchAllSubjects();
+    } else if (levelFilter === 'Basic') {
+      fetchSubjects('Basic');
     } else if (levelFilter === 'JHS') {
       fetchSubjects('JHS');
     } else if (levelFilter === 'SHS') {
@@ -97,9 +105,15 @@ const GESCurriculumPage = () => {
     }
   }, [contentStandardFilter]);
 
-  const levels = ['all', 'JHS', 'SHS'] as const;
+  // Reset selection when active tab changes
+  useEffect(() => {
+    resetSelection();
+    setViewMode('cards'); // Reset to cards view when changing tabs
+  }, [activeTab]);
+
+  const levels = ['all', 'Basic', 'JHS', 'SHS'] as const;
   const courses = ['all', ...shsCourses] as const;
-  const classes = ['all', 'JHS 1', 'JHS 2', 'JHS 3', 'SHS 1', 'SHS 2', 'SHS 3'] as const;
+  const classes = ['all', 'Basic 4', 'Basic 5', 'Basic 6', 'JHS 1', 'JHS 2', 'JHS 3', 'SHS 1', 'SHS 2', 'SHS 3'] as const;
 
   // RELATIONAL FILTERING - Using IDs to create proper hierarchical relationships
   const filteredData = useMemo(() => {
@@ -309,6 +323,123 @@ const GESCurriculumPage = () => {
     setSearchQuery('');
   };
 
+  // Selection and deletion helpers
+  const getCurrentItems = () => {
+    switch (activeTab) {
+      case 'subjects':
+        return filteredData.subjects;
+      case 'strands':
+        return filteredData.strands;
+      case 'substrands':
+        return filteredData.substrands;
+      case 'contentStandards':
+        return filteredData.contentStandards;
+      case 'indicators':
+        return filteredData.indicators;
+      default:
+        return [];
+    }
+  };
+
+  const handleSelectItem = (itemId: string) => {
+    const newSelected = new Set(selectedItems);
+    if (newSelected.has(itemId)) {
+      newSelected.delete(itemId);
+    } else {
+      newSelected.add(itemId);
+    }
+    setSelectedItems(newSelected);
+    setSelectAll(newSelected.size === getCurrentItems().length);
+  };
+
+  const handleSelectAll = () => {
+    if (selectAll) {
+      setSelectedItems(new Set());
+      setSelectAll(false);
+    } else {
+      const currentItems = getCurrentItems();
+      setSelectedItems(new Set(currentItems.map(item => item.id)));
+      setSelectAll(true);
+    }
+  };
+
+  const handleDeleteSelected = async () => {
+    if (selectedItems.size === 0) return;
+
+    const selectedArray = Array.from(selectedItems);
+    let success = false;
+
+    try {
+      switch (activeTab) {
+        case 'strands':
+          success = await bulkDeleteStrands(selectedArray);
+          break;
+        case 'substrands':
+          success = await bulkDeleteSubStrands(selectedArray);
+          break;
+        case 'contentStandards':
+          success = await bulkDeleteContentStandards(selectedArray);
+          break;
+        case 'indicators':
+          success = await bulkDeleteIndicators(selectedArray);
+          break;
+        default:
+          // Subjects don't have bulk delete, handle individually
+          success = true;
+          break;
+      }
+
+      if (success) {
+        setSelectedItems(new Set());
+        setSelectAll(false);
+        setShowDeleteConfirm(false);
+      }
+    } catch (error) {
+      console.error('Error deleting items:', error);
+    }
+  };
+
+  const confirmDeleteSelected = () => {
+    setShowDeleteConfirm(true);
+  };
+
+  const handleDeleteItem = async (itemId: string) => {
+    let success = false;
+
+    try {
+      switch (activeTab) {
+        case 'strands':
+          success = await deleteStrand(itemId);
+          break;
+        case 'substrands':
+          success = await deleteSubStrand(itemId);
+          break;
+        case 'contentStandards':
+          success = await deleteContentStandard(itemId);
+          break;
+        case 'indicators':
+          success = await deleteIndicator(itemId);
+          break;
+        default:
+          break;
+      }
+
+      if (success) {
+        // Remove from selection if it was selected
+        const newSelected = new Set(selectedItems);
+        newSelected.delete(itemId);
+        setSelectedItems(newSelected);
+      }
+    } catch (error) {
+      console.error('Error deleting item:', error);
+    }
+  };
+
+  const resetSelection = () => {
+    setSelectedItems(new Set());
+    setSelectAll(false);
+  };
+
   const isLoading = isLoadingSubjects || isLoadingStrands || isLoadingSubStrands || 
                    isLoadingContentStandards || isLoadingIndicators;
 
@@ -363,6 +494,31 @@ const GESCurriculumPage = () => {
                 />
               </div>
               <div className="flex gap-3">
+                {/* View Toggle */}
+                <div className="flex border border-gray-200 rounded-lg overflow-hidden">
+                  <button
+                    onClick={() => setViewMode('cards')}
+                    className={`px-4 py-3 flex items-center space-x-2 transition-colors duration-200 ${
+                      viewMode === 'cards' 
+                        ? 'bg-blue-600 text-white' 
+                        : 'bg-white text-gray-600 hover:bg-gray-50'
+                    }`}
+                  >
+                    <Grid className="h-4 w-4" />
+                    <span>Cards</span>
+                  </button>
+                  <button
+                    onClick={() => setViewMode('list')}
+                    className={`px-4 py-3 flex items-center space-x-2 transition-colors duration-200 ${
+                      viewMode === 'list' 
+                        ? 'bg-blue-600 text-white' 
+                        : 'bg-white text-gray-600 hover:bg-gray-50'
+                    }`}
+                  >
+                    <List className="h-4 w-4" />
+                    <span>List</span>
+                  </button>
+                </div>
                 <button
                   onClick={() => setShowFilters(!showFilters)}
                   className="flex items-center space-x-2 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
@@ -557,15 +713,71 @@ const GESCurriculumPage = () => {
             </div>
           </div>
 
+          {/* Selection Controls */}
+          {viewMode === 'list' && (
+            <div className="border-b border-gray-100 p-4 bg-gray-50">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <button
+                    onClick={handleSelectAll}
+                    className="flex items-center space-x-2 text-sm text-gray-600 hover:text-gray-800"
+                  >
+                    {selectAll ? (
+                      <CheckSquare className="h-5 w-5 text-blue-600" />
+                    ) : (
+                      <Square className="h-5 w-5 text-gray-400" />
+                    )}
+                    <span>{selectAll ? 'Deselect All' : 'Select All'}</span>
+                  </button>
+                  {selectedItems.size > 0 && (
+                    <span className="text-sm text-gray-600">
+                      {selectedItems.size} item{selectedItems.size !== 1 ? 's' : ''} selected
+                    </span>
+                  )}
+                  {isDeleting && (
+                    <div className="flex items-center space-x-2 text-sm text-blue-600">
+                      <div className="animate-spin h-4 w-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
+                      <span>Deleting...</span>
+                    </div>
+                  )}
+                </div>
+                {selectedItems.size > 0 && (
+                  <div className="flex items-center space-x-3">
+                    <button
+                      onClick={confirmDeleteSelected}
+                      disabled={isDeleting}
+                      className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      <span>Delete Selected ({selectedItems.size})</span>
+                    </button>
+                    <button
+                      onClick={resetSelection}
+                      className="px-3 py-2 text-gray-600 hover:text-gray-800 transition-colors duration-200"
+                    >
+                      Clear Selection
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Content */}
           <div className="p-6">
             {activeTab === 'subjects' && (
+              <>
+                {viewMode === 'cards' ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredData.subjects.map(subject => (
                   <div key={subject.id} className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-100 hover:shadow-lg transition-all duration-200 transform hover:-translate-y-1">
                     <div className="flex items-start justify-between mb-4">
                       <BookOpen className="h-6 w-6 text-blue-600" />
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${subject.level === 'JHS' ? 'bg-green-100 text-green-800' : 'bg-purple-100 text-purple-800'}`}>
+                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                            subject.level === 'Basic' ? 'bg-blue-100 text-blue-800' :
+                            subject.level === 'JHS' ? 'bg-green-100 text-green-800' : 
+                            'bg-purple-100 text-purple-800'
+                          }`}>
                         {subject.level}
                       </span>
                     </div>
@@ -575,23 +787,56 @@ const GESCurriculumPage = () => {
                     )}
                   </div>
                 ))}
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {filteredData.subjects.map(subject => (
+                      <div key={subject.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                        <div className="flex items-center space-x-4">
+                          <BookOpen className="h-5 w-5 text-blue-600" />
+                          <div>
+                            <h3 className="font-medium text-gray-900">{subject.name}</h3>
+                            <div className="flex items-center space-x-2 mt-1">
+                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                subject.level === 'Basic' ? 'bg-blue-100 text-blue-800' :
+                                subject.level === 'JHS' ? 'bg-green-100 text-green-800' : 
+                                'bg-purple-100 text-purple-800'
+                              }`}>
+                                {subject.level}
+                              </span>
+                              {subject.course && (
+                                <span className="text-sm text-blue-600">{subject.course}</span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
                 {filteredData.subjects.length === 0 && (
-                  <div className="col-span-full text-center py-12">
+                  <div className="text-center py-12">
                     <BookOpen className="h-12 w-12 text-gray-300 mx-auto mb-4" />
                     <p className="text-gray-500">No subjects found with current filters</p>
                   </div>
                 )}
-              </div>
+              </>
             )}
 
             {activeTab === 'strands' && (
+              <>
+                {viewMode === 'cards' ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {filteredData.strands.map(strand => (
                   <div key={strand.id} className="p-6 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl border border-emerald-100 hover:shadow-lg transition-all duration-200">
                     <div className="flex items-start justify-between mb-4">
                       <Layers className="h-6 w-6 text-emerald-600" />
                       <div className="flex space-x-2">
-                        <span className="px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                            <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                              strand.level === 'Basic' ? 'bg-blue-100 text-blue-800' :
+                              strand.level === 'JHS' ? 'bg-green-100 text-green-800' : 
+                              'bg-emerald-100 text-emerald-800'
+                            }`}>
                           {strand.level}
                         </span>
                         <span className="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
@@ -604,16 +849,67 @@ const GESCurriculumPage = () => {
                     {strand.course && <p className="text-emerald-600 text-sm">Course: {strand.course}</p>}
                   </div>
                 ))}
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {filteredData.strands.map(strand => (
+                      <div key={strand.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                        <div className="flex items-center space-x-4">
+                          <button
+                            onClick={() => handleSelectItem(strand.id)}
+                            className="flex-shrink-0"
+                          >
+                            {selectedItems.has(strand.id) ? (
+                              <CheckSquare className="h-5 w-5 text-blue-600" />
+                            ) : (
+                              <Square className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                            )}
+                          </button>
+                          <Layers className="h-5 w-5 text-emerald-600" />
+                          <div>
+                            <h3 className="font-medium text-gray-900">{strand.name}</h3>
+                            <div className="flex items-center space-x-2 mt-1">
+                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                strand.level === 'Basic' ? 'bg-blue-100 text-blue-800' :
+                                strand.level === 'JHS' ? 'bg-green-100 text-green-800' : 
+                                'bg-emerald-100 text-emerald-800'
+                              }`}>
+                                {strand.level}
+                              </span>
+                              <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                {strand.class}
+                              </span>
+                              <span className="text-sm text-emerald-700">Subject: {strand.subject}</span>
+                              {strand.course && (
+                                <span className="text-sm text-emerald-600">Course: {strand.course}</span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => handleDeleteItem(strand.id)}
+                          disabled={isDeleting}
+                          className="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors duration-200 disabled:opacity-50"
+                          title="Delete strand"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
                 {filteredData.strands.length === 0 && (
-                  <div className="col-span-full text-center py-12">
+                  <div className="text-center py-12">
                     <Layers className="h-12 w-12 text-gray-300 mx-auto mb-4" />
                     <p className="text-gray-500">No strands found with current filters</p>
                   </div>
                 )}
-              </div>
+              </>
             )}
 
             {activeTab === 'substrands' && (
+              <>
+                {viewMode === 'cards' ? (
               <div className="space-y-4">
                 {filteredData.substrands.map(substrand => (
                   <div key={substrand.id} className="p-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-100 hover:shadow-lg transition-all duration-200">
@@ -635,16 +931,61 @@ const GESCurriculumPage = () => {
                     </div>
                   </div>
                 ))}
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {filteredData.substrands.map(substrand => (
+                      <div key={substrand.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                        <div className="flex items-center space-x-4">
+                          <button
+                            onClick={() => handleSelectItem(substrand.id)}
+                            className="flex-shrink-0"
+                          >
+                            {selectedItems.has(substrand.id) ? (
+                              <CheckSquare className="h-5 w-5 text-blue-600" />
+                            ) : (
+                              <Square className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                            )}
+                          </button>
+                          <Target className="h-5 w-5 text-purple-600" />
+                          <div>
+                            <h3 className="font-medium text-gray-900">{substrand.name}</h3>
+                            <div className="flex items-center space-x-4 mt-1 text-sm">
+                              <div>
+                                <span className="font-medium text-purple-700">Strand:</span>
+                                <span className="text-gray-600 ml-1">{substrand.strand}</span>
+                              </div>
+                              <div>
+                                <span className="font-medium text-purple-700">Subject:</span>
+                                <span className="text-gray-600 ml-1">{substrand.subject}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => handleDeleteItem(substrand.id)}
+                          disabled={isDeleting}
+                          className="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors duration-200 disabled:opacity-50"
+                          title="Delete sub-strand"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
                 {filteredData.substrands.length === 0 && (
                   <div className="text-center py-12">
                     <Target className="h-12 w-12 text-gray-300 mx-auto mb-4" />
                     <p className="text-gray-500">No sub-strands found with current filters</p>
                   </div>
                 )}
-              </div>
+              </>
             )}
 
             {activeTab === 'contentStandards' && (
+              <>
+                {viewMode === 'cards' ? (
               <div className="space-y-4">
                 {filteredData.contentStandards.map(cs => (
                   <div key={cs.id} className="p-6 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl border border-orange-100 hover:shadow-lg transition-all duration-200">
@@ -667,16 +1008,61 @@ const GESCurriculumPage = () => {
                     </div>
                   </div>
                 ))}
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {filteredData.contentStandards.map(cs => (
+                      <div key={cs.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                        <div className="flex items-center space-x-4">
+                          <button
+                            onClick={() => handleSelectItem(cs.id)}
+                            className="flex-shrink-0"
+                          >
+                            {selectedItems.has(cs.id) ? (
+                              <CheckSquare className="h-5 w-5 text-blue-600" />
+                            ) : (
+                              <Square className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                            )}
+                          </button>
+                          <FileText className="h-5 w-5 text-orange-600" />
+                          <div>
+                            <h3 className="font-medium text-gray-900">{cs.name}</h3>
+                            <div className="flex items-center space-x-4 mt-1 text-sm">
+                              <div>
+                                <span className="font-medium text-orange-700">Strand:</span>
+                                <span className="text-gray-600 ml-1">{cs.strand}</span>
+                              </div>
+                              <div>
+                                <span className="font-medium text-orange-700">Subject:</span>
+                                <span className="text-gray-600 ml-1">{cs.subject}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => handleDeleteItem(cs.id)}
+                          disabled={isDeleting}
+                          className="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors duration-200 disabled:opacity-50"
+                          title="Delete content standard"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
                 {filteredData.contentStandards.length === 0 && (
                   <div className="text-center py-12">
                     <FileText className="h-12 w-12 text-gray-300 mx-auto mb-4" />
                     <p className="text-gray-500">No content standards found with current filters</p>
                   </div>
                 )}
-              </div>
+              </>
             )}
 
             {activeTab === 'indicators' && (
+              <>
+                {viewMode === 'cards' ? (
               <div className="space-y-4">
                 {filteredData.indicators.map(indicator => (
                   <div key={indicator.id} className="p-6 bg-gradient-to-r from-pink-50 to-rose-50 rounded-xl border border-pink-100 hover:shadow-lg transition-all duration-200">
@@ -706,17 +1092,103 @@ const GESCurriculumPage = () => {
                     </div>
                   </div>
                 ))}
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {filteredData.indicators.map(indicator => (
+                      <div key={indicator.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                        <div className="flex items-center space-x-4">
+                          <button
+                            onClick={() => handleSelectItem(indicator.id)}
+                            className="flex-shrink-0"
+                          >
+                            {selectedItems.has(indicator.id) ? (
+                              <CheckSquare className="h-5 w-5 text-blue-600" />
+                            ) : (
+                              <Square className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                            )}
+                          </button>
+                          <Users className="h-5 w-5 text-pink-600" />
+                          <div>
+                            <h3 className="font-medium text-gray-900">{indicator.name}</h3>
+                            <div className="flex items-center space-x-4 mt-1 text-sm">
+                              <div>
+                                <span className="font-medium text-pink-700">Content Standard:</span>
+                                <span className="text-gray-600 ml-1">{indicator.contentStandard}</span>
+                              </div>
+                              <div>
+                                <span className="font-medium text-pink-700">Sub-strand:</span>
+                                <span className="text-gray-600 ml-1">{indicator.subStrand}</span>
+                              </div>
+                              <div>
+                                <span className="font-medium text-pink-700">Strand:</span>
+                                <span className="text-gray-600 ml-1">{indicator.strand}</span>
+                              </div>
+                              <div>
+                                <span className="font-medium text-pink-700">Subject:</span>
+                                <span className="text-gray-600 ml-1">{indicator.subject}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => handleDeleteItem(indicator.id)}
+                          disabled={isDeleting}
+                          className="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors duration-200 disabled:opacity-50"
+                          title="Delete indicator"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
                 {filteredData.indicators.length === 0 && (
                   <div className="text-center py-12">
                     <Users className="h-12 w-12 text-gray-300 mx-auto mb-4" />
                     <p className="text-gray-500">No indicators found with current filters</p>
                   </div>
                 )}
-              </div>
+              </>
             )}
           </div>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 max-w-md w-full mx-4">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="p-2 bg-red-100 rounded-lg">
+                <Trash2 className="h-6 w-6 text-red-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Confirm Deletion</h3>
+                <p className="text-sm text-gray-600">This action cannot be undone.</p>
+              </div>
+            </div>
+            <p className="text-gray-700 mb-6">
+              Are you sure you want to delete {selectedItems.size} selected item{selectedItems.size !== 1 ? 's' : ''}?
+            </p>
+            <div className="flex space-x-3">
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteSelected}
+                disabled={isDeleting}
+                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+              >
+                {isDeleting ? 'Deleting...' : 'Delete'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

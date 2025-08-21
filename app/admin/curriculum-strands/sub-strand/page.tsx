@@ -100,7 +100,7 @@ const availableSubjects = useMemo(() => {
       strand.subjectId === formData.subjectId &&
       strand.level === formData.level &&
       strand.class === `${formData.level} ${formData.class}` &&
-      (formData.level === 'JHS' || strand.course === formData.course)
+      (formData.level === 'Basic' || formData.level === 'JHS' || strand.course === formData.course)
     );
   }, [formData.subjectId, formData.level, formData.class, formData.course, strands]);
 
@@ -139,7 +139,8 @@ const loadData = useCallback(async () => {
     if (formData.subjectId && formData.level && formData.class) {
       // For Basic and JHS, course is not required, for SHS it is
       if (formData.level === 'Basic' || formData.level === 'JHS' || (formData.level === 'SHS' && formData.course)) {
-        await fetchStrands(formData.subjectId, formData.level, formData.class, formData.course);
+        const fullClassName = `${formData.level} ${formData.class}`;
+        await fetchStrands(formData.subjectId, formData.level, fullClassName, formData.course);
       }
     }
   } catch (err) {
@@ -168,7 +169,8 @@ useEffect(() => {
   if (fetchStrands && formData.subjectId && formData.level && formData.class) {
     // For Basic and JHS, course is not required, for SHS it is
     if (formData.level === 'Basic' || formData.level === 'JHS' || (formData.level === 'SHS' && formData.course)) {
-      fetchStrands(formData.subjectId, formData.level, formData.class, formData.course).catch(err => {
+      const fullClassName = `${formData.level} ${formData.class}`;
+      fetchStrands(formData.subjectId, formData.level, fullClassName, formData.course).catch(err => {
         console.error('Failed to load strands:', err);
       });
     }
