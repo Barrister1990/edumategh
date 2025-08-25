@@ -80,6 +80,7 @@ const [localContent, setLocalContent] = useState<ContentSection[]>([]);
 
   // Course options for SHS
   const shsCourses = [
+    'Core Subject',
     'General Science',
     'General Arts',
     'Business',
@@ -285,11 +286,33 @@ const [localContent, setLocalContent] = useState<ContentSection[]>([]);
   };
 
   const getAvailableSubjects = () => {
-    if (formData.level === 'JHS') {
-      return subjects.filter(s => s.level === 'JHS');
-    } else {
-      return subjects.filter(s => s.level === 'SHS' && (!formData.course || s.course === formData.course));
+    console.log('Getting available subjects for level:', formData.level, 'course(s):', formData.course);
+    console.log('All subjects:', subjects);
+    
+    if (formData.level === 'Basic') {
+      const filtered = subjects.filter(s => s.level === 'Basic');
+      console.log('Filtered Basic subjects:', filtered);
+      return filtered;
+    } else if (formData.level === 'JHS') {
+      const filtered = subjects.filter(s => s.level === 'JHS');
+      console.log('Filtered JHS subjects:', filtered);
+      return filtered;
+    } else if (formData.level === 'SHS') {
+      const filtered = subjects.filter(s => {
+        console.log('Checking subject:', s, 'against level:', s.level, 'course:', s.course);
+        return (
+          s.level === 'SHS' &&
+          (
+            !formData.course || 
+            (Array.isArray(s.course) ? s.course.includes(formData.course) : s.course === formData.course)
+          )
+        );
+      });
+      console.log('Filtered SHS subjects for course(s)', formData.course, ':', filtered);
+      return filtered;
     }
+    
+    return [];
   };
 
   if (isLoading) {

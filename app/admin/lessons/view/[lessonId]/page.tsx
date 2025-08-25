@@ -81,6 +81,7 @@ const lessonId = params?.lessonId as string;
 
   // Course options for SHS
   const shsCourses = [
+    'Core Subject',
     'General Science',
     'General Arts',
     'Business',
@@ -177,6 +178,26 @@ const addNewContentSection = (type: 'text' | 'image' | 'video' | 'quiz', index?:
     updateContentSection(sectionId, { [field]: value });
   };
 
+  const getAvailableSubjects = () => {
+    if (formData.level === 'Basic') {
+      return subjects.filter(s => s.level === 'Basic');
+    } else if (formData.level === 'JHS') {
+      return subjects.filter(s => s.level === 'JHS');
+    } else if (formData.level === 'SHS') {
+      return subjects.filter(s => {
+        return (
+          s.level === 'SHS' &&
+          (
+            !formData.course || 
+            (Array.isArray(s.course) ? s.course.includes(formData.course) : s.course === formData.course)
+          )
+        );
+      });
+    }
+    
+    return [];
+  };
+
   const updateQuizContent = (sectionId: number, field: keyof QuizContent, value: string | number | string[]) => {
     const section = currentLesson?.content.find(c => c.id === sectionId);
     if (section && section.quiz) {
@@ -270,19 +291,7 @@ const addNewContentSection = (type: 'text' | 'image' | 'video' | 'quiz', index?:
     );
   };
 
-const getAvailableSubjects = () => {
-  const level = formData.level;
-  const course = formData.course;
 
-  if (level === 'Basic' || level === 'JHS') {
-    return subjects.filter(s => s.level === level);
-  }
-
-  // Default to SHS logic
-  return subjects.filter(
-    s => s.level === 'SHS' && (!course || s.course === course)
-  );
-};
 
 
   if (isLoading) {
