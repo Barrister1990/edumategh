@@ -342,7 +342,7 @@ const renderContentPreview = (content: ContentSection) => {
 };
 
 const getAvailableSubjects = () => {
-  console.log('Getting available subjects for level:', formData.level, 'course:', formData.course);
+  console.log('Getting available subjects for level:', formData.level, 'course(s):', formData.course);
   console.log('All subjects:', subjects);
   
   if (formData.level === 'Basic') {
@@ -354,17 +354,23 @@ const getAvailableSubjects = () => {
     console.log('Filtered JHS subjects:', filtered);
     return filtered;
   } else if (formData.level === 'SHS') {
-    // Make sure the filtering logic matches your data structure
     const filtered = subjects.filter(s => {
       console.log('Checking subject:', s, 'against level:', s.level, 'course:', s.course);
-      return s.level === 'SHS' && (!formData.course || s.course === formData.course);
+      return (
+        s.level === 'SHS' &&
+        (
+          !formData.course || 
+          (Array.isArray(s.course) ? s.course.includes(formData.course) : s.course === formData.course)
+        )
+      );
     });
-    console.log('Filtered SHS subjects for course', formData.course, ':', filtered);
+    console.log('Filtered SHS subjects for course(s)', formData.course, ':', filtered);
     return filtered;
   }
   
   return [];
 };
+
 
   return (
     <div className="min-h-screen bg-gray-50">

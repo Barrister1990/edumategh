@@ -3,28 +3,28 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/components/ui/select";
 import { CurriculumDocument, shsCourses, useAdminCurriculumStore } from "@/stores/curriculum";
 import { motion } from "framer-motion";
 import {
-  ArrowRight,
-  BookOpen,
-  Calendar,
-  ChevronLeft,
-  ChevronRight,
-  Clock,
-  Edit3,
-  GraduationCap,
-  Grid3X3,
-  List,
-  Search,
-  Target,
-  Users
+    ArrowRight,
+    BookOpen,
+    Calendar,
+    ChevronLeft,
+    ChevronRight,
+    Clock,
+    Edit3,
+    GraduationCap,
+    Grid3X3,
+    List,
+    Search,
+    Target,
+    Users
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -180,10 +180,7 @@ export default function CurriculumPage() {
         </div>
       </div>
 
-      {/* Description */}
-      <p className="text-gray-600 dark:text-gray-300 text-xs mb-4 line-clamp-2">
-        {curriculum.description}
-      </p>
+
 
       {/* Tags and Info */}
       <div className="space-y-3">
@@ -255,9 +252,7 @@ export default function CurriculumPage() {
                 <h3 className="text-base font-semibold text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors truncate">
                   {curriculum.title}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-300 text-sm mt-1 line-clamp-2">
-                  {curriculum.description}
-                </p>
+
               </div>
               
               <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400 flex-shrink-0 ml-2">

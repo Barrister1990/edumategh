@@ -2,44 +2,38 @@
 
 import { uploadToCloudinary } from '@/lib/cloudinary';
 import { shsCourses, useAdminCurriculumStore } from '@/stores/curriculum';
-import { AlertCircle, ArrowLeft, Check, FileText, Image, Upload } from 'lucide-react';
+import { AlertCircle, ArrowLeft, Check, FileText, Upload } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 // Type definitions
 interface FormData {
   title: string;
-  description: string;
   level: 'Basic' | 'JHS' | 'SHS' | '';
   class: string;
   course: string;
   subject: string;
   pdfFile: File | null;
-  thumbnailFile: File | null;
 }
 
 interface FormErrors {
   title?: string;
-  description?: string;
   level?: string;
   class?: string;
   course?: string;
   subject?: string;
   pdfFile?: string;
-  thumbnailFile?: string;
 }
 
 interface DragState {
   pdf: boolean;
-  thumbnail: boolean;
 }
 
 interface UploadProgress {
   pdf: number;
-  thumbnail: number;
 }
 
-type FileField = 'pdfFile' | 'thumbnailFile';
-type ProgressField = 'pdf' | 'thumbnail';
+type FileField = 'pdfFile';
+type ProgressField = 'pdf';
 
 // Class options for each level
 const classOptions = {
@@ -63,18 +57,16 @@ const AddNewCurriculum = () => {
 
   const [formData, setFormData] = useState<FormData>({
     title: '',
-    description: '',
     level: '',
     class: '',
     course: '',
     subject: '',
-    pdfFile: null,
-    thumbnailFile: null
+    pdfFile: null
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
-  const [isDragOver, setIsDragOver] = useState<DragState>({ pdf: false, thumbnail: false });
-  const [uploadProgress, setUploadProgress] = useState<UploadProgress>({ pdf: 0, thumbnail: 0 });
+  const [isDragOver, setIsDragOver] = useState<DragState>({ pdf: false });
+  const [uploadProgress, setUploadProgress] = useState<UploadProgress>({ pdf: 0 });
   const [isDuplicateChecking, setIsDuplicateChecking] = useState(false);
 
   useEffect(() => {
@@ -91,20 +83,14 @@ const AddNewCurriculum = () => {
     const newErrors: FormErrors = {};
 
     if (!formData.title.trim()) newErrors.title = 'Title is required';
-    if (!formData.description.trim()) newErrors.description = 'Description is required';
     if (!formData.level) newErrors.level = 'Level is required';
     if (!formData.class) newErrors.class = 'Class is required';
     if (!formData.subject) newErrors.subject = 'Subject is required';
     if (formData.level === 'SHS' && !formData.course) newErrors.course = 'Course is required for SHS';
     if (!formData.pdfFile) newErrors.pdfFile = 'PDF file is required';
-    if (!formData.thumbnailFile) newErrors.thumbnailFile = 'Thumbnail image is required';
 
     if (formData.pdfFile && formData.pdfFile.type !== 'application/pdf') {
       newErrors.pdfFile = 'Please select a valid PDF file';
-    }
-
-    if (formData.thumbnailFile && !formData.thumbnailFile.type.startsWith('image/')) {
-      newErrors.thumbnailFile = 'Please select a valid image file';
     }
 
     setErrors(newErrors);
@@ -129,14 +115,12 @@ const AddNewCurriculum = () => {
   // Enhanced handleFileUpload function with immediate progress feedback
   const handleFileUpload = (field: FileField, file: File | null): void => {
     if (file) {
-      const progressField: ProgressField = field === 'pdfFile' ? 'pdf' : 'thumbnail';
-      
       // Show immediate feedback
-      setUploadProgress(prev => ({ ...prev, [progressField]: 10 }));
+      setUploadProgress(prev => ({ ...prev, pdf: 10 }));
       
       // Simulate validation progress
       setTimeout(() => {
-        setUploadProgress(prev => ({ ...prev, [progressField]: 30 }));
+        setUploadProgress(prev => ({ ...prev, pdf: 30 }));
       }, 200);
 
       setFormData(prev => ({ ...prev, [field]: file }));
@@ -146,7 +130,7 @@ const AddNewCurriculum = () => {
 
       // Complete local processing
       setTimeout(() => {
-        setUploadProgress(prev => ({ ...prev, [progressField]: 50 }));
+        setUploadProgress(prev => ({ ...prev, pdf: 50 }));
       }, 500);
     }
   };
@@ -154,16 +138,14 @@ const AddNewCurriculum = () => {
   // Alternative: Upload files immediately when selected (optional)
   const handleFileUploadImmediate = async (field: FileField, file: File | null): Promise<void> => {
     if (!file) return;
-
-    const progressField: ProgressField = field === 'pdfFile' ? 'pdf' : 'thumbnail';
     
     try {
-      setUploadProgress(prev => ({ ...prev, [progressField]: 10 }));
+      setUploadProgress(prev => ({ ...prev, pdf: 10 }));
       
-      const folder = field === 'pdfFile' ? 'curriculum/pdfs' : 'curriculum/thumbnails';
+      const folder = 'curriculum/pdfs';
       const uploadResult = await uploadToCloudinary(file, folder);
       
-      setUploadProgress(prev => ({ ...prev, [progressField]: 100 }));
+      setUploadProgress(prev => ({ ...prev, pdf: 100 }));
       
       // Store both file and URL for later use
       setFormData(prev => ({ 
@@ -177,7 +159,7 @@ const AddNewCurriculum = () => {
       }
     } catch (error) {
       console.error(`Error uploading ${field}:`, error);
-      setUploadProgress(prev => ({ ...prev, [progressField]: 0 }));
+      setUploadProgress(prev => ({ ...prev, pdf: 0 }));
       setErrors(prev => ({ 
         ...prev, 
         [field]: `Upload failed: ${error instanceof Error ? error.message : 'Unknown error'}`
@@ -197,8 +179,7 @@ const AddNewCurriculum = () => {
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>, field: FileField): void => {
     e.preventDefault();
-    const progressField: ProgressField = field === 'pdfFile' ? 'pdf' : 'thumbnail';
-    setIsDragOver(prev => ({ ...prev, [progressField]: false }));
+    setIsDragOver(prev => ({ ...prev, pdf: false }));
     
     const files = Array.from(e.dataTransfer.files);
     if (files.length > 0) {
@@ -212,7 +193,7 @@ const AddNewCurriculum = () => {
     if (!validateForm()) return;
 
     // Ensure files exist
-    if (!formData.pdfFile || !formData.thumbnailFile) {
+    if (!formData.pdfFile) {
       return;
     }
 
@@ -236,31 +217,24 @@ const AddNewCurriculum = () => {
         return;
       }
 
-      // Update progress for both files
-      setUploadProgress({ pdf: 0, thumbnail: 0 });
+      // Update progress for PDF
+      setUploadProgress({ pdf: 0 });
 
       // Upload PDF to Cloudinary
       setUploadProgress(prev => ({ ...prev, pdf: 20 }));
       const pdfUpload = await uploadToCloudinary(formData.pdfFile, 'curriculum/pdfs');
       setUploadProgress(prev => ({ ...prev, pdf: 60 }));
 
-      // Upload thumbnail to Cloudinary
-      setUploadProgress(prev => ({ ...prev, thumbnail: 20 }));
-      const thumbnailUpload = await uploadToCloudinary(formData.thumbnailFile, 'curriculum/thumbnails');
-      setUploadProgress(prev => ({ ...prev, thumbnail: 60 }));
-
       // Complete progress
-      setUploadProgress({ pdf: 100, thumbnail: 100 });
+      setUploadProgress({ pdf: 100 });
 
       const documentData = {
         title: formData.title.trim(),
-        description: formData.description.trim(),
         class: formData.class, // Pass full class name
         subject: formData.subject,
         level: formData.level,
         course: formData.level === 'SHS' ? formData.course : undefined,
-        pdfUrl: pdfUpload.secure_url,
-        thumbnailUrl: thumbnailUpload.secure_url
+        pdfUrl: pdfUpload.secure_url
       };
 
       const success = await createDocument(documentData);
@@ -269,20 +243,18 @@ const AddNewCurriculum = () => {
         // Reset form
         setFormData({
           title: '',
-          description: '',
           level: '',
           class: '',
           course: '',
           subject: '',
-          pdfFile: null,
-          thumbnailFile: null
+          pdfFile: null
         });
-        setUploadProgress({ pdf: 0, thumbnail: 0 });
+        setUploadProgress({ pdf: 0 });
         alert('Curriculum document created successfully!');
       }
     } catch (error) {
       console.error('Error:', error);
-      setUploadProgress({ pdf: 0, thumbnail: 0 });
+      setUploadProgress({ pdf: 0 });
       setIsDuplicateChecking(false);
       
       if (error instanceof Error && error.message.includes('duplicate') || error instanceof Error && error.message.includes('existing')) {
@@ -346,26 +318,7 @@ const AddNewCurriculum = () => {
                   )}
                 </div>
 
-                <div className="lg:col-span-2">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Description *
-                  </label>
-                  <textarea
-                    value={formData.description}
-                    onChange={(e) => handleInputChange('description', e.target.value)}
-                    rows={4}
-                    className={`w-full px-4 py-3 rounded-lg border-2 transition-colors resize-none ${
-                      errors.description ? 'border-red-300 bg-red-50' : 'border-gray-200 focus:border-blue-500'
-                    } focus:outline-none`}
-                    placeholder="Describe the curriculum document..."
-                  />
-                  {errors.description && (
-                    <p className="text-red-600 text-sm mt-1 flex items-center gap-1">
-                      <AlertCircle className="w-4 h-4" />
-                      {errors.description}
-                    </p>
-                  )}
-                </div>
+
               </div>
 
               {/* Classification */}
@@ -480,10 +433,10 @@ const AddNewCurriculum = () => {
                 </div>
               </div>
 
-              {/* File Uploads */}
+              {/* File Upload */}
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">File Uploads</h3>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">File Upload</h3>
+                <div className="grid grid-cols-1 gap-6">
                   {/* PDF Upload */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -547,68 +500,7 @@ const AddNewCurriculum = () => {
                     )}
                   </div>
 
-                  {/* Thumbnail Upload */}
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Thumbnail Image *
-                    </label>
-                    <div
-                      className={`relative border-2 border-dashed rounded-lg p-6 transition-colors ${
-                        isDragOver.thumbnail 
-                          ? 'border-blue-400 bg-blue-50' 
-                          : errors.thumbnailFile 
-                            ? 'border-red-300 bg-red-50' 
-                            : 'border-gray-300 hover:border-gray-400'
-                      }`}
-                      onDragOver={(e) => handleDragOver(e, 'thumbnail')}
-                      onDragLeave={(e) => handleDragLeave(e, 'thumbnail')}
-                      onDrop={(e) => handleDrop(e, 'thumbnailFile')}
-                    >
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => handleFileUpload('thumbnailFile', e.target.files?.[0] || null)}
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                      />
-                      <div className="text-center">
-                        {formData.thumbnailFile ? (
-                          <div className="space-y-2">
-                            <div className="flex items-center justify-center w-12 h-12 mx-auto bg-green-100 rounded-full">
-                              <Check className="w-6 h-6 text-green-600" />
-                            </div>
-                            <p className="text-sm font-medium text-gray-900">{formData.thumbnailFile.name}</p>
-                            <p className="text-xs text-gray-500">
-                              {(formData.thumbnailFile.size / 1024 / 1024).toFixed(2)} MB
-                            </p>
-                            {uploadProgress.thumbnail > 0 && uploadProgress.thumbnail < 100 && (
-                              <div className="w-full bg-gray-200 rounded-full h-2">
-                                <div 
-                                  className="bg-blue-600 h-2 rounded-full transition-all"
-                                  style={{ width: `${uploadProgress.thumbnail}%` }}
-                                />
-                              </div>
-                            )}
-                          </div>
-                        ) : (
-                          <div className="space-y-2">
-                            <div className="flex items-center justify-center w-12 h-12 mx-auto bg-gray-100 rounded-full">
-                              <Image className="w-6 h-6 text-gray-400" />
-                            </div>
-                            <p className="text-sm font-medium text-gray-700">
-                              Drop image here or click to browse
-                            </p>
-                            <p className="text-xs text-gray-500">PNG, JPG, WEBP up to 10MB</p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    {errors.thumbnailFile && (
-                      <p className="text-red-600 text-sm mt-1 flex items-center gap-1">
-                        <AlertCircle className="w-4 h-4" />
-                        {errors.thumbnailFile}
-                      </p>
-                    )}
-                  </div>
+
                 </div>
               </div>
 

@@ -12,9 +12,7 @@ export interface CurriculumOptions {
 export interface CurriculumDocument {
   id: string;
   title: string;
-  description: string;
   pdfUrl: string;
-  thumbnailUrl: string;
   level: string;
   class: string; // e.g., "JHS 1", "SHS 2"
   subject: string;
@@ -25,9 +23,7 @@ export interface CurriculumDocument {
 
 export interface CreateCurriculumDocument {
   title: string;
-  description: string;
   pdfUrl: string;
-  thumbnailUrl: string;
   level: string;
   class: string;
   subject: string;
@@ -37,9 +33,7 @@ export interface CreateCurriculumDocument {
 export interface UpdateCurriculumDocument {
   id: string;
   title?: string;
-  description?: string;
   pdfUrl?: string;
-  thumbnailUrl?: string;
   class?: string;
   subject?: string;
   course?: string;
@@ -180,9 +174,7 @@ export const useAdminCurriculumStore = create<AdminCurriculumState>((set, get) =
       const document: CurriculumDocument = {
         id: data.id,
         title: data.title,
-        description: data.description,
         pdfUrl: data.pdf_url,
-        thumbnailUrl: data.thumbnail_url,
         class: data.class,
         level: data.level,
         subject: data.subject,
@@ -214,12 +206,9 @@ export const useAdminCurriculumStore = create<AdminCurriculumState>((set, get) =
       let query = supabase
         .from('subjects')
         .select('*')
+        .eq('level', level)
         .order('name');
 
-      // Filter by level if provided
-      if (level) {
-        query = query.eq('level', level);
-      }
 
       // Filter by course if provided (for SHS subjects)
       if (level === 'SHS' && course) {
@@ -227,7 +216,7 @@ export const useAdminCurriculumStore = create<AdminCurriculumState>((set, get) =
           }
 
       const { data, error } = await query;
-
+console.log(data)
       if (error) throw error;
 
       // Transform data to match interface
@@ -279,7 +268,7 @@ export const useAdminCurriculumStore = create<AdminCurriculumState>((set, get) =
       }
       
       if (filters.searchTerm) {
-        query = query.or(`title.ilike.%${filters.searchTerm}%,description.ilike.%${filters.searchTerm}%`);
+        query = query.or(`title.ilike.%${filters.searchTerm}%`);
       }
 
       // Apply pagination
@@ -298,9 +287,7 @@ export const useAdminCurriculumStore = create<AdminCurriculumState>((set, get) =
       const documents: CurriculumDocument[] = (data || []).map(doc => ({
         id: doc.id,
         title: doc.title,
-        description: doc.description,
         pdfUrl: doc.pdf_url,
-        thumbnailUrl: doc.thumbnail_url,
         class: doc.class,
         level: doc.level,
         subject: doc.subject,
@@ -335,9 +322,7 @@ export const useAdminCurriculumStore = create<AdminCurriculumState>((set, get) =
         .from('curriculum_documents')
         .insert({
           title: document.title,
-          description: document.description,
           pdf_url: document.pdfUrl,
-          thumbnail_url: document.thumbnailUrl,
           level: document.level,
           class: document.class,
           subject: document.subject,
@@ -352,9 +337,7 @@ export const useAdminCurriculumStore = create<AdminCurriculumState>((set, get) =
       const newDocument: CurriculumDocument = {
         id: data.id,
         title: data.title,
-        description: data.description,
         pdfUrl: data.pdf_url,
-        thumbnailUrl: data.thumbnail_url,
         class: data.class,
         level: data.level,
         subject: data.subject,
@@ -424,9 +407,7 @@ checkDuplicateDocument: async (
       const updateData: any = {};
       
       if (document.title !== undefined) updateData.title = document.title;
-      if (document.description !== undefined) updateData.description = document.description;
       if (document.pdfUrl !== undefined) updateData.pdf_url = document.pdfUrl;
-      if (document.thumbnailUrl !== undefined) updateData.thumbnail_url = document.thumbnailUrl;
       if (document.class !== undefined) updateData.class = document.class;
       if (document.subject !== undefined) updateData.subject = document.subject;
       if (document.course !== undefined) updateData.course = document.course;
@@ -444,9 +425,7 @@ checkDuplicateDocument: async (
       const updatedDocument: CurriculumDocument = {
         id: data.id,
         title: data.title,
-        description: data.description,
         pdfUrl: data.pdf_url,
-        thumbnailUrl: data.thumbnail_url,
         class: data.class,
         level: data.level,
         subject: data.subject,
