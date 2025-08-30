@@ -6,7 +6,6 @@ import {
   Clock,
   HelpCircle,
   Mail,
-  MapPin,
   MessageSquare,
   Phone,
   Send,
@@ -99,13 +98,6 @@ const ContactPage = () => {
       primary: "+233241940783",
       secondary: "+233241940783",
       description: "Speak with our team"
-    },
-    {
-      icon: <MapPin className="h-5 w-5" />,
-      title: "Visit Us",
-      primary: "123 Innovation Street",
-      secondary: "Accra, Ghana",
-      description: "Come see us in person"
     },
     {
       icon: <Clock className="h-5 w-5" />,
