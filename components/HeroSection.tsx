@@ -15,7 +15,7 @@ export function HeroSection() {
     "/images/quiz.jpg", 
     "/images/result.jpg",
     "/images/Lesssons.jpg",
-    "/images/Language.jpg",
+    "/images/language.jpg",
     "/images/plan.jpg",
     "/images/past.jpg",
     "/images/score.jpg",
@@ -157,13 +157,14 @@ export function HeroSection() {
             <motion.p variants={item} className="text-base lg:text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
               Master BECE, NOVDEC, and WASSCE with AI-powered lessons, quizzes, and personalized remedial support. 
               Comprehensive curriculum coverage with 24/7 AI tutoring designed for Ghanaian students.
+              <span className="text-yellow-600 dark:text-yellow-400 font-semibold"> Start with 500 free coins!</span>
             </motion.p>
             
             {/* CTA Buttons */}
             <motion.div variants={item} className="flex flex-col sm:flex-row gap-3 lg:gap-4 justify-center lg:justify-start pt-4">
               <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                 <button 
-                  onClick={() => window.open('https://apps.apple.com/app/your-app-id', '_blank')}
+                  onClick={() => window.open('https://apps.apple.com/app/id6747842263', '_blank')}
                   className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 lg:px-8 lg:py-4 text-sm lg:text-base font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group w-full sm:w-auto flex items-center justify-center"
                 >
                   <AppStoreIcon />
@@ -174,7 +175,7 @@ export function HeroSection() {
               
               <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                 <button 
-                  onClick={() => window.open('https://play.google.com/store/apps/details?id=your.package.name', '_blank')}
+                  onClick={() => window.open('https://play.google.com/store/apps/details?id=com.edumategh.app', '_blank')}
                   className="border-2 border-slate-300 dark:border-slate-600 hover:border-blue-400 dark:hover:border-blue-500 px-6 py-3 lg:px-8 lg:py-4 text-sm lg:text-base font-semibold hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-all duration-300 w-full sm:w-auto flex items-center justify-center rounded-full"
                 >
                   <GooglePlayIcon />
@@ -186,16 +187,28 @@ export function HeroSection() {
             {/* Quick Stats */}
             <motion.div variants={item} className="flex flex-wrap justify-center lg:justify-start gap-6 lg:gap-8 pt-6 lg:pt-8">
               <div className="text-center">
-                <div className="text-xl lg:text-2xl font-bold text-slate-900 dark:text-white">3</div>
-                <div className="text-xs lg:text-sm text-slate-600 dark:text-slate-400">Exam Types</div>
+                <div className="text-xl lg:text-2xl font-bold text-slate-900 dark:text-white">10,000+</div>
+                <div className="text-xs lg:text-sm text-slate-600 dark:text-slate-400">Curriculum aligned lessons</div>
               </div>
               <div className="text-center">
-                <div className="text-xl lg:text-2xl font-bold text-slate-900 dark:text-white">1000+</div>
+                <div className="text-xl lg:text-2xl font-bold text-slate-900 dark:text-white">10,000+</div>
                 <div className="text-xs lg:text-sm text-slate-600 dark:text-slate-400">AI Quizzes</div>
               </div>
               <div className="text-center">
                 <div className="text-xl lg:text-2xl font-bold text-slate-900 dark:text-white">24/7</div>
                 <div className="text-xs lg:text-sm text-slate-600 dark:text-slate-400">AI Support</div>
+              </div>
+              <div className="text-center">
+                <div className="text-xl lg:text-2xl font-bold text-yellow-600 dark:text-yellow-400">500</div>
+                <div className="text-xs lg:text-sm text-slate-600 dark:text-slate-400">Free Coins</div>
+              </div>
+            </motion.div>
+            
+            {/* Coin System Badge */}
+            <motion.div variants={item} className="pt-4">
+              <div className="inline-flex items-center px-4 py-2 lg:px-5 lg:py-2.5 rounded-full bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 text-xs lg:text-sm font-medium text-yellow-700 dark:text-yellow-300 border border-yellow-200 dark:border-yellow-800">
+                <Zap className="w-3 h-3 lg:w-4 lg:h-4 mr-2 text-yellow-600 dark:text-yellow-400" />
+                Get 500 Free Coins on Sign Up!
               </div>
             </motion.div>
           </motion.div>
@@ -214,175 +227,176 @@ export function HeroSection() {
                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" as const }}
                 className="relative z-20"
               >
-                <div className="relative w-[260px] sm:w-[300px] lg:w-[400px]">
-                  {/* iPhone 16 Pro Frame */}
-                  <div className="relative rounded-[3rem] lg:rounded-[3.5rem] overflow-hidden border-8 lg:border-10 border-slate-800 shadow-2xl bg-slate-900">
+                <div className="relative w-[260px] sm:w-[300px] lg:w-[400px] h-[540px] sm:h-[640px] lg:h-[820px]">
+                  {/* Premium Glow Effect Behind Phone */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-400/15 via-purple-400/10 to-pink-400/15 rounded-[3.2rem] lg:rounded-[4rem] blur-3xl scale-105"></div>
+                  
+                  {/* iPhone 16 Pro Titanium Frame - Natural Titanium Color */}
+                  <div className="relative h-full rounded-[3rem] lg:rounded-[3.8rem] overflow-hidden shadow-[0_8px_40px_rgba(0,0,0,0.25),0_2px_16px_rgba(0,0,0,0.1)] bg-gradient-to-b from-slate-700 via-slate-600 to-slate-700">
                     
-                    {/* Top Section with Dynamic Island and Action Button */}
-                    <div className="bg-slate-900 h-8 lg:h-10 rounded-t-[2.5rem] lg:rounded-t-[3rem] flex items-center justify-between px-4 lg:px-6">
-                      {/* Dynamic Island */}
-                      <div className="w-20 lg:w-24 h-2 lg:h-2.5 bg-slate-700 rounded-full"></div>
+                    {/* Titanium Frame Outer Edge */}
+                    <div className="absolute inset-0 rounded-[3rem] lg:rounded-[3.8rem] border-[3px] border-gradient-to-b from-slate-500 to-slate-600"></div>
+                    
+                    {/* Inner Frame with Screen Cutout */}
+                    <div className="relative h-full m-[3px] rounded-[2.8rem] lg:rounded-[3.6rem] overflow-hidden bg-black">
                       
-                      {/* Action Button */}
-                      <div className="w-6 lg:w-7 h-6 lg:h-7 bg-slate-700 rounded-full border border-slate-600"></div>
-                    </div>
-                    
-                    {/* Screen Content */}
-                    <div className="relative aspect-[9/19.5] bg-white overflow-hidden">
-                      <div className="relative w-full h-full">
-                        {screenshots.map((screenshot, index) => (
-                          <motion.div
-                            key={index}
-                            initial={{ opacity: 0, scale: 1.05 }}
-                            animate={{
-                              opacity: currentScreenshot === index ? 1 : 0,
-                              scale: currentScreenshot === index ? 1 : 1.05,
-                            }}
-                            transition={{
-                              duration: 0.6,
-                              ease: "easeInOut",
-                            }}
-                            className="absolute inset-0"
-                          >
-                            <Image
-                              src={screenshot}
-                              alt={`EduMate GH App Screenshot ${index + 1}`}
-                              fill
-                              className="object-cover object-center"
-                              priority={index < 3}
-                            />
-                          </motion.div>
-                        ))}
+                      {/* Screen Bezel - Thinner and More Accurate */}
+                      <div className="relative h-full inset-[2px] rounded-[2.6rem] lg:rounded-[3.4rem] overflow-hidden bg-white">
                         
-                        {/* Subtle App Interface Overlay */}
-                        <div className="absolute inset-0 bg-black/20"></div>
+                        {/* Top Notch Area with Dynamic Island */}
+                        <div className="relative h-8 lg:h-10 bg-black flex items-center justify-center">
+                          {/* Dynamic Island - More Accurate Size and Position */}
+                          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-28 lg:w-32 h-6 lg:h-7 bg-black rounded-full shadow-inner">
+                            <div className="absolute inset-0.5 bg-gradient-to-r from-slate-900 to-black rounded-full"></div>
+                          </div>
+                        </div>
                         
-                        {/* Screenshot Indicators */}
-                        <div className="absolute bottom-4 lg:bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2 lg:space-x-2.5">
-                          {screenshots.map((_, index) => (
-                            <div
-                              key={index}
-                              className={`w-2 h-2 lg:w-2.5 lg:h-2.5 rounded-full transition-all duration-300 ${
-                                currentScreenshot === index
-                                  ? 'bg-white shadow-lg scale-110'
-                                  : 'bg-white/60 scale-100'
-                              }`}
-                            />
-                          ))}
+                        {/* Main Screen Content Area */}
+                        <div className="relative h-[calc(100%-4rem)] lg:h-[calc(100%-5rem)] bg-white overflow-hidden">
+                          <div className="relative w-full h-full">
+                            {screenshots.map((screenshot, index) => (
+                              <motion.div
+                                key={index}
+                                initial={{ opacity: 0, scale: 1.05 }}
+                                animate={{
+                                  opacity: currentScreenshot === index ? 1 : 0,
+                                  scale: currentScreenshot === index ? 1 : 1.05,
+                                }}
+                                transition={{
+                                  duration: 0.6,
+                                  ease: "easeInOut",
+                                }}
+                                className="absolute inset-0"
+                              >
+                                <Image
+                                  src={screenshot}
+                                  alt={`EduMate GH App Screenshot ${index + 1}`}
+                                  fill
+                                  className="object-cover object-center"
+                                  priority={index < 3}
+                                />
+                              </motion.div>
+                            ))}
+                            
+                            {/* Premium Screen Overlay */}
+                            <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-transparent to-black/10"></div>
+                            
+                            {/* Screenshot Indicators */}
+                            <div className="absolute bottom-6 lg:bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                              {screenshots.map((_, index) => (
+                                <motion.div
+                                  key={index}
+                                  className={`w-2 h-2 lg:w-2.5 lg:h-2.5 rounded-full transition-all duration-300 ${
+                                    currentScreenshot === index
+                                      ? 'bg-blue-500 shadow-lg scale-110 ring-2 ring-blue-200'
+                                      : 'bg-gray-300 scale-100'
+                                  }`}
+                                  whileHover={{ scale: 1.2 }}
+                                />
+                              ))}
+                            </div>
+                            
+                            {/* Premium Screen Reflection */}
+                            <div className="absolute inset-0 bg-gradient-to-br from-white/8 via-transparent to-transparent pointer-events-none"></div>
+                          </div>
+                        </div>
+                        
+                        {/* Bottom Home Indicator Area */}
+                        <div className="absolute bottom-0 left-0 right-0 h-8 lg:h-9 bg-black flex items-center justify-center">
+                          <div className="w-32 lg:w-36 h-1 lg:h-1.5 bg-white rounded-full opacity-60"></div>
                         </div>
                       </div>
                     </div>
-                    
-                    {/* Bottom Section with Home Indicator */}
-                    <div className="bg-slate-900 h-4 lg:h-5 rounded-b-[2.5rem] lg:rounded-b-[3rem] flex items-center justify-center">
-                      <div className="w-16 lg:w-20 h-1 lg:h-1.5 bg-slate-700 rounded-full"></div>
-                    </div>
                   </div>
                   
-                  {/* iPhone 16 Pro Camera System */}
-                  <div className="absolute -top-2 lg:-top-3 right-4 lg:right-6 w-16 lg:w-20 h-16 lg:h-20">
-                    <div className="relative w-full h-full">
-                      {/* Main Camera */}
-                      <div className="absolute top-0 right-0 w-8 lg:w-10 h-8 lg:h-10 bg-slate-800 rounded-full border-2 border-slate-700"></div>
-                      {/* Ultra Wide Camera */}
-                      <div className="absolute top-2 lg:top-3 right-10 lg:right-12 w-6 lg:w-8 h-6 lg:h-8 bg-slate-800 rounded-full border-2 border-slate-700"></div>
-                      {/* Telephoto Camera */}
-                      <div className="absolute top-4 lg:top-5 right-18 lg:right-20 w-6 lg:w-8 h-6 lg:h-8 bg-slate-800 rounded-full border-2 border-slate-700"></div>
-                      {/* LiDAR Scanner */}
-                      <div className="absolute top-6 lg:top-7 right-6 lg:right-8 w-4 lg:w-5 h-4 lg:h-5 bg-slate-800 rounded-full border border-slate-700"></div>
-                      {/* Flash */}
-                      <div className="absolute top-8 lg:top-9 right-2 lg:right-3 w-4 lg:w-5 h-4 lg:h-5 bg-slate-800 rounded-full border border-slate-700"></div>
+                  {/* Enhanced Floating Feature Cards with Better Effects */}
+                  <motion.div
+                    initial={{ opacity: 0, x: 30, scale: 0.9 }}
+                    animate={{ opacity: 1, x: 0, scale: 1 }}
+                    transition={{ duration: 0.6, delay: 0.8 }}
+                    className="absolute -right-2 lg:-right-8 top-1/4 bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl p-3 lg:p-4 rounded-xl lg:rounded-2xl shadow-2xl border border-white/20 dark:border-slate-700/50 hover:scale-105 transition-transform duration-300"
+                  >
+                    <div className="flex items-center space-x-2 lg:space-x-3">
+                      <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg lg:rounded-xl flex items-center justify-center shadow-lg">
+                        <Brain className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
+                      </div>
+                      <div>
+                        <p className="text-xs lg:text-sm font-bold text-slate-900 dark:text-white">AI Lessons</p>
+                        <p className="text-xs text-slate-600 dark:text-slate-400">Interactive Learning</p>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </motion.div>
-              
-              {/* Enhanced Floating Feature Cards */}
-              <motion.div
-                initial={{ opacity: 0, x: 30, scale: 0.9 }}
-                animate={{ opacity: 1, x: 0, scale: 1 }}
-                transition={{ duration: 0.6, delay: 0.8 }}
-                className="absolute -right-2 lg:-right-8 top-1/4 bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl p-3 lg:p-4 rounded-xl lg:rounded-2xl shadow-2xl border border-white/20 dark:border-slate-700/50"
-              >
-                <div className="flex items-center space-x-2 lg:space-x-3">
-                  <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg lg:rounded-xl flex items-center justify-center shadow-lg">
-                    <Brain className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-xs lg:text-sm font-bold text-slate-900 dark:text-white">AI Lessons</p>
-                    <p className="text-xs text-slate-600 dark:text-slate-400">Interactive Learning</p>
-                  </div>
-                </div>
-              </motion.div>
-              
-              <motion.div
-                initial={{ opacity: 0, x: -30, scale: 0.9 }}
-                animate={{ opacity: 1, x: 0, scale: 1 }}
-                transition={{ duration: 0.6, delay: 1.1 }}
-                className="absolute -left-2 lg:-left-8 bottom-1/3 bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl p-3 lg:p-4 rounded-xl lg:rounded-2xl shadow-2xl border border-white/20 dark:border-slate-700/50"
-              >
-                <div className="flex items-center space-x-2 lg:space-x-3">
-                  <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-lg lg:rounded-xl flex items-center justify-center shadow-lg">
-                    <BookOpen className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-xs lg:text-sm font-bold text-slate-900 dark:text-white">Smart Quizzes</p>
-                    <p className="text-xs text-slate-600 dark:text-slate-400">AI-Generated Tests</p>
-                  </div>
-                </div>
-              </motion.div>
-              
-              {/* New Feature Card - Top */}
-              <motion.div
-                initial={{ opacity: 0, y: -30, scale: 0.9 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ duration: 0.6, delay: 1.0 }}
-                className="absolute -top-2 lg:-top-4 left-1/2 transform -translate-x-1/2 bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl p-3 lg:p-4 rounded-xl lg:rounded-2xl shadow-2xl border border-white/20 dark:border-slate-700/50"
-              >
-                <div className="flex items-center space-x-2 lg:space-x-3">
-                  <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg lg:rounded-xl flex items-center justify-center shadow-lg">
-                    <Zap className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-xs lg:text-sm font-bold text-slate-900 dark:text-white">Instant Results</p>
-                    <p className="text-xs text-slate-600 dark:text-slate-400">Real-time Feedback</p>
-                  </div>
-                </div>
-              </motion.div>
-              
-              {/* Bottom Feature Card */}
-              <motion.div
-                initial={{ opacity: 0, y: 30, scale: 0.9 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ duration: 0.6, delay: 1.4 }}
-                className="absolute -bottom-2 lg:-bottom-4 left-1/2 transform -translate-x-1/2 bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl p-3 lg:p-4 rounded-xl lg:rounded-2xl shadow-2xl border border-white/20 dark:border-slate-700/50"
-              >
-                <div className="flex items-center space-x-2 lg:space-x-3">
-                  <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg lg:rounded-xl flex items-center justify-center shadow-lg">
-                    <Target className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-xs lg:text-sm font-bold text-slate-900 dark:text-white">Remedial Support</p>
-                    <p className="text-xs text-slate-600 dark:text-slate-400">BECE, NOVDEC, WASSCE</p>
-                  </div>
-                </div>
-              </motion.div>
-              
-              {/* Right Side Feature Card */}
-              <motion.div
-                initial={{ opacity: 0, x: 30, scale: 0.9 }}
-                animate={{ opacity: 1, x: 0, scale: 1 }}
-                transition={{ duration: 0.6, delay: 1.2 }}
-                className="absolute -right-2 lg:-right-8 bottom-1/4 bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl p-3 lg:p-4 rounded-xl lg:rounded-2xl shadow-2xl border border-white/20 dark:border-slate-700/50"
-              >
-                <div className="flex items-center space-x-2 lg:space-x-3">
-                  <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg lg:rounded-xl flex items-center justify-center shadow-lg">
-                    <Clock className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-xs lg:text-sm font-bold text-slate-900 dark:text-white">24/7 Access</p>
-                    <p className="text-xs text-slate-600 dark:text-slate-400">Always Available</p>
-                  </div>
+                  </motion.div>
+                  
+                  <motion.div
+                    initial={{ opacity: 0, x: -30, scale: 0.9 }}
+                    animate={{ opacity: 1, x: 0, scale: 1 }}
+                    transition={{ duration: 0.6, delay: 1.1 }}
+                    className="absolute -left-2 lg:-left-8 bottom-1/3 bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl p-3 lg:p-4 rounded-xl lg:rounded-2xl shadow-2xl border border-white/20 dark:border-slate-700/50 hover:scale-105 transition-transform duration-300"
+                  >
+                    <div className="flex items-center space-x-2 lg:space-x-3">
+                      <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-lg lg:rounded-xl flex items-center justify-center shadow-lg">
+                        <BookOpen className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
+                      </div>
+                      <div>
+                        <p className="text-xs lg:text-sm font-bold text-slate-900 dark:text-white">Smart Quizzes</p>
+                        <p className="text-xs text-slate-600 dark:text-slate-400">AI-Generated Tests</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                  
+                  {/* New Feature Card - Top */}
+                  <motion.div
+                    initial={{ opacity: 0, y: -30, scale: 0.9 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    transition={{ duration: 0.6, delay: 1.0 }}
+                    className="absolute -top-2 lg:-top-4 left-1/2 transform -translate-x-1/2 bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl p-3 lg:p-4 rounded-xl lg:rounded-2xl shadow-2xl border border-white/20 dark:border-slate-700/50 hover:scale-105 transition-transform duration-300"
+                  >
+                    <div className="flex items-center space-x-2 lg:space-x-3">
+                      <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg lg:rounded-xl flex items-center justify-center shadow-lg">
+                        <Zap className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
+                      </div>
+                      <div>
+                        <p className="text-xs lg:text-sm font-bold text-slate-900 dark:text-white">Instant Results</p>
+                        <p className="text-xs text-slate-600 dark:text-slate-400">Real-time Feedback</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                  
+                  {/* Bottom Feature Card */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 30, scale: 0.9 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    transition={{ duration: 0.6, delay: 1.4 }}
+                    className="absolute -bottom-2 lg:-bottom-4 left-1/2 transform -translate-x-1/2 bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl p-3 lg:p-4 rounded-xl lg:rounded-2xl shadow-2xl border border-white/20 dark:border-slate-700/50 hover:scale-105 transition-transform duration-300"
+                  >
+                    <div className="flex items-center space-x-2 lg:space-x-3">
+                      <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg lg:rounded-xl flex items-center justify-center shadow-lg">
+                        <Target className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
+                      </div>
+                      <div>
+                        <p className="text-xs lg:text-sm font-bold text-slate-900 dark:text-white">Remedial Support</p>
+                        <p className="text-xs text-slate-600 dark:text-slate-400">BECE, NOVDEC, WASSCE</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                  
+                  {/* Right Side Feature Card */}
+                  <motion.div
+                    initial={{ opacity: 0, x: 30, scale: 0.9 }}
+                    animate={{ opacity: 1, x: 0, scale: 1 }}
+                    transition={{ duration: 0.6, delay: 1.2 }}
+                    className="absolute -right-2 lg:-right-8 bottom-1/4 bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl p-3 lg:p-4 rounded-xl lg:rounded-2xl shadow-2xl border border-white/20 dark:border-slate-700/50 hover:scale-105 transition-transform duration-300"
+                  >
+                    <div className="flex items-center space-x-2 lg:space-x-3">
+                      <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg lg:rounded-xl flex items-center justify-center shadow-lg">
+                        <Clock className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
+                      </div>
+                      <div>
+                        <p className="text-xs lg:text-sm font-bold text-slate-900 dark:text-white">24/7 Access</p>
+                        <p className="text-xs text-slate-600 dark:text-slate-400">Always Available</p>
+                      </div>
+                    </div>
+                  </motion.div>
                 </div>
               </motion.div>
             </div>

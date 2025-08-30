@@ -167,6 +167,40 @@ const AddNewQuiz = () => {
     addQuestion(newQuestion);
   };
 
+  const addNewQuestionAtPosition = (type: 'multiple_choice' | 'true_false' | 'short_answer', position: number) => {
+    // Generate a unique ID for the new question
+    const maxId = Math.max(0, ...(currentQuiz?.questions?.map(q => q.id) || []));
+    const newQuestion: QuizQuestion = {
+      id: maxId + 1,
+      type,
+      question: '',
+      correct_answer: '',
+      explanation: '',
+      ...(type === 'multiple_choice' && {
+        options: ['', '', '', '']
+      }),
+      ...(type === 'true_false' && {
+        options: ['True', 'False']
+      })
+    };
+    
+    // Create a new array with the question inserted at the specified position
+    const currentQuestions = currentQuiz?.questions || [];
+    const newQuestions = [
+      ...currentQuestions.slice(0, position),
+      newQuestion,
+      ...currentQuestions.slice(position)
+    ];
+    
+    // Update the quiz with the new questions array
+    if (currentQuiz) {
+      setCurrentQuiz({
+        ...currentQuiz,
+        questions: newQuestions
+      });
+    }
+  };
+
   const updateQuestionField = (questionId: number, field: keyof QuizQuestion, value: string | string[]) => {
     updateQuestion(questionId, { [field]: value });
   };
@@ -817,8 +851,98 @@ const AddNewQuiz = () => {
                         </div>
                       </div>
                     )}
+
+                    {/* Insert Question Actions */}
+                    <div className="mt-4 pt-4 border-t border-gray-200 bg-blue-50 rounded-lg p-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <span className="text-sm font-medium text-blue-700">Insert new question below:</span>
+                          <span className="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded-full">
+                            After Q{index + 1}
+                          </span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <button
+                            type="button"
+                            onClick={() => addNewQuestionAtPosition('multiple_choice', index + 1)}
+                            className="flex items-center px-3 py-2 text-xs font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors shadow-sm hover:shadow-md"
+                            title="Add Multiple Choice Question"
+                          >
+                            <HelpCircle className="w-3 h-3 mr-1" />
+                            MCQ
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => addNewQuestionAtPosition('true_false', index + 1)}
+                            className="flex items-center px-3 py-2 text-xs font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors shadow-sm hover:shadow-md"
+                            title="Add True/False Question"
+                          >
+                            <HelpCircle className="w-3 h-3 mr-1" />
+                            T/F
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => addNewQuestionAtPosition('short_answer', index + 1)}
+                            className="flex items-center px-3 py-2 text-xs font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700 transition-colors shadow-sm hover:shadow-md"
+                            title="Add Short Answer Question"
+                          >
+                            <HelpCircle className="w-3 h-3 mr-1" />
+                            Short
+                          </button>
+                        </div>
+                      </div>
+                      <div className="mt-2 text-xs text-blue-600">
+                        💡 The new question will be inserted between this question and the next one
+                      </div>
+                    </div>
                   </div>
                 ))}
+
+                {/* Insert Question After Last Question */}
+                {currentQuiz?.questions && currentQuiz.questions.length > 0 && (
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-sm font-medium text-green-700">Add another question:</span>
+                        <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full">
+                          At the end
+                        </span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <button
+                          type="button"
+                          onClick={() => addNewQuestion('multiple_choice')}
+                          className="flex items-center px-3 py-2 text-xs font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors shadow-sm hover:shadow-md"
+                          title="Add Multiple Choice Question"
+                        >
+                          <HelpCircle className="w-3 h-3 mr-1" />
+                          MCQ
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => addNewQuestion('true_false')}
+                          className="flex items-center px-3 py-2 text-xs font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors shadow-sm hover:shadow-md"
+                          title="Add True/False Question"
+                        >
+                          <HelpCircle className="w-3 h-3 mr-1" />
+                          T/F
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => addNewQuestion('short_answer')}
+                          className="flex items-center px-3 py-2 text-xs font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700 transition-colors shadow-sm hover:shadow-md"
+                          title="Add Short Answer Question"
+                        >
+                          <HelpCircle className="w-3 h-3 mr-1" />
+                          Short
+                        </button>
+                      </div>
+                    </div>
+                    <div className="mt-2 text-xs text-green-600">
+                      💡 The new question will be added to the end of the quiz
+                    </div>
+                  </div>
+                )}
 
                 {/* Empty State */}
                 {(!currentQuiz?.questions || currentQuiz.questions.length === 0) && (

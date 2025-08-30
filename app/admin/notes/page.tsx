@@ -2,6 +2,7 @@
 
 import { LessonNote, useAdminLessonNoteStore } from '@/stores/lessonNote';
 import { BookOpen, Calendar, ChevronLeft, ChevronRight, Eye, FileText, Filter, Grid, List, MoreVertical, Search, Trash2, Users } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 interface LessonNoteCardProps {
@@ -31,6 +32,7 @@ const LessonNotesList = () => {
     clearError
   } = useAdminLessonNoteStore();
 
+  const router = useRouter();
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [selectedNotes, setSelectedNotes] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState<boolean>(false);
@@ -75,11 +77,9 @@ const LessonNotesList = () => {
   const LessonNoteCard: React.FC<LessonNoteCardProps> = ({ note }) => (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-200 group overflow-hidden">
       <div className="relative">
-        <img 
-          src={note.thumbnailUrl} 
-          alt={note.title}
-          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-        />
+        <div className="w-full h-48 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+          <FileText className="w-16 h-16 text-white" />
+        </div>
         <div className="absolute top-3 left-3">
           <span className="bg-blue-600 text-white px-2 py-1 rounded-full text-xs font-medium">
             {note.level} {note.class}
@@ -87,7 +87,10 @@ const LessonNotesList = () => {
         </div>
         <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
           <div className="flex gap-1">
-            <button className="bg-white/90 hover:bg-white p-1.5 rounded-full shadow-md transition-colors">
+            <button 
+              onClick={() => note.id && router.push(`/admin/notes/${note.id}`)}
+              className="bg-white/90 hover:bg-white p-1.5 rounded-full shadow-md transition-colors"
+            >
               <Eye className="w-4 h-4 text-gray-700" />
             </button>
             <button 
@@ -109,10 +112,6 @@ const LessonNotesList = () => {
             <MoreVertical className="w-4 h-4" />
           </button>
         </div>
-        
-        <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-          {note.description}
-        </p>
         
         <div className="space-y-2 mb-4">
           <div className="flex items-center gap-2 text-sm text-gray-500">
@@ -159,11 +158,9 @@ const LessonNotesList = () => {
           className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
         />
         
-        <img 
-          src={note.thumbnailUrl} 
-          alt={note.title}
-          className="w-16 h-16 object-cover rounded-lg"
-        />
+        <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
+          <FileText className="w-8 h-8 text-gray-400" />
+        </div>
         
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between">
@@ -171,9 +168,6 @@ const LessonNotesList = () => {
               <h3 className="font-semibold text-gray-900 text-lg mb-1 truncate pr-4">
                 {note.title}
               </h3>
-              <p className="text-gray-600 text-sm mb-2 line-clamp-1">
-                {note.description}
-              </p>
               <div className="flex items-center gap-4 text-sm text-gray-500">
                 <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
                   {note.level} {note.class}
@@ -188,7 +182,10 @@ const LessonNotesList = () => {
             </div>
             
             <div className="flex items-center gap-2">
-              <button className="text-gray-400 hover:text-blue-600 p-2 rounded-lg hover:bg-blue-50 transition-colors">
+              <button 
+                onClick={() => note.id && router.push(`/admin/notes/${note.id}`)}
+                className="text-gray-400 hover:text-blue-600 p-2 rounded-lg hover:bg-blue-50 transition-colors"
+              >
                 <Eye className="w-4 h-4" />
               </button>
               <button 

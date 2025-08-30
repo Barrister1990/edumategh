@@ -59,7 +59,7 @@ export interface Subject {
   id: string;
   name: string;
   level: string;
-  course?: string; // Only for SHS subjects
+  course?: string | string[]; // Only for SHS subjects
   createdAt: string;
   updatedAt: string;
 }
@@ -559,18 +559,19 @@ getSubjectsForLevel: (level, course) => {
     return subjects;
   }
 
-  if (level === 'JHS') {
+  if (level === 'Basic') {
+    return subjects.filter(subject => subject.level === 'Basic');
+  } else if (level === 'JHS') {
     return subjects.filter(subject => subject.level === 'JHS');
   } else if (level === 'SHS') {
     if (course) {
       return subjects.filter(subject =>
-        subject.level === 'SHS' && subject.course === course
+        subject.level === 'SHS' && 
+        (Array.isArray(subject.course) ? subject.course.includes(course) : subject.course === course)
       );
     } else {
       return subjects.filter(subject => subject.level === 'SHS');
     }
-  } else if (level === 'Basic') {
-    return subjects.filter(subject => subject.level === 'Basic');
   }
 
   return subjects;

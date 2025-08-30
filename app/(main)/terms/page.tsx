@@ -1,13 +1,5 @@
-import { pageConfigs, seoConfig } from "@/config/seo";
-import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  ...seoConfig,
-  ...pageConfigs.terms,
-  alternates: {
-    canonical: 'https://edumategh.com/terms'
-  }
-};
+
 
 export default function TermsPage() {
   return (
@@ -77,7 +69,38 @@ export default function TermsPage() {
 
               <div>
                 <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-4">
-                  3. User Accounts and Privacy
+                  3. Coin Purchase and Virtual Currency
+                </h3>
+                <p className="text-gray-600 mb-4">
+                  EduMate GH operates a virtual currency system where users can purchase coins to unlock premium content and features:
+                </p>
+                <ul className="list-disc list-inside text-gray-600 space-y-2 ml-4">
+                  <li>Coins can be earned through completing tasks, watching ads, or purchased directly</li>
+                  <li>New users receive 500 free coins upon registration</li>
+                  <li>Coins can be used to unlock premium lessons, AI tutoring sessions, and advanced features</li>
+                  <li>Coin prices and packages are subject to change with prior notice</li>
+                </ul>
+                
+                <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded-r-xl mt-4">
+                  <p className="text-red-800 font-semibold">
+                    <strong>IMPORTANT:</strong> All coin purchases are final and non-refundable. Coins cannot be traded for cash, 
+                    exchanged for other currencies, or transferred between accounts. Once purchased, coins become the property 
+                    of the user account and are subject to our virtual currency terms.
+                  </p>
+                </div>
+                
+                <div className="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-xl mt-4">
+                  <p className="text-blue-800">
+                    <strong>Coin Usage Policy:</strong> Coins are valid for the duration of your account and do not expire. 
+                    However, coins are tied to your specific account and cannot be transferred or sold to other users. 
+                    Unused coins remain in your account until used or until your account is deactivated.
+                  </p>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-4">
+                  4. User Accounts and Privacy
                 </h3>
                 <p className="text-gray-600 mb-4">
                   When you create an account with EduMate GH, you must provide accurate and complete information. 
@@ -87,7 +110,7 @@ export default function TermsPage() {
 
               <div>
                 <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-4">
-                  4. Acceptable Use
+                  5. Acceptable Use
                 </h3>
                 <p className="text-gray-600 mb-4">
                   You agree to use EduMate GH only for educational purposes. You may not:
@@ -103,7 +126,7 @@ export default function TermsPage() {
 
               <div>
                 <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-4">
-                  5. Intellectual Property
+                  6. Intellectual Property
                 </h3>
                 <p className="text-gray-600 mb-4">
                   All content on EduMate GH, including lessons, quiz questions, and AI-generated materials, is protected by 
@@ -113,7 +136,7 @@ export default function TermsPage() {
 
               <div>
                 <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-4">
-                  6. GES Curriculum Compliance
+                  7. GES Curriculum Compliance
                 </h3>
                 <p className="text-gray-600 mb-4">
                   Our educational content is carefully aligned with Ghana Education Service (GES) curriculum standards. 
@@ -124,7 +147,7 @@ export default function TermsPage() {
 
               <div>
                 <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-4">
-                  7. Limitation of Liability
+                  8. Limitation of Liability
                 </h3>
                 <p className="text-gray-600 mb-4">
                   EduMate GH is provided &quot;as is&quot; for educational purposes. While we strive for accuracy in our 
@@ -134,7 +157,7 @@ export default function TermsPage() {
 
               <div>
                 <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-4">
-                  8. Contact Information
+                  9. Contact Information
                 </h3>
                 <p className="text-gray-600 mb-4">
                   For questions about these terms, contact us at:
@@ -143,7 +166,7 @@ export default function TermsPage() {
                   <p className="text-gray-700">
                     <strong>Email:</strong> edumategh@gmail.com<br/>
                     <strong>Phone:</strong> +233241940783<br/>
-                    <strong>Address:</strong> 123 Innovation Street, Accra, Ghana
+               
                   </p>
                 </div>
               </div>

@@ -8,7 +8,8 @@ import {
   School,
   Sparkles,
   Star,
-  Users
+  Users,
+  Zap
 } from "lucide-react";
 import type { Metadata } from 'next';
 import HomePageClient from "./HomePageClient";
@@ -79,6 +80,13 @@ export default function Home() {
         "Ask questions and get instant explanations from your personal AI tutor, available 24/7 for all subjects.",
       color: "bg-red-500",
     },
+    {
+      icon: <Zap className="h-4 w-4 md:h-5 md:w-5 lg:h-6 lg:w-6" />,
+      title: "Coin Reward System",
+      description:
+        "Earn coins through daily tasks, watching ads, and completing challenges. Use coins to unlock premium content and AI generations.",
+      color: "bg-yellow-500",
+    },
   ];
   
 
@@ -106,8 +114,8 @@ export default function Home() {
   const testimonials = [
     {
       content: "EduMate GH helped me pass my BECE with flying colors! The AI quizzes were so helpful, and I could study offline during power outages. Highly recommended!",
-      author: "Ama Osei",
-      role: "BECE Graduate, Accra Academy",
+      author: "Bernice Osei",
+      role: "BECE Graduate, ",
       rating: 5,
       imageSrc: "https://images.pexels.com/photos/7688336/pexels-photo-7688336.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
     },
@@ -130,8 +138,8 @@ export default function Home() {
   const stats = [
     { number: "100000+", label: "Lessons", icon: <School className="h-5 w-5" /> },
     { number: "1000+", label: "AI Quizzes", icon: <FilePenLine className="h-5 w-5" /> },
-    { number: "24/7", label: "AI Support", icon: <Sparkles className="h-5 w-5" /> },
-    { number: "4.9★", label: "App Rating", icon: <Star className="h-5 w-5 fill-current" /> }
+    { number: "500", label: "Free Coins", icon: <Zap className="h-5 w-5" /> },
+    { number: "4.9★", label: "App Rating", icon: <Star className="h-5 w-5" fill="currentColor" /> }
   ];
 
   return (

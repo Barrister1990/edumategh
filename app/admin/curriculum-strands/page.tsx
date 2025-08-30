@@ -66,7 +66,7 @@ const GESCurriculumPage = () => {
         fetchSubjects('SHS');
       }
     }
-  }, [levelFilter, courseFilter]);
+  }, [levelFilter, courseFilter, fetchSubjects, fetchAllSubjects]);
 
   // Fetch strands when subject filter changes
   useEffect(() => {
@@ -83,39 +83,62 @@ const GESCurriculumPage = () => {
         );
       }
     }
-  }, [subjectFilter, classFilter, subjects]);
+  }, [subjectFilter, classFilter, subjects, fetchStrands]);
 
   // Fetch sub-strands when strand filter changes
   useEffect(() => {
     if (strandFilter !== 'all') {
       fetchSubStrands(strandFilter);
     }
-  }, [strandFilter]);
+  }, [strandFilter, fetchSubStrands]);
 
   // Fetch content standards when sub-strand filter changes
   useEffect(() => {
     if (substrandFilter !== 'all') {
       fetchContentStandards(substrandFilter);
     }
-  }, [substrandFilter]);
+  }, [substrandFilter, fetchContentStandards]);
 
   // Fetch indicators when content standard filter changes
   useEffect(() => {
     if (contentStandardFilter !== 'all') {
       fetchIndicators(contentStandardFilter);
     }
-  }, [contentStandardFilter]);
-
-  // Reset selection when active tab changes
-  useEffect(() => {
-    resetSelection();
-    setViewMode('cards'); // Reset to cards view when changing tabs
-  }, [activeTab]);
+  }, [contentStandardFilter, fetchIndicators]);
 
   // Reset class filter when level filter changes to ensure consistency
   useEffect(() => {
     setClassFilter('all');
   }, [levelFilter]);
+
+  // Selection and deletion helpers
+  const resetSelection = () => {
+    setSelectedItems(new Set());
+    setSelectAll(false);
+  };
+
+  const getCurrentItems = () => {
+    switch (activeTab) {
+      case 'subjects':
+        return filteredData.subjects;
+      case 'strands':
+        return filteredData.strands;
+      case 'substrands':
+        return filteredData.substrands;
+      case 'contentStandards':
+        return filteredData.contentStandards;
+      case 'indicators':
+        return filteredData.indicators;
+      default:
+        return [];
+    }
+  };
+
+  // Reset selection when active tab changes
+  useEffect(() => {
+    resetSelection();
+    setViewMode('cards'); // Reset to cards view when changing tabs
+  }, [activeTab, resetSelection]);
 
   const levels = ['all', 'Basic', 'JHS', 'SHS'] as const;
   const courses = ['all', ...shsCourses] as const;
@@ -143,7 +166,12 @@ const GESCurriculumPage = () => {
       
       // If SHS is selected and course filter is applied
       if (levelFilter === 'SHS' && courseFilter !== 'all') {
-        filteredSubjects = filteredSubjects.filter(subject => subject.course === courseFilter);
+        filteredSubjects = filteredSubjects.filter(subject => 
+          // Handle both array and string course types
+          Array.isArray(subject.course) 
+            ? subject.course.includes(courseFilter)
+            : subject.course === courseFilter
+        );
       }
     }
 
@@ -344,23 +372,6 @@ const GESCurriculumPage = () => {
   };
 
   // Selection and deletion helpers
-  const getCurrentItems = () => {
-    switch (activeTab) {
-      case 'subjects':
-        return filteredData.subjects;
-      case 'strands':
-        return filteredData.strands;
-      case 'substrands':
-        return filteredData.substrands;
-      case 'contentStandards':
-        return filteredData.contentStandards;
-      case 'indicators':
-        return filteredData.indicators;
-      default:
-        return [];
-    }
-  };
-
   const handleSelectItem = (itemId: string) => {
     const newSelected = new Set(selectedItems);
     if (newSelected.has(itemId)) {
@@ -453,11 +464,6 @@ const GESCurriculumPage = () => {
     } catch (error) {
       console.error('Error deleting item:', error);
     }
-  };
-
-  const resetSelection = () => {
-    setSelectedItems(new Set());
-    setSelectAll(false);
   };
 
   const isLoading = isLoadingSubjects || isLoadingStrands || isLoadingSubStrands || 

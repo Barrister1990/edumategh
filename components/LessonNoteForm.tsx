@@ -2,22 +2,21 @@
 
 import { Button } from "@/components/ui/button";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
 import { LessonNoteFormData } from "@/types/lessonNote";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -38,10 +37,7 @@ const formSchema = z.object({
   }),
   content: z.object({
     title: z.string().min(3, { message: "Title must be at least 3 characters." }),
-    description: z.string().min(10, { message: "Description must be at least 10 characters." }),
     pdfUrl: z.string().url({ message: "Please enter a valid URL." }),
-    thumbnailUrl: z.string().url({ message: "Please enter a valid URL." }),
-    keywords: z.array(z.string()).min(1, { message: "At least one keyword is required." }),
   }),
 });
 
@@ -53,7 +49,6 @@ interface LessonNoteFormProps {
 
 export function LessonNoteForm({ initialData, onSubmit, onCancel }: LessonNoteFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [keywords, setKeywords] = useState<string[]>(initialData?.content.keywords || []);
 
   const form = useForm<LessonNoteFormData>({
     resolver: zodResolver(formSchema),
@@ -70,10 +65,7 @@ export function LessonNoteForm({ initialData, onSubmit, onCancel }: LessonNoteFo
       },
       content: {
         title: "",
-        description: "",
         pdfUrl: "",
-        thumbnailUrl: "",
-        keywords: [],
       },
     },
   });
@@ -98,19 +90,7 @@ export function LessonNoteForm({ initialData, onSubmit, onCancel }: LessonNoteFo
     }
   }
 
-  const handleAddKeyword = (keyword: string) => {
-    if (keyword.trim() && !keywords.includes(keyword.trim())) {
-      const newKeywords = [...keywords, keyword.trim()];
-      setKeywords(newKeywords);
-      form.setValue("content.keywords", newKeywords);
-    }
-  };
 
-  const handleRemoveKeyword = (keyword: string) => {
-    const newKeywords = keywords.filter((k) => k !== keyword);
-    setKeywords(newKeywords);
-    form.setValue("content.keywords", newKeywords);
-  };
 
   return (
     <Form {...form}>
@@ -261,24 +241,6 @@ export function LessonNoteForm({ initialData, onSubmit, onCancel }: LessonNoteFo
 
           <FormField
             control={form.control}
-            name="content.description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Description</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder="Enter note description"
-                    className="min-h-[100px]"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
             name="content.pdfUrl"
             render={({ field }) => (
               <FormItem>
@@ -291,64 +253,7 @@ export function LessonNoteForm({ initialData, onSubmit, onCancel }: LessonNoteFo
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="content.thumbnailUrl"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Thumbnail URL</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter thumbnail URL" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
 
-          <div className="space-y-2">
-            <FormLabel>Keywords</FormLabel>
-            <div className="flex flex-wrap gap-2 mb-2">
-              {keywords.map((keyword) => (
-                <div
-                  key={keyword}
-                  className="bg-edumate-purple/10 text-edumate-purple px-2 py-1 rounded-md flex items-center"
-                >
-                  <span>{keyword}</span>
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveKeyword(keyword)}
-                    className="ml-2 text-edumate-purple hover:text-edumate-purple/80"
-                  >
-                    ×
-                  </button>
-                </div>
-              ))}
-            </div>
-            <div className="flex gap-2">
-              <Input
-                placeholder="Add keyword"
-                onKeyPress={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault();
-                    handleAddKeyword((e.target as HTMLInputElement).value);
-                    (e.target as HTMLInputElement).value = '';
-                  }
-                }}
-              />
-              <Button
-                type="button"
-                variant="outline"
-                onClick={(e) => {
-                  const input = e.currentTarget.previousElementSibling as HTMLInputElement;
-                  handleAddKeyword(input.value);
-                  input.value = '';
-                }}
-              >
-                Add
-              </Button>
-            </div>
-            <FormMessage>{form.formState.errors.content?.keywords?.message}</FormMessage>
-          </div>
         </div>
 
         <div className="flex justify-end space-x-4">

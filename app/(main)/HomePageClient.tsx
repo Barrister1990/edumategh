@@ -8,7 +8,6 @@ import {
   CheckCircle,
   Download,
   Globe,
-  Play,
   Star,
   Zap
 } from "lucide-react";
@@ -230,7 +229,7 @@ export default function HomePageClient({ features, benefits, testimonials, stats
               className="order-1 lg:order-2 relative">
               <div className="relative z-10 rounded-2xl lg:rounded-3xl overflow-hidden shadow-2xl group">
                 <Image
-                  src="https://images.pexels.com/photos/5212703/pexels-photo-5212703.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                  src="/images/homepage.jpg"
                   alt="Ghanaian students using EduMate GH for enhanced learning"
                   width={600}
                   height={400}
@@ -252,6 +251,183 @@ export default function HomePageClient({ features, benefits, testimonials, stats
               />
             </motion.div>
           </div>
+        </div>
+      </section>
+      
+      {/* Coins System Section */}
+      <section className="py-12 md:py-20 bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-950/20 dark:to-orange-950/20">
+        <div className="container mx-auto px-4 md:px-6">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center max-w-4xl mx-auto mb-12 lg:mb-16"
+          >
+            <motion.div
+              initial={{ scale: 0.9 }}
+              whileInView={{ scale: 1 }}
+              viewport={{ once: true }}
+              className="inline-flex items-center justify-center w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl lg:rounded-3xl mb-6 lg:mb-8"
+            >
+              <Zap className="h-8 w-8 lg:h-10 lg:w-10 text-white" />
+            </motion.div>
+            
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white mb-4 lg:mb-6">
+              Unlock Premium Content with
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-orange-500">
+                {" "}Coins
+              </span>
+            </h2>
+            
+            <p className="text-base lg:text-xl text-slate-600 dark:text-slate-400 leading-relaxed max-w-3xl mx-auto">
+              Get started with 500 free coins when you join! Use coins to unlock premium lessons, AI generations, and exclusive content.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-12 lg:mb-16">
+            {/* Welcome Bonus */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="bg-white dark:bg-slate-900 rounded-2xl p-6 lg:p-8 shadow-lg hover:shadow-xl transition-all duration-300 border border-yellow-200 dark:border-yellow-800"
+            >
+              <div className="w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-br from-green-400 to-emerald-500 rounded-xl lg:rounded-2xl flex items-center justify-center mb-4 lg:mb-6">
+                <CheckCircle className="h-6 w-6 lg:h-8 lg:w-8 text-white" />
+              </div>
+              <h3 className="text-xl lg:text-2xl font-bold text-slate-900 dark:text-white mb-3 lg:mb-4">
+                Welcome Bonus
+              </h3>
+              <p className="text-slate-600 dark:text-slate-400 mb-4 lg:mb-6">
+                New users get <span className="font-bold text-green-600 dark:text-green-400">500 coins</span> instantly upon registration and login.
+              </p>
+              <div className="text-2xl lg:text-3xl font-black text-green-600 dark:text-green-400">
+                500 Coins
+              </div>
+            </motion.div>
+
+            {/* Earn Coins */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="bg-white dark:bg-slate-900 rounded-2xl p-6 lg:p-8 shadow-lg hover:shadow-xl transition-all duration-300 border border-blue-200 dark:border-blue-800"
+            >
+              <div className="w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-xl lg:rounded-2xl flex items-center justify-center mb-4 lg:mb-6">
+                <Star className="h-6 w-6 lg:h-8 lg:w-8 text-white" />
+              </div>
+              <h3 className="text-xl lg:text-2xl font-bold text-slate-900 dark:text-white mb-3 lg:mb-4">
+                Earn More Coins
+              </h3>
+              <p className="text-slate-600 dark:text-slate-400 mb-4 lg:mb-6">
+                Complete daily tasks, watch ads, and participate in challenges to earn additional coins.
+              </p>
+              <div className="text-sm text-blue-600 dark:text-blue-400 font-semibold">
+                Daily Rewards • Task Completion • Ad Watching
+              </div>
+            </motion.div>
+
+            {/* Purchase Coins */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3 }}
+              className="bg-white dark:bg-slate-900 rounded-2xl p-6 lg:p-8 shadow-lg hover:shadow-xl transition-all duration-300 border border-purple-200 dark:border-purple-800"
+            >
+              <div className="w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-br from-purple-400 to-pink-500 rounded-xl lg:rounded-2xl flex items-center justify-center mb-4 lg:mb-6">
+                <Zap className="h-6 w-6 lg:h-8 lg:w-8 text-white" />
+              </div>
+              <h3 className="text-xl lg:text-2xl font-bold text-slate-900 dark:text-white mb-3 lg:mb-4">
+                Purchase Coins
+              </h3>
+              <p className="text-slate-600 dark:text-slate-400 mb-4 lg:mb-6">
+                Get coins instantly with our affordable pricing plans. Perfect for power users and premium content access.
+              </p>
+              <div className="text-sm text-purple-600 dark:text-purple-400 font-semibold">
+                Affordable Pricing • Instant Delivery • Premium Support
+              </div>
+            </motion.div>
+          </div>
+
+          {/* How It Works */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="bg-white dark:bg-slate-900 rounded-3xl p-8 lg:p-12 shadow-xl border border-yellow-200 dark:border-yellow-800"
+          >
+            <h3 className="text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white text-center mb-8 lg:mb-12">
+              How the Coin System Works
+            </h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+              <div className="text-center">
+                <div className="w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4 lg:mb-6">
+                  <span className="text-white font-bold text-lg lg:text-xl">1</span>
+                </div>
+                <h4 className="font-semibold text-slate-900 dark:text-white mb-2 lg:mb-3">Sign Up & Login</h4>
+                <p className="text-sm text-slate-600 dark:text-slate-400">
+                  Create your account and receive 500 free coins instantly
+                </p>
+              </div>
+              
+              <div className="text-center">
+                <div className="w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 lg:mb-6">
+                  <span className="text-white font-bold text-lg lg:text-xl">2</span>
+                </div>
+                <h4 className="font-semibold text-slate-900 dark:text-white mb-2 lg:mb-3">Unlock Content</h4>
+                <p className="text-sm text-slate-600 dark:text-slate-400">
+                  Use coins to access premium lessons, AI generations, and exclusive content
+                </p>
+              </div>
+              
+              <div className="text-center">
+                <div className="w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4 lg:mb-6">
+                  <span className="text-white font-bold text-lg lg:text-xl">3</span>
+                </div>
+                <h4 className="font-semibold text-slate-900 dark:text-white mb-2 lg:mb-3">Earn More</h4>
+                <p className="text-sm text-slate-600 dark:text-slate-400">
+                  Complete tasks, watch ads, and participate in challenges to earn additional coins
+                </p>
+              </div>
+              
+              <div className="text-center">
+                <div className="w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4 lg:mb-6">
+                  <span className="text-white font-bold text-lg lg:text-xl">4</span>
+                </div>
+                <h4 className="font-semibold text-slate-900 dark:text-white mb-2 lg:mb-3">Purchase</h4>
+                <p className="text-sm text-slate-600 dark:text-slate-400">
+                  Buy coins directly for instant access to premium features and content
+                </p>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* CTA for Coins */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mt-12 lg:mt-16"
+          >
+            <p className="text-lg lg:text-xl text-slate-600 dark:text-slate-400 mb-6 lg:mb-8">
+              Ready to start earning and unlocking premium content?
+            </p>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Link href="/download" passHref>
+              <Button 
+                size="lg"
+                className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white px-6 py-3 lg:px-8 lg:py-4 text-sm lg:text-lg font-bold shadow-xl hover:shadow-2xl transition-all duration-300 w-full sm:w-auto"
+              >
+                <Download className="mr-3 h-5 w-5" />
+                Download & Get 500 Free Coins
+              </Button>
+              </Link>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
       
@@ -356,6 +532,7 @@ export default function HomePageClient({ features, benefits, testimonials, stats
             
             <div className="flex flex-col sm:flex-row gap-4 lg:gap-6 justify-center items-center mb-6 lg:mb-8">
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Link href="/download" passHref>
                 <Button 
                   size="lg"
                   className="bg-white text-blue-600 hover:bg-gray-100 px-6 py-3 lg:px-8 lg:py-4 text-sm lg:text-lg font-bold shadow-xl hover:shadow-2xl transition-all duration-300 w-full sm:w-auto"
@@ -363,18 +540,10 @@ export default function HomePageClient({ features, benefits, testimonials, stats
                   <Download className="mr-2 lg:mr-3 h-4 w-4 lg:h-6 lg:w-6" />
                   Download Free Now
                 </Button>
+      </Link>
               </motion.div>
               
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button 
-                  variant="outline"
-                  size="lg"
-                  className="border-2 border-white/30 text-white hover:bg-white/10 px-6 lg:px-8 py-3 lg:py-4 text-base lg:text-lg font-bold rounded-xl lg:rounded-2xl transition-all duration-300 flex items-center w-full sm:w-auto justify-center"
-                  >
-                  <Play className="mr-2 lg:mr-3 h-4 w-4 lg:h-6 lg:w-6" />
-                  Watch Demo
-                </Button>
-              </motion.div>
+            
             </div>
             
             <div className="flex flex-wrap justify-center items-center gap-4 lg:gap-8 text-blue-100">

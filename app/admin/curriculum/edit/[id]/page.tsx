@@ -20,7 +20,7 @@ import { useEffect, useState } from 'react';
 // Type definitions
 interface FormData {
   title: string;
-  level: 'JHS' | 'SHS';
+  level: 'Basic' | 'JHS' | 'SHS';
   class: string;
   course: string;
   subject: string;
@@ -97,7 +97,7 @@ const EditCurriculum = () => {
   // Set form data when document is loaded
   useEffect(() => {
     if (selectedDocument) {
-      const levelFromClass = selectedDocument.class.split(' ')[0] as 'JHS' | 'SHS';
+      const levelFromClass = selectedDocument.class.split(' ')[0] as 'Basic' | 'JHS' | 'SHS';
       const classNumber = selectedDocument.class.split(' ')[1];
       
       const data: FormData = {
@@ -260,7 +260,7 @@ const handleInputChange = (field: keyof FormData, value: string): void => {
       const updateData = {
         id: selectedDocument.id,
         title: formData.title.trim(),
-        class: `${formData.level} ${formData.class}`,
+        class: formData.class,
         subject: formData.subject,
         course: formData.level === 'SHS' ? formData.course : undefined,
         ...(hasFileChanges.pdf && { pdfUrl: updatedPdfUrl })
@@ -290,7 +290,7 @@ const handleInputChange = (field: keyof FormData, value: string): void => {
   };
 
   const availableSubjects = getSubjectsForLevel(
-    formData.level as 'JHS' | 'SHS' | undefined, 
+    formData.level as 'Basic' | 'JHS' | 'SHS' | undefined, 
     formData.course
   );
 
@@ -466,6 +466,7 @@ const handleInputChange = (field: keyof FormData, value: string): void => {
                         } focus:outline-none`}
                       >
                         <option value="">Select Level</option>
+                        <option value="Basic">Basic School</option>
                         <option value="JHS">Junior High School</option>
                         <option value="SHS">Senior High School</option>
                       </select>
@@ -496,9 +497,27 @@ const handleInputChange = (field: keyof FormData, value: string): void => {
                         } focus:outline-none disabled:bg-gray-100`}
                       >
                         <option value="">Select Class</option>
-                        <option value="1">Class 1</option>
-                        <option value="2">Class 2</option>
-                        <option value="3">Class 3</option>
+                        {formData.level === 'Basic' && (
+                          <>
+                            <option value="Basic 4">Basic 4</option>
+                            <option value="Basic 5">Basic 5</option>
+                            <option value="Basic 6">Basic 6</option>
+                          </>
+                        )}
+                        {formData.level === 'JHS' && (
+                          <>
+                            <option value="JHS 1">JHS 1</option>
+                            <option value="JHS 2">JHS 2</option>
+                            <option value="JHS 3">JHS 3</option>
+                          </>
+                        )}
+                        {formData.level === 'SHS' && (
+                          <>
+                            <option value="SHS 1">SHS 1</option>
+                            <option value="SHS 2">SHS 2</option>
+                            <option value="SHS 3">SHS 3</option>
+                          </>
+                        )}
                       </select>
                     ) : (
                       <div className="w-full px-4 py-3 bg-gray-50 rounded-lg border border-gray-200">

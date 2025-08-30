@@ -5,10 +5,10 @@ import {
   CheckCircle,
   Download,
   GraduationCap,
-  Play,
   Sparkles,
   Users
 } from 'lucide-react';
+import Link from 'next/link';
 import React from 'react';
 
 interface HeroFeatures {
@@ -65,9 +65,21 @@ export default function FeaturesPageClient({
   return (
     <div className="min-h-screen bg-white dark:bg-slate-950">
       {/* Hero Section */}
-      <section className="relative pt-24 pb-16 bg-blue-600 overflow-hidden">
+      <section className="relative pt-24 pb-16 overflow-hidden">
+        {/* Background Image */}
         <div 
-          className="absolute inset-0 opacity-20"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-blue-600"
+          style={{
+            backgroundImage: `url('/images/features.jpg')`
+          }}
+        />
+        
+        {/* Dark Overlay for Better Text Readability */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/80 via-blue-800/70 to-indigo-900/80"></div>
+        
+        {/* Subtle Pattern Overlay */}
+        <div 
+          className="absolute inset-0 opacity-10"
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
           }}
@@ -79,23 +91,38 @@ export default function FeaturesPageClient({
             animate={{ opacity: 1, y: 0 }}
             className="text-center max-w-4xl mx-auto mb-16"
           >
-            <div className="inline-flex items-center px-3 py-1.5 rounded-full bg-white/20 backdrop-blur-xl text-white text-xs md:text-sm font-medium mb-6">
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="inline-flex items-center px-3 py-1.5 rounded-full bg-white/25 backdrop-blur-xl text-white text-xs md:text-sm font-medium mb-6 border border-white/30 shadow-lg"
+            >
               <Sparkles className="w-3 h-3 md:w-4 md:h-4 mr-2" />
               Advanced AI Technology
-            </div>
+            </motion.div>
             
-            <h1 className="text-3xl md:text-6xl lg:text-7xl font-black text-white mb-6">
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="text-3xl md:text-6xl lg:text-7xl font-black text-white mb-6"
+            >
               Features That
               <br />
-              <span className="text-yellow-300">
+              <span className="text-yellow-300 drop-shadow-lg">
                 Transform Education
               </span>
-            </h1>
+            </motion.h1>
             
-            <p className="text-lg md:text-xl text-blue-100 mb-8 leading-relaxed max-w-3xl mx-auto">
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="text-lg md:text-xl text-blue-100 mb-8 leading-relaxed max-w-3xl mx-auto"
+            >
               Comprehensive AI-powered educational tools designed specifically for Ghana&apos;s curriculum, 
               empowering both students and teachers with cutting-edge technology.
-            </p>
+            </motion.p>
           </motion.div>
 
           {/* Hero Feature Cards */}
@@ -107,7 +134,7 @@ export default function FeaturesPageClient({
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ y: -5 }}
-                className="group relative overflow-hidden bg-white/10 backdrop-blur-xl rounded-xl md:rounded-2xl p-4 md:p-6 border border-white/20 hover:bg-white/20 transition-all duration-500"
+                className="group relative overflow-hidden bg-white/15 backdrop-blur-xl rounded-xl md:rounded-2xl p-4 md:p-6 border border-white/30 hover:bg-white/25 hover:border-white/40 transition-all duration-500 shadow-lg hover:shadow-xl"
               >
                 <div className={`inline-flex items-center justify-center w-10 h-10 md:w-16 md:h-16 ${feature.color} rounded-xl md:rounded-2xl mb-3 md:mb-4 group-hover:scale-110 transition-transform duration-300`}>
                   <div className="text-white">
@@ -406,6 +433,7 @@ export default function FeaturesPageClient({
             </p>
             
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-8">
+              <Link href="/download" passHref>
               <motion.button 
                 whileHover={{ scale: 1.05 }} 
                 whileTap={{ scale: 0.95 }}
@@ -414,15 +442,8 @@ export default function FeaturesPageClient({
                 <Download className="mr-2 md:mr-3 h-5 w-5 md:h-6 md:w-6" />
                 Start Learning Today
               </motion.button>
-              
-              <motion.button 
-                whileHover={{ scale: 1.05 }} 
-                whileTap={{ scale: 0.95 }}
-                className="border-2 border-white/30 text-white hover:bg-white/10 px-6 py-3 md:px-8 md:py-4 text-base md:text-lg font-bold rounded-2xl transition-all duration-300 flex items-center w-full sm:w-auto justify-center"
-              >
-                <Play className="mr-2 md:mr-3 h-5 w-5 md:h-6 md:w-6" />
-                Watch Demo
-              </motion.button>
+              </Link>
+             
             </div>
             
             <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8 text-blue-100">

@@ -11,10 +11,7 @@ export interface LessonNoteOptions {
 
 export interface LessonNoteContent {
   title: string;
-  description: string;
   pdfUrl: string;
-  thumbnailUrl: string;
-  keywords: string[];
 }
 
 export interface LessonNote {

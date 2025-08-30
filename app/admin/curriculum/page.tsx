@@ -3,39 +3,42 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { CurriculumDocument, shsCourses, useAdminCurriculumStore } from "@/stores/curriculum";
 import { motion } from "framer-motion";
 import {
-    ArrowRight,
-    BookOpen,
-    Calendar,
-    ChevronLeft,
-    ChevronRight,
-    Clock,
-    Edit3,
-    GraduationCap,
-    Grid3X3,
-    List,
-    Search,
-    Target,
-    Users
+  ArrowRight,
+  BookOpen,
+  Calendar,
+  ChevronLeft,
+  ChevronRight,
+  Clock,
+  Edit3,
+  GraduationCap,
+  Grid3X3,
+  List,
+  Search,
+  Target,
+  Trash2,
+  Users
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function CurriculumPage() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedLevel, setSelectedLevel] = useState<"all" | "JHS" | "SHS">("all");
-  const [selectedClass, setSelectedClass] = useState<"all" | "1" | "2" | "3">("all");
+  const [selectedLevel, setSelectedLevel] = useState<"all" | "Basic" | "JHS" | "SHS">("all");
+  const [selectedClass, setSelectedClass] = useState<"all" | "Basic 4" | "Basic 5" | "Basic 6" | "JHS 1" | "JHS 2" | "JHS 3" | "SHS 1" | "SHS 2" | "SHS 3">("all");
   const [selectedSubject, setSelectedSubject] = useState("all");
   const [selectedCourse, setSelectedCourse] = useState("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const [isDeleting, setIsDeleting] = useState(false);
   
   const {
     documents,
@@ -47,6 +50,8 @@ export default function CurriculumPage() {
     fetchDocuments,
     fetchSubjects,
     fetchDocumentById,
+    deleteDocument,
+    deleteManyDocuments,
     setFilters,
     clearFilters,
     setPage,
@@ -88,6 +93,8 @@ export default function CurriculumPage() {
     }
 
     setFilters(newFilters);
+    // Clear selection when filters change
+    setSelectedItems([]);
   }, [selectedLevel, selectedClass, selectedSubject, selectedCourse, searchTerm, setFilters]);
 
   useEffect(() => {
@@ -136,25 +143,93 @@ export default function CurriculumPage() {
     setPageSize(pageSize);
   };
 
+  // Delete functionality
+  const handleSelectItem = (id: string) => {
+    setSelectedItems(prev => 
+      prev.includes(id) 
+        ? prev.filter(item => item !== id)
+        : [...prev, id]
+    );
+  };
+
+  const handleSelectAll = () => {
+    if (selectedItems.length === documents.length) {
+      setSelectedItems([]);
+    } else {
+      setSelectedItems(documents.map(doc => doc.id));
+    }
+  };
+
+  const handleDeleteSelected = async () => {
+    if (selectedItems.length === 0) return;
+    
+    const confirmMessage = selectedItems.length === 1 
+      ? `Are you sure you want to delete this curriculum document?`
+      : `Are you sure you want to delete ${selectedItems.length} curriculum documents?`;
+    
+    if (!confirm(confirmMessage)) return;
+
+    setIsDeleting(true);
+    try {
+      const success = await deleteManyDocuments(selectedItems);
+      if (success) {
+        setSelectedItems([]);
+        // Refresh documents
+        fetchDocuments();
+      }
+    } catch (error) {
+      console.error('Error deleting documents:', error);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleDeleteSingle = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this curriculum document?')) return;
+    
+    try {
+      const success = await deleteDocument(id);
+      if (success) {
+        // Refresh documents
+        fetchDocuments();
+      }
+    } catch (error) {
+      console.error('Error deleting document:', error);
+    }
+  };
+
   const CurriculumCard = ({ curriculum, index }: { curriculum: CurriculumDocument; index: number }) => (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="group relative bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
-      onClick={() => handleViewCurriculum(curriculum.id)}
+      className="group relative bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300 hover:-translate-y-1"
     >
+      {/* Selection Checkbox */}
+      <div className="absolute top-3 left-3 z-10">
+        <input
+          type="checkbox"
+          checked={selectedItems.includes(curriculum.id)}
+          onChange={(e) => {
+            e.stopPropagation();
+            handleSelectItem(curriculum.id);
+          }}
+          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+        />
+      </div>
+
       {/* Gradient accent */}
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-blue-500 rounded-t-lg" />
       
       {/* Header */}
       <div className="flex items-start justify-between mb-3">
-        <div className="flex items-center space-x-2 flex-1 min-w-0">
+        <div className="flex items-center space-x-2 flex-1 min-w-0 ml-6">
           <div className="p-1.5 bg-gradient-to-br from-purple-500 to-blue-500 rounded-md flex-shrink-0">
             <BookOpen className="h-3 w-3 text-white" />
           </div>
           <div className="min-w-0 flex-1">
-            <h3 className="text-sm font-semibold text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors truncate">
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors truncate cursor-pointer"
+                onClick={() => handleViewCurriculum(curriculum.id)}>
               {curriculum.title}
             </h3>
             <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
@@ -173,6 +248,17 @@ export default function CurriculumPage() {
             className="opacity-0 group-hover:opacity-100 transition-all duration-200 p-1 h-6 w-6 hover:bg-purple-100 dark:hover:bg-purple-900/30"
           >
             <Edit3 className="h-3 w-3 text-purple-600 dark:text-purple-400" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDeleteSingle(curriculum.id);
+            }}
+            className="opacity-0 group-hover:opacity-100 transition-all duration-200 p-1 h-6 w-6 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400"
+          >
+            <Trash2 className="h-3 w-3" />
           </Button>
           <div className="opacity-0 group-hover:opacity-100 transition-opacity">
             <ArrowRight className="h-3 w-3 text-purple-500" />
@@ -237,22 +323,32 @@ export default function CurriculumPage() {
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.5, delay: index * 0.05 }}
-      className="group bg-white dark:bg-gray-800 rounded-lg p-3 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-all duration-300 cursor-pointer"
-      onClick={() => handleViewCurriculum(curriculum.id)}
+      className="group bg-white dark:bg-gray-800 rounded-lg p-3 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-all duration-300"
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3 flex-1 min-w-0">
+          {/* Selection Checkbox */}
+          <input
+            type="checkbox"
+            checked={selectedItems.includes(curriculum.id)}
+            onChange={(e) => {
+              e.stopPropagation();
+              handleSelectItem(curriculum.id);
+            }}
+            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+          />
+          
           <div className="p-2 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex-shrink-0">
-            <BookOpen className="h-4 w-4 text-white" />
+            <BookOpen className="h-4 text-white" />
           </div>
           
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between">
               <div className="min-w-0 flex-1">
-                <h3 className="text-base font-semibold text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors truncate">
+                <h3 className="text-base font-semibold text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors truncate cursor-pointer"
+                    onClick={() => handleViewCurriculum(curriculum.id)}>
                   {curriculum.title}
                 </h3>
-
               </div>
               
               <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400 flex-shrink-0 ml-2">
@@ -274,6 +370,17 @@ export default function CurriculumPage() {
                   className="opacity-0 group-hover:opacity-100 transition-all duration-200 p-1 h-6 w-6 hover:bg-purple-100 dark:hover:bg-purple-900/30"
                 >
                   <Edit3 className="h-3 w-3 text-purple-600 dark:text-purple-400" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteSingle(curriculum.id);
+                  }}
+                  className="opacity-0 group-hover:opacity-100 transition-all duration-200 p-1 h-6 w-6 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400"
+                >
+                  <Trash2 className="h-3 w-3" />
                 </Button>
                 <ArrowRight className="h-4 w-4 text-purple-500 opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
@@ -331,6 +438,7 @@ export default function CurriculumPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Levels</SelectItem>
+                  <SelectItem value="Basic">Basic</SelectItem>
                   <SelectItem value="JHS">JHS</SelectItem>
                   <SelectItem value="SHS">SHS</SelectItem>
                 </SelectContent>
@@ -342,9 +450,15 @@ export default function CurriculumPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Classes</SelectItem>
-                  <SelectItem value="1">Class 1</SelectItem>
-                  <SelectItem value="2">Class 2</SelectItem>
-                  <SelectItem value="3">Class 3</SelectItem>
+                  <SelectItem value="Basic 4">Basic 4</SelectItem>
+                  <SelectItem value="Basic 5">Basic 5</SelectItem>
+                  <SelectItem value="Basic 6">Basic 6</SelectItem>
+                  <SelectItem value="JHS 1">JHS 1</SelectItem>
+                  <SelectItem value="JHS 2">JHS 2</SelectItem>
+                  <SelectItem value="JHS 3">JHS 3</SelectItem>
+                  <SelectItem value="SHS 1">SHS 1</SelectItem>
+                  <SelectItem value="SHS 2">SHS 2</SelectItem>
+                  <SelectItem value="SHS 3">SHS 3</SelectItem>
                 </SelectContent>
               </Select>
 
@@ -378,6 +492,53 @@ export default function CurriculumPage() {
 
           {/* View Toggle - Hidden on mobile */}
           <div className="hidden sm:flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {/* Select All Checkbox */}
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={selectedItems.length === documents.length && documents.length > 0}
+                  onChange={handleSelectAll}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <span className="text-sm text-gray-600 dark:text-gray-400">
+                  Select All
+                </span>
+              </div>
+            </div>
+            <div className="flex items-center space-x-2 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+              <Button
+                variant={viewMode === "grid" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setViewMode("grid")}
+                className={viewMode === "grid" ? "bg-white dark:bg-gray-700 shadow-sm" : ""}
+              >
+                <Grid3X3 className="h-4 w-4" />
+              </Button>
+              <Button
+                variant={viewMode === "list" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setViewMode("list")}
+                className={viewMode === "list" ? "bg-white dark:bg-gray-700 shadow-sm" : ""}
+              >
+                <List className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+
+          {/* Mobile Select All - Visible on mobile */}
+          <div className="sm:hidden flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={selectedItems.length === documents.length && documents.length > 0}
+                onChange={handleSelectAll}
+                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+              />
+              <span className="text-sm text-gray-600 dark:text-gray-400">
+                Select All
+              </span>
+            </div>
             <div className="flex items-center space-x-2 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
               <Button
                 variant={viewMode === "grid" ? "default" : "ghost"}
@@ -415,6 +576,54 @@ export default function CurriculumPage() {
             </Button>
           )}
         </div>
+
+        {/* Bulk Actions Bar */}
+        {selectedItems.length > 0 && (
+          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  checked={selectedItems.length === documents.length}
+                  onChange={handleSelectAll}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <span className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                  {selectedItems.length} item{selectedItems.length !== 1 ? 's' : ''} selected
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setSelectedItems([])}
+                  className="text-blue-700 border-blue-300 hover:bg-blue-50"
+                >
+                  Clear Selection
+                </Button>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={handleDeleteSelected}
+                  disabled={isDeleting}
+                  className="bg-red-600 hover:bg-red-700 text-white"
+                >
+                  {isDeleting ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                      Deleting...
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Delete Selected
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Content */}

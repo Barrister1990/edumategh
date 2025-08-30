@@ -2,9 +2,8 @@
 import { Footer } from '@/components/Footer';
 import { Navbar } from '@/components/Navbar';
 import { Toaster } from '@/components/ui/toaster';
+import { WhatsAppFloatingIcon } from '@/components/WhatsAppFloatingIcon';
 import '../globals.css';
-
-
 
 export default function RootLayout({
   children,
@@ -15,12 +14,12 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <div className="flex min-h-screen flex-col">
-  <Navbar /> 
+          <Navbar /> 
           <main className="flex-1">{children}</main>
-            <Footer /> 
-          
+          <Footer /> 
         </div>
         <Toaster />
+        <WhatsAppFloatingIcon />
       </body>
     </html>
   );

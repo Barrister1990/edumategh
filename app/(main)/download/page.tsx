@@ -2,30 +2,50 @@
 import { motion } from "framer-motion";
 import { Apple, Award, ChevronRight, Download, PlayCircle, Star, Users } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function DownloadPage() {
   const [activeTab, setActiveTab] = useState("android");
+  const [currentScreenshot, setCurrentScreenshot] = useState(0);
   
   const handleTabChange = (value: string) => {
     setActiveTab(value);
   };
+  
+  // Auto-rotate through screenshots
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentScreenshot((prev) => (prev + 1) % appScreenshots.length);
+    }, 3000);
+    
+    return () => clearInterval(interval);
+  }, []);
 
   const appScreenshots = [
     {
-      src: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&h=800&fit=crop",
+      src: "/images/Home.jpg",
       alt: "Dashboard screen",
       caption: "Smart Dashboard"
     },
     {
-      src: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&h=800&fit=crop", 
+      src: "/images/Lesssons.jpg", 
       alt: "Lesson screen",
       caption: "Interactive Learning"
     },
     {
-      src: "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&h=800&fit=crop",
+      src: "/images/quiz.jpg",
       alt: "Quiz screen", 
       caption: "Smart Quizzes"
+    },
+    {
+      src: "/images/result.jpg",
+      alt: "Results screen",
+      caption: "Track Progress"
+    },
+    {
+      src: "/images/score.jpg",
+      alt: "Score screen",
+      caption: "Performance Analytics"
     }
   ];
 
@@ -56,8 +76,27 @@ export default function DownloadPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative pt-16 pb-8 lg:pt-20 lg:pb-12 overflow-hidden bg-blue-600">
-        <div className="container mx-auto px-3 lg:px-6">
+      <section className="relative pt-16 pb-8 lg:pt-20 lg:pb-12 overflow-hidden">
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-blue-600"
+          style={{
+            backgroundImage: `url('/images/download.jpg')`
+          }}
+        />
+        
+        {/* Dark Overlay for Better Text Readability */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/80 via-blue-800/70 to-indigo-900/80"></div>
+        
+        {/* Subtle Pattern Overlay */}
+        <div 
+          className="absolute inset-0 opacity-10"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+          }}
+        />
+        
+        <div className="container mx-auto px-3 lg:px-6 relative z-10">
           <motion.div 
             className="text-center max-w-4xl mx-auto"
             initial="hidden"
@@ -69,7 +108,7 @@ export default function DownloadPage() {
               variants={itemVariants}
               className="mb-6 lg:mb-8"
             >
-              <div className="mx-auto w-16 h-16 lg:w-20 lg:h-20 bg-white rounded-2xl lg:rounded-3xl shadow-2xl flex items-center justify-center mb-4">
+              <div className="mx-auto w-16 h-16 lg:w-20 lg:h-20 bg-white/95 backdrop-blur-xl rounded-2xl lg:rounded-3xl shadow-2xl flex items-center justify-center mb-4 border border-white/30">
                 <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-xl lg:rounded-2xl overflow-hidden flex items-center justify-center relative">
                   <Image 
                     src="/icon.png" 
@@ -79,22 +118,22 @@ export default function DownloadPage() {
                   />
                 </div>
               </div>
-              <div className="text-white/90 text-sm lg:text-base font-medium">EduMate GH</div>
+              <div className="text-white text-sm lg:text-base  font-semibold">EduMate GH</div>
             </motion.div>
 
             <motion.h1 
               variants={itemVariants}
-              className="text-3xl sm:text-4xl lg:text-6xl font-bold text-white mb-4 lg:mb-6"
+              className="text-3xl sm:text-4xl lg:text-6xl font-bold text-white mb-4 lg:mb-6 drop-shadow-lg"
             >
               Transform Your Learning
-              <span className="block text-2xl sm:text-3xl lg:text-5xl text-blue-100 mt-2">
+              <span className="block text-2xl sm:text-3xl lg:text-5xl text-yellow-300 mt-2 drop-shadow-lg">
                 Download Now
               </span>
             </motion.h1>
             
             <motion.p 
               variants={itemVariants}
-              className="text-base lg:text-xl text-white/90 mb-6 lg:mb-8 max-w-2xl mx-auto px-3"
+              className="text-base lg:text-xl text-white mb-6 lg:mb-8 max-w-2xl mx-auto px-3 font-medium"
             >
               Join thousands of students already using Ghana&apos;s #1 learning app
             </motion.p>
@@ -102,18 +141,18 @@ export default function DownloadPage() {
             {/* Quick Stats */}
             <motion.div 
               variants={itemVariants}
-              className="flex flex-wrap justify-center gap-4 lg:gap-8 mb-8 text-white/90"
+              className="flex flex-wrap justify-center gap-4 lg:gap-8 mb-8"
             >
-              <div className="flex items-center gap-2 text-sm lg:text-base">
+              <div className="flex items-center gap-2 text-sm lg:text-base bg-white/15 backdrop-blur-xl px-4 py-2 rounded-full border border-white/30 text-white">
                 <Star className="w-4 h-4 lg:w-5 lg:h-5 text-yellow-300 fill-current" />
                 <span className="font-semibold">4.9</span>
                 <span>Rating</span>
               </div>
-              <div className="flex items-center gap-2 text-sm lg:text-base">
+              <div className="flex items-center gap-2 text-sm lg:text-base bg-white/15 backdrop-blur-xl px-4 py-2 rounded-full border border-white/30 text-white">
                 <Users className="w-4 h-4 lg:w-5 lg:h-5" />
                 <span><span className="font-semibold">50K+</span> Students</span>
               </div>
-              <div className="flex items-center gap-2 text-sm lg:text-base">
+              <div className="flex items-center gap-2 text-sm lg:text-base bg-white/15 backdrop-blur-xl px-4 py-2 rounded-full border border-white/30 text-white">
                 <Award className="w-4 h-4 lg:w-5 lg:h-5" />
                 <span><span className="font-semibold">#1</span> Education App</span>
               </div>
@@ -214,7 +253,7 @@ export default function DownloadPage() {
                           </div>
                           <div className="flex items-center gap-2">
                             <ChevronRight className="w-3 h-3 lg:w-4 lg:h-4 text-green-500" />
-                            50 MB • Free with in-app purchases
+                            80 MB • Free with in-app purchases
                           </div>
                         </div>
                       </div>
@@ -223,6 +262,7 @@ export default function DownloadPage() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       className="w-full mt-4 bg-blue-600 text-white py-3 lg:py-4 rounded-xl font-semibold text-sm lg:text-base shadow-lg hover:shadow-xl transition-all"
+                      onClick={() => window.open('https://play.google.com/store/apps/details?id=com.edumategh.app', '_blank', 'noopener,noreferrer')}
                     >
                       <div className="flex items-center justify-center gap-2">
                         <Download className="w-4 h-4 lg:w-5 lg:h-5" />
@@ -299,6 +339,7 @@ export default function DownloadPage() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       className="w-full mt-4 bg-blue-600 text-white py-3 lg:py-4 rounded-xl font-semibold text-sm lg:text-base shadow-lg hover:shadow-xl transition-all"
+                      onClick={() => window.open('https://apps.apple.com/app/id6747842263', '_blank', 'noopener,noreferrer')}
                     >
                       <div className="flex items-center justify-center gap-2">
                         <Download className="w-4 h-4 lg:w-5 lg:h-5" />
@@ -338,65 +379,99 @@ export default function DownloadPage() {
                 animate="animate"
                 className="relative"
               >
-                {/* Phone Frame */}
+                {/* Subtle Glow Behind Phone */}
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 rounded-full blur-3xl scale-150"></div>
+                {/* Enhanced Phone Frame */}
                 <div className="relative w-64 h-[520px] lg:w-80 lg:h-[640px]">
-                  <div className="absolute inset-0 bg-gray-900 rounded-[3rem] lg:rounded-[4rem] p-2 lg:p-3 shadow-2xl">
-                    {/* Notch */}
-                    <div className="absolute top-0 left-1/2 w-24 h-6 lg:w-32 lg:h-8 -translate-x-1/2 bg-black rounded-b-2xl z-10"></div>
+                  {/* Phone Frame with Enhanced Design */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-black rounded-[3rem] lg:rounded-[4rem] p-2 lg:p-3 shadow-[0_0_50px_rgba(0,0,0,0.3)] border border-gray-700">
                     
-                    {/* Screen */}
-                    <div className="h-full w-full bg-white overflow-hidden rounded-[2.5rem] lg:rounded-[3.5rem] relative">
+                    {/* Enhanced Dynamic Island */}
+                    <div className="absolute top-0 left-1/2 w-24 h-6 lg:w-32 lg:h-8 -translate-x-1/2 bg-gradient-to-b from-black via-gray-900 to-gray-800 rounded-b-2xl z-10 shadow-lg">
+                      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-b-2xl"></div>
+                    </div>
+                    
+                    {/* Enhanced Screen */}
+                    <div className="h-full w-full bg-white overflow-hidden rounded-[2.5rem] lg:rounded-[3.5rem] relative shadow-inner">
+                      <div className="relative w-full h-full">
+                        {appScreenshots.map((screenshot, index) => (
                       <motion.div
+                            key={index}
+                            initial={{ opacity: 0, scale: 1.05 }}
                         animate={{
-                          y: ["0%", "-100%", "-200%", "0%"]
+                              opacity: currentScreenshot === index ? 1 : 0,
+                              scale: currentScreenshot === index ? 1 : 1.05,
                         }}
                         transition={{
-                          duration: 8,
-                          repeat: Infinity,
-                          ease: "easeInOut"
-                        }}
-                        className="w-full"
-                      >
-                        {appScreenshots.map((screenshot, index) => (
-                          <div key={index} className="w-full h-full shrink-0 relative bg-blue-50">
-                            <div className="absolute inset-0 flex items-center justify-center">
-                              <div className="text-center p-8">
-                                <div className="w-20 h-20 lg:w-24 lg:h-24 bg-blue-600 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                                  <span className="text-white font-bold text-xl lg:text-2xl">E</span>
-                                </div>
-                                <h3 className="text-lg lg:text-xl font-bold text-gray-900 mb-2">{screenshot.caption}</h3>
-                                <p className="text-sm lg:text-base text-gray-600">Experience the future of learning</p>
-                              </div>
-                            </div>
-                            <div className="absolute bottom-0 left-0 right-0 bg-black/20 p-6">
-                              <div className="flex justify-center space-x-2">
-                                {[...Array(3)].map((_, i) => (
-                                  <div key={i} className={`w-2 h-2 rounded-full ${i === index ? 'bg-white' : 'bg-white/50'}`}></div>
-                                ))}
-                              </div>
-                            </div>
-                          </div>
+                              duration: 0.6,
+                              ease: "easeInOut",
+                            }}
+                            className="absolute inset-0"
+                          >
+                            <Image
+                              src={screenshot.src}
+                              alt={screenshot.alt}
+                              fill
+                              className="object-cover object-center"
+                              priority={index < 3}
+                            />
+                          </motion.div>
                         ))}
-                      </motion.div>
+                        
+                        {/* Enhanced App Interface Overlay with Glass Effect */}
+                        <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/5 to-black/15"></div>
+                        
+                        {/* Enhanced Screenshot Indicators */}
+                        <div className="absolute bottom-4 lg:bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2 lg:space-x-2.5">
+                          {appScreenshots.map((_, index) => (
+                            <motion.div
+                              key={index}
+                              className={`w-2 h-2 lg:w-2.5 lg:h-2.5 rounded-full transition-all duration-300 ${
+                                currentScreenshot === index
+                                  ? 'bg-white shadow-lg scale-110 ring-2 ring-white/50'
+                                  : 'bg-white/60 scale-100'
+                              }`}
+                              whileHover={{ scale: 1.2 }}
+                            />
+                          ))}
+                        </div>
+                        
+                        {/* Subtle Screen Reflection */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none"></div>
+                      </div>
                     </div>
+                    
+                    {/* Enhanced Side Buttons */}
+                    <div className="absolute right-0 top-1/4 w-1 h-8 bg-gradient-to-b from-gray-600 to-gray-800 rounded-l-full"></div>
+                    <div className="absolute right-0 top-1/2 w-1 h-12 bg-gradient-to-b from-gray-600 to-gray-800 rounded-l-full"></div>
+                    <div className="absolute right-0 top-3/4 w-1 h-8 bg-gradient-to-b from-gray-600 to-gray-800 rounded-l-full"></div>
+                    
+                    {/* Enhanced Volume Buttons */}
+                    <div className="absolute left-0 top-1/4 w-1 h-8 bg-gradient-to-b from-gray-600 to-gray-800 rounded-r-full"></div>
+                    <div className="absolute left-0 top-1/2 w-1 h-12 bg-gradient-to-b from-gray-600 to-gray-800 rounded-r-full"></div>
+                    
+                    {/* Enhanced Power Button */}
+                    <div className="absolute right-0 top-1/3 w-1 h-16 bg-gradient-to-b from-gray-600 to-gray-800 rounded-l-full"></div>
                   </div>
                 </div>
                 
-                {/* Floating Elements */}
+                {/* Enhanced Floating Elements */}
                 <motion.div 
-                  className="absolute -top-4 -right-4 w-12 h-12 lg:w-16 lg:h-16 bg-yellow-400 rounded-2xl flex items-center justify-center shadow-lg"
+                  className="absolute -top-4 -right-4 w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-2xl flex items-center justify-center shadow-lg border-2 border-yellow-300/50 backdrop-blur-sm"
                   animate={{ rotate: 360 }}
                   transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                  whileHover={{ scale: 1.1 }}
                 >
-                  <Star className="w-6 h-6 lg:w-8 lg:h-8 text-white" />
+                  <Star className="w-6 h-6 lg:w-8 lg:h-8 text-white drop-shadow-lg" />
                 </motion.div>
                 
                 <motion.div 
-                  className="absolute -bottom-4 -left-4 w-12 h-12 lg:w-16 lg:h-16 bg-green-400 rounded-2xl flex items-center justify-center shadow-lg"
+                  className="absolute -bottom-4 -left-4 w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-br from-green-400 to-green-500 rounded-2xl flex items-center justify-center shadow-lg border-2 border-green-300/50 backdrop-blur-sm"
                   animate={{ scale: [1, 1.1, 1] }}
                   transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                  whileHover={{ scale: 1.1 }}
                 >
-                  <Award className="w-6 h-6 lg:w-8 lg:h-8 text-white" />
+                  <Award className="w-6 h-6 lg:w-8 lg:h-8 text-white drop-shadow-lg" />
                 </motion.div>
               </motion.div>
             </motion.div>
@@ -473,7 +548,10 @@ export default function DownloadPage() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <motion.button
+              <motion.a
+              href="https://play.google.com/store/apps/details?id=com.edumategh.app"
+              target="_blank"
+  rel="noopener noreferrer"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="w-full sm:w-auto bg-white text-gray-900 py-3 lg:py-4 px-6 lg:px-8 rounded-xl font-semibold text-sm lg:text-base shadow-lg hover:shadow-xl transition-all"
@@ -482,9 +560,12 @@ export default function DownloadPage() {
                   <PlayCircle className="w-5 h-5" />
                   Download for Android
                 </div>
-              </motion.button>
+              </motion.a>
               
-              <motion.button
+              <motion.a
+              href='https://apps.apple.com/app/id6747842263'
+            target="_blank"
+  rel="noopener noreferrer"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="w-full sm:w-auto bg-gray-900 text-white py-3 lg:py-4 px-6 lg:px-8 rounded-xl font-semibold text-sm lg:text-base shadow-lg hover:shadow-xl transition-all"
@@ -493,7 +574,7 @@ export default function DownloadPage() {
                   <Apple className="w-5 h-5" />
                   Download for iOS
                 </div>
-              </motion.button>
+              </motion.a>
             </div>
             
             <div className="flex justify-center items-center gap-6 lg:gap-8 mt-6 lg:mt-8 text-white/80 text-xs lg:text-sm">

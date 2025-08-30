@@ -3,7 +3,7 @@ import { create } from 'zustand';
 
 // Types
 export interface LessonNoteOptions {
-  level: 'JHS' | 'SHS';
+  level: string;
   class: '1' | '2' | '3';
   course?: string;
   subject?: string;
@@ -11,6 +11,7 @@ export interface LessonNoteOptions {
   strand: string;
   strandId?: string;
   subStrand: string;
+  contentStandard: string;
   indicator: string;
   indicatorId?: string;
 }
@@ -18,18 +19,18 @@ export interface LessonNoteOptions {
 export interface LessonNote {
   id?: string;
   title: string;
-  description: string;
   pdfUrl: string;
-  thumbnailUrl: string;
-  level: 'JHS' | 'SHS';
+  level: string;
   class: string;
   course?: string; // Only for SHS
   strand: string;
   subStrand: string;
+  contentStandard: string;
   indicator: string;
   subject: string;
   subjectId: string;
   strandId: string;
+  contentStandardId: string;
   indicatorId: string;
   createdAt?: string;
   updatedAt?: string;
@@ -37,18 +38,18 @@ export interface LessonNote {
 
 export interface CreateLessonNoteInput {
   title: string;
-  description: string;
   pdfUrl: string;
-  thumbnailUrl?: string;
-  level: 'JHS' | 'SHS';
+  level: string;
   class: string;
   course?: string; // Only for SHS
   strand: string;
   subStrand: string;
+  contentStandard: string;
   indicator: string;
   subject: string;
   subjectId: string;
   strandId: string;
+  contentStandardId: string;
   indicatorId: string;
 }
 
@@ -70,8 +71,8 @@ export interface LessonNoteFilters {
 export interface Subject {
   id: string;
   name: string;
-  level: 'JHS' | 'SHS';
-  course?: string; // Only for SHS subjects
+  level: string;
+  course?: string | string[]; // Only for SHS subjects
   createdAt: string;
   updatedAt: string;
 }
@@ -81,9 +82,9 @@ export interface Strand {
   name: string;
   subjectId: string;
   subject: string; // Subject name for display
-  level: 'JHS' | 'SHS';
+  level: string;
   class: string;
-  course?: string; // Only for SHS
+  course?: string | string[]; // Only for SHS
   createdAt: string;
   updatedAt: string;
 }
@@ -99,7 +100,7 @@ export interface SubStrand {
   updatedAt: string;
 }
 
-export interface Indicator {
+export interface ContentStandard {
   id: string;
   name: string;
   subStrandId: string;
@@ -108,9 +109,27 @@ export interface Indicator {
   strand: string; // Strand name for display
   subjectId: string;
   subject: string; // Subject name for display
-  level: 'JHS' | 'SHS';
+  level: string;
   class: string;
-  course?: string; // Only for SHS
+  course?: string | string[]; // Only for SHS
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Indicator {
+  id: string;
+  name: string;
+  contentStandardId: string;
+  contentStandard: string; // Content standard name for display
+  subStrandId: string;
+  subStrand: string; // Sub-strand name for display
+  strandId: string;
+  strand: string; // Strand name for display
+  subjectId: string;
+  subject: string; // Subject name for display
+  level: string;
+  class: string;
+  course?: string | string[]; // Only for SHS
   createdAt: string;
   updatedAt: string;
 }
@@ -127,6 +146,7 @@ interface AdminLessonNoteState {
   subjects: Subject[];
   strands: Strand[];
   subStrands: SubStrand[];
+  contentStandards: ContentStandard[];
   indicators: Indicator[];
   
   // Loading states
@@ -137,6 +157,7 @@ interface AdminLessonNoteState {
   isLoadingSubjects: boolean;
   isLoadingStrands: boolean;
   isLoadingSubStrands: boolean;
+  isLoadingContentStandards: boolean;
   isLoadingIndicators: boolean;
   
   // Error states
@@ -144,6 +165,7 @@ interface AdminLessonNoteState {
   subjectsError: string | null;
   strandsError: string | null;
   subStrandsError: string | null;
+  contentStandardsError: string | null;
   indicatorsError: string | null;
   
   // Filters
@@ -172,13 +194,15 @@ interface AdminLessonNoteState {
   fetchSubjects: (level: string, classNum: string, course?: string) => Promise<Subject[]>;
  fetchStrands: (subjectId: string, level: string, classLevel: string, course?: string) => Promise<Strand[]>;
   fetchSubStrands: (strandId: string) => Promise<SubStrand[]>;
-  fetchIndicators: (subStrandId: string) => Promise<Indicator[]>;
+  fetchContentStandards: (subStrandId: string) => Promise<ContentStandard[]>;
+  fetchIndicators: (contentStandardId: string) => Promise<Indicator[]>;
   
   // Actions - Utility getters
-  getSubjectsForLevel: (level?: 'JHS' | 'SHS', course?: string) => Subject[];
+  getSubjectsForLevel: (level?: string, course?: string) => Subject[];
   getStrandsForSubject: (subjectId: string) => Strand[];
   getSubStrandsForStrand: (strandId: string) => SubStrand[];
-  getIndicatorsForSubStrand: (subStrandId: string) => Indicator[];
+  getContentStandardsForSubStrand: (subStrandId: string) => ContentStandard[];
+  getIndicatorsForContentStandard: (contentStandardId: string) => Indicator[];
   
   // Actions - Utility
   resetState: () => void;
@@ -208,6 +232,7 @@ const defaultLessonNoteOptions: LessonNoteOptions = {
   strand: '',
   strandId: undefined,
   subStrand: '',
+  contentStandard: '',
   indicator: '',
   indicatorId: undefined,
 };
@@ -222,6 +247,7 @@ const initialState = {
   subjects: [],
   strands: [],
   subStrands: [],
+  contentStandards: [],
   indicators: [],
   isLoading: false,
   isCreating: false,
@@ -230,11 +256,13 @@ const initialState = {
   isLoadingSubjects: false,
   isLoadingStrands: false,
   isLoadingSubStrands: false,
+  isLoadingContentStandards: false,
   isLoadingIndicators: false,
   error: null,
   subjectsError: null,
   strandsError: null,
   subStrandsError: null,
+  contentStandardsError: null,
   indicatorsError: null,
   filters: {},
   lessonNoteOptions: defaultLessonNoteOptions,
@@ -266,7 +294,7 @@ export const useAdminLessonNoteStore = create<AdminLessonNoteState>((set, get) =
       
       // Search filter
       if (filters.search) {
-        query = query.or(`title.ilike.%${filters.search}%,description.ilike.%${filters.search}%`);
+        query = query.or(`title.ilike.%${filters.search}%`);
       }
       
       // Pagination and ordering
@@ -280,18 +308,18 @@ export const useAdminLessonNoteStore = create<AdminLessonNoteState>((set, get) =
       const transformedData: LessonNote[] = data?.map(item => ({
         id: item.id,
         title: item.title,
-        description: item.description,
         pdfUrl: item.pdf_url,
-        thumbnailUrl: item.thumbnail_url || 'https://images.pexels.com/photos/6238297/pexels-photo-6238297.jpeg',
         level: item.level,
         class: item.class,
         course: item.course, // Only exists for SHS
         strand: item.strand,
         subStrand: item.substrand,
+        contentStandard: item.content_standard || '',
         indicator: item.indicator,
         subject: item.subject,
         subjectId: item.subject_id,
         strandId: item.strand_id,
+        contentStandardId: item.content_standard_id || '',
         indicatorId: item.indicator_id,
         createdAt: item.created_at,
         updatedAt: item.updated_at,
@@ -329,18 +357,18 @@ export const useAdminLessonNoteStore = create<AdminLessonNoteState>((set, get) =
         const transformedData: LessonNote = {
           id: data.id,
           title: data.title,
-          description: data.description,
           pdfUrl: data.pdf_url,
-          thumbnailUrl: data.thumbnail_url || 'https://images.pexels.com/photos/6238297/pexels-photo-6238297.jpeg',
           level: data.level,
           class: data.class,
           course: data.course,
           strand: data.strand,
           subStrand: data.substrand,
+          contentStandard: data.content_standard || '',
           indicator: data.indicator,
           subject: data.subject,
           subjectId: data.subject_id,
           strandId: data.strand_id,
+          contentStandardId: data.content_standard_id || '',
           indicatorId: data.indicator_id,
           createdAt: data.created_at,
           updatedAt: data.updated_at,
@@ -368,18 +396,18 @@ export const useAdminLessonNoteStore = create<AdminLessonNoteState>((set, get) =
     try {
       const insertData = {
         title: input.title,
-        description: input.description,
         pdf_url: input.pdfUrl,
-        thumbnail_url: input.thumbnailUrl || 'https://images.pexels.com/photos/6238297/pexels-photo-6238297.jpeg',
         level: input.level,
         class: input.class,
         course: input.level === 'SHS' ? input.course : null, // Only for SHS
         strand: input.strand,
         sub_strand: input.subStrand, // Note: using 'substrand' to match your table
+        content_standard: input.contentStandard,
         indicator: input.indicator,
         subject: input.subject,
         subject_id: input.subjectId,
         strand_id: input.strandId,
+        content_standard_id: input.contentStandardId,
         indicator_id: input.indicatorId,
       };
       
@@ -395,18 +423,18 @@ export const useAdminLessonNoteStore = create<AdminLessonNoteState>((set, get) =
         const transformedData: LessonNote = {
           id: data.id,
           title: data.title,
-          description: data.description,
           pdfUrl: data.pdf_url,
-          thumbnailUrl: data.thumbnail_url,
           level: data.level,
           class: data.class,
           course: data.course,
           strand: data.strand,
           subStrand: data.subStrand,
+          contentStandard: data.content_standard || '',
           indicator: data.indicator,
           subject: data.subject,
           subjectId: data.subject_id,
           strandId: data.strand_id,
+          contentStandardId: data.content_standard_id || '',
           indicatorId: data.indicator_id,
           createdAt: data.created_at,
           updatedAt: data.updated_at,
@@ -442,18 +470,18 @@ export const useAdminLessonNoteStore = create<AdminLessonNoteState>((set, get) =
       
       // Only include fields that are provided
       if (input.title !== undefined) updateData.title = input.title;
-      if (input.description !== undefined) updateData.description = input.description;
       if (input.pdfUrl !== undefined) updateData.pdf_url = input.pdfUrl;
-      if (input.thumbnailUrl !== undefined) updateData.thumbnail_url = input.thumbnailUrl;
       if (input.level !== undefined) updateData.level = input.level;
       if (input.class !== undefined) updateData.class = input.class;
       if (input.course !== undefined) updateData.course = input.course;
       if (input.strand !== undefined) updateData.strand = input.strand;
       if (input.subStrand !== undefined) updateData.substrand = input.subStrand;
+      if (input.contentStandard !== undefined) updateData.content_standard = input.contentStandard;
       if (input.indicator !== undefined) updateData.indicator = input.indicator;
       if (input.subject !== undefined) updateData.subject = input.subject;
       if (input.subjectId !== undefined) updateData.subject_id = input.subjectId;
       if (input.strandId !== undefined) updateData.strand_id = input.strandId;
+      if (input.contentStandardId !== undefined) updateData.content_standard_id = input.contentStandardId;
       if (input.indicatorId !== undefined) updateData.indicator_id = input.indicatorId;
       
       updateData.updated_at = new Date().toISOString();
@@ -471,18 +499,18 @@ export const useAdminLessonNoteStore = create<AdminLessonNoteState>((set, get) =
         const transformedData: LessonNote = {
           id: data.id,
           title: data.title,
-          description: data.description,
           pdfUrl: data.pdf_url,
-          thumbnailUrl: data.thumbnail_url,
           level: data.level,
           class: data.class,
           course: data.course,
           strand: data.strand,
-          subStrand: data.substrand,
+          subStrand: data.subStrand,
+          contentStandard: data.content_standard || '',
           indicator: data.indicator,
           subject: data.subject,
           subjectId: data.subject_id,
           strandId: data.strand_id,
+          contentStandardId: data.content_standard_id || '',
           indicatorId: data.indicator_id,
           createdAt: data.created_at,
           updatedAt: data.updated_at,
@@ -637,7 +665,7 @@ export const useAdminLessonNoteStore = create<AdminLessonNoteState>((set, get) =
   }),
 
   // Enhanced curriculum data fetching methods
-  fetchSubjects: async (level, classNum, course) => {
+  fetchSubjects: async (level: string, classNum: string, course?: string) => {
     set({ isLoadingSubjects: true, subjectsError: null });
     
     try {
@@ -647,6 +675,7 @@ export const useAdminLessonNoteStore = create<AdminLessonNoteState>((set, get) =
         .eq('level', level)
         .order('name');
       
+      // Filter by course if provided (for SHS subjects)
      if (level === 'SHS' && course) {
             query = query.contains('course', [course]);
           }
@@ -679,20 +708,16 @@ export const useAdminLessonNoteStore = create<AdminLessonNoteState>((set, get) =
 fetchStrands: async (subjectId: string, level: string, classLevel: string, course?: string) => {
   set({ isLoadingStrands: true, strandsError: null });
    
-   const formattedClass = `${level} ${classLevel}`
-   console.log(formattedClass)
   try {
     let query = supabase
       .from('curriculum_strands')
       .select('*')
       .eq('subject_id', subjectId)
       .eq('level', level)
-      .eq('class', formattedClass);
+    
     
     // Add course filter for SHS
-    if (level === 'SHS' && course) {
-      query = query.eq('course', course);
-    }
+    
     
     const { data, error } = await query.order('strand');
     console.log(data)
@@ -757,14 +782,53 @@ fetchStrands: async (subjectId: string, level: string, classLevel: string, cours
     }
   },
 
-  fetchIndicators: async (subStrandId: string) => {
+  fetchContentStandards: async (subStrandId: string) => {
+    set({ isLoadingContentStandards: true, contentStandardsError: null });
+    try {
+      const { data, error } = await supabase
+        .from('curriculum_content_standards')
+        .select('*')
+        .eq('sub_strand_id', subStrandId)
+        .order('content_standard');
+
+      if (error) throw error;
+
+      const contentStandards: ContentStandard[] = (data || []).map(item => ({
+        id: item.id,
+        name: item.content_standard,
+        subStrandId: item.sub_strand_id,
+        subStrand: item.sub_strand,
+        strandId: item.strand_id,
+        strand: item.strand,
+        subjectId: item.subject_id,
+        subject: item.subject,
+        level: item.level,
+        class: item.class,
+        course: item.course,
+        createdAt: item.created_at,
+        updatedAt: item.updated_at,
+      }));
+
+      set({ contentStandards, isLoadingContentStandards: false });
+      return contentStandards;
+    } catch (error: any) {
+      console.error('Error fetching content standards:', error);
+      set({
+        contentStandardsError: error.message || 'Failed to fetch content standards',
+        isLoadingContentStandards: false
+      });
+      return [];
+    }
+  },
+
+  fetchIndicators: async (contentStandardId: string) => {
     set({ isLoadingIndicators: true, indicatorsError: null });
     
     try {
       const { data, error } = await supabase
         .from('curriculum_indicators')
         .select('*')
-        .eq('sub_strand_id', subStrandId)
+        .eq('content_standard_id', contentStandardId)
         .order('indicator');
       
       if (error) throw error;
@@ -772,6 +836,8 @@ fetchStrands: async (subjectId: string, level: string, classLevel: string, cours
       const indicators: Indicator[] = (data || []).map(item => ({
         id: item.id,
         name: item.indicator,
+        contentStandardId: item.content_standard_id,
+        contentStandard: item.content_standard,
         subStrandId: item.sub_strand_id,
         subStrand: item.sub_strand,
         strandId: item.strand_id,
@@ -798,19 +864,22 @@ fetchStrands: async (subjectId: string, level: string, classLevel: string, cours
   },
 
   // Utility getters
-  getSubjectsForLevel: (level, course) => {
+  getSubjectsForLevel: (level?: string, course?: string) => {
     const { subjects } = get();
     
     if (!level) {
       return subjects;
     }
     
-    if (level === 'JHS') {
+    if (level === 'Basic') {
+      return subjects.filter(subject => subject.level === 'Basic');
+    } else if (level === 'JHS') {
       return subjects.filter(subject => subject.level === 'JHS');
     } else if (level === 'SHS') {
       if (course) {
         return subjects.filter(subject => 
-          subject.level === 'SHS' && subject.course === course
+          subject.level === 'SHS' && 
+          (Array.isArray(subject.course) ? subject.course.includes(course) : subject.course === course)
         );
       } else {
         return subjects.filter(subject => subject.level === 'SHS');
@@ -830,9 +899,14 @@ fetchStrands: async (subjectId: string, level: string, classLevel: string, cours
     return subStrands.filter(subStrand => subStrand.strandId === strandId);
   },
 
-  getIndicatorsForSubStrand: (subStrandId: string) => {
+  getContentStandardsForSubStrand: (subStrandId: string) => {
+    const { contentStandards } = get();
+    return contentStandards.filter(contentStandard => contentStandard.subStrandId === subStrandId);
+  },
+
+  getIndicatorsForContentStandard: (contentStandardId: string) => {
     const { indicators } = get();
-    return indicators.filter(indicator => indicator.subStrandId === subStrandId);
+    return indicators.filter(indicator => indicator.contentStandardId === contentStandardId);
   },
 
   // Utility
@@ -842,6 +916,7 @@ fetchStrands: async (subjectId: string, level: string, classLevel: string, cours
     subjectsError: null,
     strandsError: null,
     subStrandsError: null,
+    contentStandardsError: null,
     indicatorsError: null,
   }),
 }));

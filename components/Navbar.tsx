@@ -1,7 +1,8 @@
 "use client";
 
 import { AnimatePresence, motion, Variants } from "framer-motion";
-import { BookOpen, Menu, Smartphone, Sparkles, X, Zap } from "lucide-react";
+import { Menu, Smartphone, X, Zap } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -149,27 +150,19 @@ export function Navbar() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <motion.div
-                className="relative"
-                animate={{ rotate: [0, 5, -5, 0] }}
-                transition={{ 
-                  duration: 4,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-              >
-                <div className="w-6 h-6 lg:w-10 lg:h-10 bg-blue-500 rounded-lg lg:rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300">
-                  <BookOpen className="h-3 w-3 lg:h-5 lg:w-5 text-white" />
-                  <motion.div
-                    className="absolute -top-0.5 -right-0.5 lg:-top-1 lg:-right-1 w-2 h-2 lg:w-3 lg:h-3 bg-yellow-400 rounded-full flex items-center justify-center"
-                    animate={{ scale: [1, 1.2, 1] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  >
-                    <Sparkles className="w-1 h-1 lg:w-2 lg:h-2 text-white" />
-                  </motion.div>
+              {/* Logo Image */}
+              <div className="relative">
+                <div className="w-8 h-8 lg:w-12 lg:h-12 relative">
+                  <Image
+                    src="/icon.png"
+                    alt="EduMate GH Logo"
+                    fill
+                    className="object-contain rounded-full"
+                  />
                 </div>
-              </motion.div>
+              </div>
               
+              {/* Logo Text */}
               <div className="flex flex-col">
                 <motion.span
                   className="text-base lg:text-xl font-black text-blue-600"

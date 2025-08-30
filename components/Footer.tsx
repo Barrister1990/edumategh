@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import {
-  BookOpen,
   Code2,
   ExternalLink,
   Facebook,
@@ -10,11 +9,26 @@ import {
   Instagram,
   Mail,
   Phone,
-  Sparkles,
-  Twitter,
   Youtube
 } from "lucide-react";
+import Image from "next/image";
 
+// Custom TikTok icon since lucide-react doesn't have it
+const TikTokIcon = () => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className="w-6 h-6"
+  >
+    <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+  </svg>
+);
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -22,22 +36,22 @@ export function Footer() {
 
   const socialLinks = [
     { 
-      href: "https://facebook.com", 
+      href: "https://www.facebook.com/share/1Cv3bWMTzo/?mibextid=wwXIfr", 
       icon: Facebook, 
       label: "Facebook"
     },
     { 
-      href: "https://twitter.com", 
-      icon: Twitter, 
-      label: "Twitter"
-    },
-    { 
-      href: "https://instagram.com", 
+      href: "https://instagram.com/edumate_gh", 
       icon: Instagram, 
       label: "Instagram"
     },
     { 
-      href: "https://youtube.com", 
+      href: "https://www.tiktok.com/@edumate.gh?_t=ZM-8zIEbp8UHUD&_r=1", 
+      icon: TikTokIcon, 
+      label: "TikTok"
+    },
+    { 
+      href: "https://youtube.com/@edumategh", 
       icon: Youtube, 
       label: "YouTube"
     },
@@ -109,26 +123,17 @@ export function Footer() {
               className="flex items-center space-x-2 sm:space-x-3 group"
               whileHover={{ scale: 1.02 }}
             >
-              <motion.div
-                className="relative"
-                animate={{ rotate: [0, 5, -5, 0] }}
-                transition={{ 
-                  duration: 6,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-              >
-                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-white rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300">
-                  <BookOpen className="h-4 w-4 sm:h-6 sm:w-6 text-white" />
-                  <motion.div
-                    className="absolute -top-0.5 -right-0.5 sm:-top-1 sm:-right-1 w-2 h-2 sm:w-3 sm:h-3 bg-yellow-400 rounded-full flex items-center justify-center"
-                    animate={{ scale: [1, 1.2, 1] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  >
-                    <Sparkles className="w-1 h-1 sm:w-2 sm:h-2 text-white" />
-                  </motion.div>
+              {/* Logo Image */}
+              <div className="relative">
+                <div className="w-8 h-8 sm:w-12 sm:h-12 relative">
+                  <Image
+                    src="/icon.png"
+                    alt="EduMate GH Logo"
+                    fill
+                    className="object-contain rounded-full"
+                  />
                 </div>
-              </motion.div>
+              </div>
               
               <div className="flex flex-col">
                 <span className="text-lg sm:text-xl md:text-2xl font-black text-blue-600">

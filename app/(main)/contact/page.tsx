@@ -154,27 +154,46 @@ const ContactPage = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative pt-16 pb-8 lg:pt-24 lg:pb-16 bg-blue-600 overflow-hidden">
+      <section className="relative pt-16 pb-8 lg:pt-24 lg:pb-16 overflow-hidden">
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-blue-600"
+          style={{
+            backgroundImage: `url('/images/contact.jpg')`
+          }}
+        />
+        
+        {/* Dark Overlay for Better Text Readability */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/80 via-blue-800/70 to-indigo-900/80"></div>
+        
+        {/* Subtle Pattern Overlay */}
+        <div 
+          className="absolute inset-0 opacity-10"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+          }}
+        />
+        
         <div className="container mx-auto px-3 lg:px-6 relative z-10">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-center max-w-4xl mx-auto"
           >
-            <div className="inline-flex items-center px-3 py-2 lg:px-4 lg:py-2 rounded-full bg-white/20 backdrop-blur-xl text-white text-sm font-medium mb-6">
+            <div className="inline-flex items-center px-3 py-2 lg:px-4 lg:py-2 rounded-full bg-white/20 backdrop-blur-xl text-white text-sm font-medium mb-6 border border-white/30">
               <Sparkles className="w-4 h-4 mr-2" />
               We&apos;re Here to Help
             </div>
             
-            <h1 className="text-3xl sm:text-4xl lg:text-6xl xl:text-7xl font-black text-white mb-6">
+            <h1 className="text-3xl sm:text-4xl lg:text-6xl xl:text-7xl font-black text-white mb-6 drop-shadow-lg">
               Get in
               <br />
-              <span className="text-blue-100">
+              <span className="text-yellow-300 drop-shadow-lg">
                 Touch
               </span>
             </h1>
             
-            <p className="text-base lg:text-xl text-blue-100 mb-8 leading-relaxed max-w-3xl mx-auto">
+            <p className="text-base lg:text-xl text-white mb-8 leading-relaxed max-w-3xl mx-auto font-medium">
               Have questions about EduMate GH? Our team is ready to help you succeed in your educational journey.
             </p>
           </motion.div>
