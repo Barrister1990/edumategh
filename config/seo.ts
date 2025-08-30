@@ -152,7 +152,15 @@ export const seoConfig: Metadata = {
     'format-detection': 'telephone=no',
     'HandheldFriendly': 'true',
     'MobileOptimized': '320',
-    'viewport': 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes'
+    'viewport': 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes',
+    // WhatsApp specific meta tags
+    'og:image:type': 'image/png',
+    'og:image:width': '1200',
+    'og:image:height': '630',
+    'og:image:alt': 'EduMate GH - AI-Powered Education App for Ghana Students',
+    'theme-color': '#10b981',
+    // Additional WhatsApp support
+    'og:image:secure_url': 'https://edumategh.com/images/og-image-main.png'
   },
 };
 
@@ -390,7 +398,6 @@ export const structuredData = {
       "@type": "Place",
       "address": {
         "@type": "PostalAddress",
-        "streetAddress": "123 Innovation Street",
         "addressLocality": "Accra",
         "addressCountry": "Ghana"
       }
@@ -606,7 +613,6 @@ export const structuredData = {
     "description": "Educational technology organization providing AI-powered learning solutions aligned with Ghana's GES curriculum.",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "123 Innovation Street",
       "addressLocality": "Accra",
       "addressRegion": "Greater Accra",
       "postalCode": "GA-123-4567",
