@@ -46,19 +46,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       changeFrequency: 'monthly' as any,
       priority: 0.5
-    },
-    // App store links for sitelinks
-    {
-      url: 'https://apps.apple.com/app/edumate-gh/id6747842263',
-      lastModified: new Date(),
-      changeFrequency: 'weekly' as any,
-      priority: 0.9
-    },
-    {
-      url: 'https://play.google.com/store/apps/details?id=com.edumategh.app',
-      lastModified: new Date(),
-      changeFrequency: 'weekly' as any,
-      priority: 0.9
     }
   ];
 
