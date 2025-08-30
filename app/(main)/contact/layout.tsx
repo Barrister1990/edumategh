@@ -1,8 +1,7 @@
-import { pageConfigs, seoConfig } from "@/config/seo";
+import { seoConfig } from "@/config/seo";
 import type { Metadata } from 'next';
 export const metadata: Metadata = {
   ...seoConfig,
-  ...pageConfigs.contact,
   alternates: {
     canonical: 'https://edumategh.com/contact'
   }
