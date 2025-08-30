@@ -1,5 +1,6 @@
 'use client';
 
+import { HeroSection } from "@/components/HeroSection";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import {
@@ -13,7 +14,6 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { HeroSection } from "../../components/HeroSection";
 
 interface Feature {
   icon: React.ReactNode;

@@ -1,4 +1,3 @@
-import { sitemapConfig } from '@/config/seo';
 import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -8,26 +7,26 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: baseUrl,
       lastModified: new Date(),
-      changeFrequency: sitemapConfig.changeFrequency['/'] as any,
-      priority: sitemapConfig.priority['/']
+      changeFrequency: 'daily' as any,
+      priority: 1.0
     },
     {
       url: `${baseUrl}/features`,
       lastModified: new Date(),
-      changeFrequency: sitemapConfig.changeFrequency['/features'] as any,
-      priority: sitemapConfig.priority['/features']
+      changeFrequency: 'weekly' as any,
+      priority: 0.8
     },
     {
       url: `${baseUrl}/download`,
       lastModified: new Date(),
-      changeFrequency: sitemapConfig.changeFrequency['/download'] as any,
-      priority: sitemapConfig.priority['/download']
+      changeFrequency: 'weekly' as any,
+      priority: 0.9
     },
     {
       url: `${baseUrl}/contact`,
       lastModified: new Date(),
-      changeFrequency: sitemapConfig.changeFrequency['/contact'] as any,
-      priority: sitemapConfig.priority['/contact']
+      changeFrequency: 'monthly' as any,
+      priority: 0.6
     },
     // Additional important pages for sitelinks
     {
