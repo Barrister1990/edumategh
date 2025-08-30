@@ -106,7 +106,7 @@ export default function LessonNoteViewPage() {
               <FileText className="w-6 h-6 text-gray-600" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Lesson Note Not Found</h3>
-            <p className="text-gray-600 mb-4">The lesson note you're looking for doesn't exist or has been removed.</p>
+            <p className="text-gray-600 mb-4">The lesson note you&apos;re looking for doesn&apos;t exist or has been removed.</p>
             <button 
               onClick={handleBack}
               className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"

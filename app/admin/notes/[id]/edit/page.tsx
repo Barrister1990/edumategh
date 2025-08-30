@@ -3,21 +3,21 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import { uploadToCloudinary } from '@/lib/cloudinary';
@@ -360,7 +360,7 @@ export default function EditLessonNotePage() {
               <FileText className="w-6 h-6 text-gray-600" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Lesson Note Not Found</h3>
-            <p className="text-gray-600 mb-4">The lesson note you're looking for doesn't exist or has been removed.</p>
+            <p className="text-gray-600 mb-4">The lesson note you&apos;re looking for doesn &apos;t exist or has been removed.</p>
             <button 
               onClick={() => router.push('/admin/notes')}
               className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
