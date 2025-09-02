@@ -193,7 +193,13 @@ useEffect(() => {
   // Get unique courses from subjects for SHS level
   const getCoursesForSHS = () => {
     const shsSubjects = subjects.filter(subject => subject.level === 'SHS');
-    const courses = Array.from(new Set(shsSubjects.map(subject => subject.course).filter(Boolean)));
+    const courses = Array.from(new Set(
+      shsSubjects
+        .map(subject => subject.course)
+        .filter(Boolean)
+        .flat() // Flatten arrays to strings
+        .filter((course): course is string => typeof course === 'string')
+    ));
     return courses;
   };
 
