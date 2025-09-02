@@ -50,7 +50,7 @@ export interface Subject {
   id: string;
   name: string;
   level: string;
-  course?: string;
+  course?: string | string[];
   createdAt: string;
   updatedAt: string;
 }
@@ -223,13 +223,18 @@ export const useAdminTextbookStore = create<AdminTextbookState>((set, get) => ({
         id: item.id,
         name: item.name,
         level: item.level,
-        course: item.course,
+        course: item.course, // This will be either string or array from database
         createdAt: item.created_at,
         updatedAt: item.updated_at,
       }));
       
-      set({ subjects, isLoadingSubjects: false });
-      return subjects;
+      // Remove duplicates based on id to ensure uniqueness
+      const uniqueSubjects = subjects.filter((subject, index, self) => 
+        index === self.findIndex(s => s.id === subject.id)
+      );
+      
+      set({ subjects: uniqueSubjects, isLoadingSubjects: false });
+      return uniqueSubjects;
     } catch (error: any) {
       console.error('Error fetching all subjects:', error);
       set({ 
@@ -262,13 +267,18 @@ if (level === 'SHS' && course) {
         id: item.id,
         name: item.name,
         level: item.level,
-        course: item.course,
+        course: item.course, // This will be either string or array from database
         createdAt: item.created_at,
         updatedAt: item.updated_at,
       }));
       
-      set({ subjects, isLoadingSubjects: false });
-      return subjects;
+      // Remove duplicates based on id to ensure uniqueness
+      const uniqueSubjects = subjects.filter((subject, index, self) => 
+        index === self.findIndex(s => s.id === subject.id)
+      );
+      
+      set({ subjects: uniqueSubjects, isLoadingSubjects: false });
+      return uniqueSubjects;
     } catch (error: any) {
       console.error('Error fetching subjects:', error);
       set({ 
@@ -288,7 +298,19 @@ if (level === 'SHS' && course) {
     let filtered = subjects.filter(subject => subject.level === level);
     
     if (level === 'SHS' && course) {
-      filtered = filtered.filter(subject => subject.course === course);
+      filtered = filtered.filter(subject => {
+        if (!subject.course) return false;
+        
+        if (Array.isArray(subject.course)) {
+          // If course is an array, check if the selected course is in the array
+          return subject.course.includes(course);
+        } else if (typeof subject.course === 'string') {
+          // If course is a string, check for exact match
+          return subject.course === course;
+        }
+        
+        return false;
+      });
     }
     
     return filtered;
@@ -299,13 +321,37 @@ if (level === 'SHS' && course) {
     
     if (level !== 'SHS') return [];
     
-    const courseSet = new Set(
-      subjects
-        .filter(subject => subject.level === 'SHS' && subject.course)
-        .map(subject => subject.course!)
+    // Extract all unique courses from SHS subjects
+    const courseSet = new Set<string>();
+    
+    // Filter SHS subjects and ensure we have course data
+    const shsSubjects = subjects.filter(subject => 
+      subject.level === 'SHS' && 
+      subject.course && 
+      (subject.course !== null && subject.course !== undefined)
     );
     
-    return Array.from(courseSet).map(course => ({ name: course }));
+    console.log('SHS Subjects for course extraction:', shsSubjects.length, 'subjects');
+    
+    shsSubjects.forEach(subject => {
+      if (Array.isArray(subject.course)) {
+        // If course is an array, add each course to the set
+        subject.course.forEach(course => {
+          if (course && typeof course === 'string' && course.trim() !== '') {
+            courseSet.add(course.trim());
+          }
+        });
+      } else if (typeof subject.course === 'string' && subject.course.trim() !== '') {
+        // If course is a string, add it to the set
+        courseSet.add(subject.course.trim());
+      }
+    });
+    
+    const uniqueCourses = Array.from(courseSet).sort();
+    console.log('Final unique courses:', uniqueCourses);
+    
+    // Convert set to array and sort alphabetically
+    return uniqueCourses.map(course => ({ name: course }));
   },
 
   uploadFiles: async (pdfFile, coverFile) => {

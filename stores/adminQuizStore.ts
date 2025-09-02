@@ -5,10 +5,10 @@ import { create } from 'zustand';
 export interface Subject {
   id: string;
   name: string;
-  class: string;
   level: string;
-  description?: string;
-  course?: string; // Only for SHS level subjects
+  course?: string | string[]; // Can be string or array for SHS subjects
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CurriculumStrand {
@@ -104,8 +104,10 @@ interface AdminQuizState {
   reorderQuestions: (fromIndex: number, toIndex: number) => void;
   
   // Actions - Data Fetching
-  fetchSubjects: (level?: string, classFilter?: string) => Promise<void>;
+  fetchSubjects: (level?: string, course?: string) => Promise<void>;
   fetchSubStrands: (subjectId: string, classFilter?: string) => Promise<void>;
+  getAvailableCourses: (level?: string) => { name: string }[];
+  getFilteredSubjects: (level?: string, course?: string) => Subject[];
   
   // Actions - UI State
   setCurrentQuiz: (quiz: Quiz | null) => void;
@@ -425,9 +427,8 @@ export const useAdminQuizStore = create<AdminQuizState>((set, get) => ({
   },
 
   // Data Fetching
-  fetchSubjects: async (level?: string, classFilter?: string) => {
+  fetchSubjects: async (level?: string, course?: string) => {
     set({ isLoading: true, error: null });
-    console.log(classFilter);
     
     try {
       let query = supabase
@@ -439,16 +440,36 @@ export const useAdminQuizStore = create<AdminQuizState>((set, get) => ({
         query = query.eq('level', level);
       }
 
+      // Filter by course if provided (for SHS subjects)
+      if (level === 'SHS' && course) {
+        query = query.contains('course', [course]);
+      }
+
       const { data, error } = await query;
 
       if (error) throw error;
 
+      // Transform data to match interface
+      const subjects = (data || []).map(subject => ({
+        id: subject.id,
+        name: subject.name,
+        level: subject.level,
+        course: subject.course, // This will be either string or array from database
+        createdAt: subject.created_at,
+        updatedAt: subject.updated_at,
+      }));
+
+      // Remove duplicates based on id to ensure uniqueness
+      const uniqueSubjects = subjects.filter((subject, index, self) => 
+        index === self.findIndex(s => s.id === subject.id)
+      );
+
       set({
-        subjects: data || [],
+        subjects: uniqueSubjects,
         isLoading: false,
       });
 
-      console.log(`Fetched ${data?.length || 0} subjects`);
+      console.log(`Fetched ${uniqueSubjects.length} subjects for level: ${level}, course: ${course}`);
     } catch (error: any) {
       console.error('Error fetching subjects:', error);
       set({
@@ -536,5 +557,67 @@ export const useAdminQuizStore = create<AdminQuizState>((set, get) => ({
     const { fetchQuizzes } = get();
     set({ currentPage: page });
     fetchQuizzes(page);
+  },
+
+  // Derived data getters
+  getFilteredSubjects: (level, course) => {
+    const { subjects } = get();
+    
+    if (!level) return subjects;
+    
+    let filtered = subjects.filter(subject => subject.level === level);
+    
+    if (level === 'SHS' && course) {
+      filtered = filtered.filter(subject => {
+        if (!subject.course) return false;
+        
+        if (Array.isArray(subject.course)) {
+          // If course is an array, check if the selected course is in the array
+          return subject.course.includes(course);
+        } else if (typeof subject.course === 'string') {
+          // If course is a string, check for exact match
+          return subject.course === course;
+        }
+        
+        return false;
+      });
+    }
+    
+    return filtered;
+  },
+
+  getAvailableCourses: (level) => {
+    const { subjects } = get();
+    
+    if (level !== 'SHS') return [];
+    
+    // Extract all unique courses from SHS subjects
+    const courseSet = new Set<string>();
+    
+    // Filter SHS subjects and ensure we have course data
+    const shsSubjects = subjects.filter(subject => 
+      subject.level === 'SHS' && 
+      subject.course && 
+      (subject.course !== null && subject.course !== undefined)
+    );
+    
+    shsSubjects.forEach(subject => {
+      if (Array.isArray(subject.course)) {
+        // If course is an array, add each course to the set
+        subject.course.forEach(course => {
+          if (course && typeof course === 'string' && course.trim() !== '') {
+            courseSet.add(course.trim());
+          }
+        });
+      } else if (typeof subject.course === 'string' && subject.course.trim() !== '') {
+        // If course is a string, add it to the set
+        courseSet.add(subject.course.trim());
+      }
+    });
+    
+    const uniqueCourses = Array.from(courseSet).sort();
+    
+    // Convert set to array and sort alphabetically
+    return uniqueCourses.map(course => ({ name: course }));
   },
 }));

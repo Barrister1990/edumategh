@@ -1,22 +1,22 @@
 "use client";
 import { AdminTextbook, useAdminTextbookStore, useBulkTextbookOperations } from '@/stores/useTexbookStore';
 import {
-  AlertCircle,
-  BookOpen,
-  Building2,
-  Calendar,
-  ChevronLeft,
-  ChevronRight,
-  Copy,
-  Edit3,
-  Eye,
-  Filter,
-  GraduationCap,
-  RefreshCw,
-  Search,
-  Trash2,
-  User,
-  X
+    AlertCircle,
+    BookOpen,
+    Building2,
+    Calendar,
+    ChevronLeft,
+    ChevronRight,
+    Copy,
+    Edit3,
+    Eye,
+    Filter,
+    GraduationCap,
+    RefreshCw,
+    Search,
+    Trash2,
+    User,
+    X
 } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -146,9 +146,18 @@ const handleDuplicate = useCallback(async (id: string) => { // Changed from stri
 
   // Get level badge color
   const getLevelBadgeColor = useCallback((level: string): string => {
-    return level === 'JHS' 
-      ? 'bg-blue-100 text-blue-800 border-blue-200' 
-      : 'bg-purple-100 text-purple-800 border-purple-200';
+    switch (level) {
+      case 'KG':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'Basic':
+        return 'bg-green-100 text-green-800 border-green-200';
+      case 'JHS':
+        return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'SHS':
+        return 'bg-purple-100 text-purple-800 border-purple-200';
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-200';
+    }
   }, []);
 
   // Handle refresh
@@ -197,14 +206,26 @@ const handleDuplicate = useCallback(async (id: string) => { // Changed from stri
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-6 gap-4 mb-6">
             <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
               <div className="text-2xl font-bold text-gray-900">{totalItems}</div>
               <div className="text-sm text-gray-600">Total Textbooks</div>
             </div>
             <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+              <div className="text-2xl font-bold text-yellow-600">
+                {textbooks.filter((b: AdminTextbook) => b.level === 'KG').length}
+              </div>
+              <div className="text-sm text-gray-600">KG Textbooks</div>
+            </div>
+            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+              <div className="text-2xl font-bold text-green-600">
+                {textbooks.filter((b: AdminTextbook) => b.level === 'Basic').length}
+              </div>
+              <div className="text-sm text-gray-600">Basic Textbooks</div>
+            </div>
+            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
               <div className="text-2xl font-bold text-blue-600">
-                {textbooks.filter((b: AdminTextbook) => b.level === 'SHS').length}
+                {textbooks.filter((b: AdminTextbook) => b.level === 'JHS').length}
               </div>
               <div className="text-sm text-gray-600">JHS Textbooks</div>
             </div>
@@ -215,7 +236,7 @@ const handleDuplicate = useCallback(async (id: string) => { // Changed from stri
               <div className="text-sm text-gray-600">SHS Textbooks</div>
             </div>
             <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-              <div className="text-2xl font-bold text-green-600">{selectedItems.size}</div>
+              <div className="text-2xl font-bold text-indigo-600">{selectedItems.size}</div>
               <div className="text-sm text-gray-600">Selected Items</div>
             </div>
           </div>
@@ -299,6 +320,8 @@ const handleDuplicate = useCallback(async (id: string) => { // Changed from stri
                   className="px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 >
                   <option value="">All Levels</option>
+                  <option value="KG">KG</option>
+                  <option value="Basic">Basic</option>
                   <option value="JHS">JHS</option>
                   <option value="SHS">SHS</option>
                 </select>
@@ -310,9 +333,20 @@ const handleDuplicate = useCallback(async (id: string) => { // Changed from stri
                   className="px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 >
                   <option value="">All Classes</option>
-                  <option value="1">Class 1</option>
-                  <option value="2">Class 2</option>
-                  <option value="3">Class 3</option>
+                  <option value="KG 1">KG 1</option>
+                  <option value="KG 2">KG 2</option>
+                  <option value="Basic 1">Basic 1</option>
+                  <option value="Basic 2">Basic 2</option>
+                  <option value="Basic 3">Basic 3</option>
+                  <option value="Basic 4">Basic 4</option>
+                  <option value="Basic 5">Basic 5</option>
+                  <option value="Basic 6">Basic 6</option>
+                  <option value="JHS 1">JHS 1</option>
+                  <option value="JHS 2">JHS 2</option>
+                  <option value="JHS 3">JHS 3</option>
+                  <option value="SHS 1">SHS 1</option>
+                  <option value="SHS 2">SHS 2</option>
+                  <option value="SHS 3">SHS 3</option>
                 </select>
                 <input
                   type="text"

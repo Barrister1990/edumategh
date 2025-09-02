@@ -1,24 +1,24 @@
 "use client"
 import { useAdminTextbookStore } from '@/stores/useTexbookStore';
 import {
-  AlertCircle,
-  ArrowLeft,
-  BookMarked,
-  BookOpen,
-  Building,
-  Calendar,
-  Check,
-  FileText,
-  GraduationCap,
-  Image as ImageIcon,
-  Loader2,
-  Target,
-  Upload,
-  User,
-  X
+    AlertCircle,
+    ArrowLeft,
+    BookMarked,
+    BookOpen,
+    Building,
+    Calendar,
+    Check,
+    FileText,
+    GraduationCap,
+    Image as ImageIcon,
+    Loader2,
+    Target,
+    Upload,
+    User,
+    X
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 
 // Type definitions
@@ -367,7 +367,7 @@ export default function NewTextbookPage() {
   // Fetch subjects when level and class change
 useEffect(() => {
   if (formData.level) {
-    if (formData.level === 'Basic' || formData.level === 'JHS') {
+    if (formData.level === 'KG' || formData.level === 'Basic' || formData.level === 'JHS') {
       fetchSubjects(formData.level);
     } else if (formData.level === 'SHS' && formData.course) {
       fetchSubjects(formData.level, formData.course);
@@ -387,7 +387,7 @@ useEffect(() => {
     setFormData(prev => ({
       ...prev,
       subject: '',
-      course: prev.level === 'JHS' ? '' : prev.course
+      course: (prev.level === 'KG' || prev.level === 'Basic' || prev.level === 'JHS') ? '' : prev.course
     }));
   }, [formData.level, formData.class]);
 
@@ -525,8 +525,17 @@ useEffect(() => {
     }
   };
 
-  const availableCourses = formData.level === 'SHS' ? getAvailableCourses('SHS') : [];
+  // Memoize the available courses to prevent unnecessary recalculations
+  const availableCourses = useMemo(() => {
+    if (formData.level !== 'SHS') return [];
+    return getAvailableCourses('SHS');
+  }, [formData.level, subjects, getAvailableCourses]);
+  
   const availableSubjects = getFilteredSubjects(formData.level, formData.course);
+  
+  // Debug: Log the available courses
+  console.log('Available courses in component:', availableCourses);
+  console.log('Form data level:', formData.level);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/30">
@@ -667,6 +676,7 @@ useEffect(() => {
                 error={validationErrors.level}
               >
                 <option value="">Select level</option>
+  <option value="KG">KG (Kindergarten)</option>
   <option value="Basic">Basic (Primary School)</option>
   <option value="JHS">JHS (Junior High School)</option>
   <option value="SHS">SHS (Senior High School)</option>
@@ -682,8 +692,16 @@ useEffect(() => {
   disabled={!formData.level}
 >
   <option value="">Select class</option>
-  {formData.level === 'Basic' ? (
+  {formData.level === 'KG' ? (
     <>
+      <option value="1">KG 1</option>
+      <option value="2">KG 2</option>
+    </>
+  ) : formData.level === 'Basic' ? (
+    <>
+      <option value="1">Basic 1</option>
+      <option value="2">Basic 2</option>
+      <option value="3">Basic 3</option>
       <option value="4">Basic 4</option>
       <option value="5">Basic 5</option>
       <option value="6">Basic 6</option>
@@ -710,7 +728,12 @@ useEffect(() => {
                   disabled={isLoadingSubjects || availableCourses.length === 0}
                 >
                   <option value="">
-                    {availableCourses.length === 0 ? 'No courses available' : 'Select course'}
+                    {isLoadingSubjects 
+                      ? 'Loading courses...' 
+                      : availableCourses.length === 0 
+                        ? 'No courses available' 
+                        : 'Select course'
+                    }
                   </option>
                   {availableCourses.map(course => (
                     <option key={course.name} value={course.name}>
@@ -718,6 +741,12 @@ useEffect(() => {
                     </option>
                   ))}
                 </ModernSelect>
+                {formData.level === 'SHS' && availableCourses.length === 0 && !isLoadingSubjects && (
+                  <p className="text-sm text-amber-600 mt-2 flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4" />
+                    No courses found for SHS level. Please ensure subjects with courses are available.
+                  </p>
+                )}
               </div>
             )}
 
@@ -732,7 +761,16 @@ useEffect(() => {
                 disabled={!formData.level || (formData.level === 'SHS' && !formData.course) || isLoadingSubjects}
               >
                 <option value="">
-                  {isLoadingSubjects ? 'Loading subjects...' : 'Select subject'}
+                  {isLoadingSubjects 
+                    ? 'Loading subjects...' 
+                    : !formData.level 
+                      ? 'Select level first'
+                      : formData.level === 'SHS' && !formData.course
+                        ? 'Select course first'
+                        : availableSubjects.length === 0
+                          ? 'No subjects available'
+                          : 'Select subject'
+                  }
                 </option>
                 {availableSubjects.map(subject => (
                   <option key={subject.id} value={subject.name}>
@@ -740,6 +778,18 @@ useEffect(() => {
                   </option>
                 ))}
               </ModernSelect>
+              {formData.level && formData.level !== 'SHS' && availableSubjects.length === 0 && !isLoadingSubjects && (
+                <p className="text-sm text-amber-600 mt-2 flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4" />
+                  No subjects found for {formData.level} level. Please ensure subjects are available.
+                </p>
+              )}
+              {formData.level === 'SHS' && formData.course && availableSubjects.length === 0 && !isLoadingSubjects && (
+                <p className="text-sm text-amber-600 mt-2 flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4" />
+                  No subjects found for {formData.course} course. Please ensure subjects are available.
+                </p>
+              )}
             </div>
           </div>
 

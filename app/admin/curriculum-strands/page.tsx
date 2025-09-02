@@ -55,6 +55,8 @@ const GESCurriculumPage = () => {
   useEffect(() => {
     if (levelFilter === 'all') {
       fetchAllSubjects();
+    } else if (levelFilter === 'KG') {
+      fetchSubjects('KG');
     } else if (levelFilter === 'Basic') {
       fetchSubjects('Basic');
     } else if (levelFilter === 'JHS') {
@@ -140,15 +142,17 @@ const GESCurriculumPage = () => {
     setViewMode('cards'); // Reset to cards view when changing tabs
   }, [activeTab, resetSelection]);
 
-  const levels = ['all', 'Basic', 'JHS', 'SHS'] as const;
+  const levels = ['all', 'KG', 'Basic', 'JHS', 'SHS'] as const;
   const courses = ['all', ...shsCourses] as const;
   
   // Dynamic classes based on selected level
   const availableClasses = useMemo(() => {
     if (levelFilter === 'all') {
-      return ['all', 'Basic 4', 'Basic 5', 'Basic 6', 'JHS 1', 'JHS 2', 'JHS 3', 'SHS 1', 'SHS 2', 'SHS 3'];
+      return ['all', 'KG 1', 'KG 2', 'Basic 1', 'Basic 2', 'Basic 3', 'Basic 4', 'Basic 5', 'Basic 6', 'JHS 1', 'JHS 2', 'JHS 3', 'SHS 1', 'SHS 2', 'SHS 3'];
+    } else if (levelFilter === 'KG') {
+      return ['all', 'KG 1', 'KG 2'];
     } else if (levelFilter === 'Basic') {
-      return ['all', 'Basic 4', 'Basic 5', 'Basic 6'];
+      return ['all', 'Basic 1', 'Basic 2', 'Basic 3', 'Basic 4', 'Basic 5', 'Basic 6'];
     } else if (levelFilter === 'JHS') {
       return ['all', 'JHS 1', 'JHS 2', 'JHS 3'];
     } else if (levelFilter === 'SHS') {
@@ -800,6 +804,7 @@ const GESCurriculumPage = () => {
                     <div className="flex items-start justify-between mb-4">
                       <BookOpen className="h-6 w-6 text-blue-600" />
                           <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                            subject.level === 'KG' ? 'bg-yellow-100 text-yellow-800' :
                             subject.level === 'Basic' ? 'bg-blue-100 text-blue-800' :
                             subject.level === 'JHS' ? 'bg-green-100 text-green-800' : 
                             'bg-purple-100 text-purple-800'
@@ -824,6 +829,7 @@ const GESCurriculumPage = () => {
                             <h3 className="font-medium text-gray-900">{subject.name}</h3>
                             <div className="flex items-center space-x-2 mt-1">
                               <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                subject.level === 'KG' ? 'bg-yellow-100 text-yellow-800' :
                                 subject.level === 'Basic' ? 'bg-blue-100 text-blue-800' :
                                 subject.level === 'JHS' ? 'bg-green-100 text-green-800' : 
                                 'bg-purple-100 text-purple-800'
@@ -859,6 +865,7 @@ const GESCurriculumPage = () => {
                       <Layers className="h-6 w-6 text-emerald-600" />
                       <div className="flex space-x-2">
                             <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                              strand.level === 'KG' ? 'bg-yellow-100 text-yellow-800' :
                               strand.level === 'Basic' ? 'bg-blue-100 text-blue-800' :
                               strand.level === 'JHS' ? 'bg-green-100 text-green-800' : 
                               'bg-emerald-100 text-emerald-800'
@@ -896,6 +903,7 @@ const GESCurriculumPage = () => {
                             <h3 className="font-medium text-gray-900">{strand.name}</h3>
                             <div className="flex items-center space-x-2 mt-1">
                               <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                strand.level === 'KG' ? 'bg-yellow-100 text-yellow-800' :
                                 strand.level === 'Basic' ? 'bg-blue-100 text-blue-800' :
                                 strand.level === 'JHS' ? 'bg-green-100 text-green-800' : 
                                 'bg-emerald-100 text-emerald-800'

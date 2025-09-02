@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 // Type definitions
 interface FormData {
   title: string;
-  level: 'Basic' | 'JHS' | 'SHS' | '';
+  level: 'KG' | 'Basic' | 'JHS' | 'SHS' | '';
   class: string;
   course: string;
   subject: string;
@@ -37,7 +37,8 @@ type ProgressField = 'pdf';
 
 // Class options for each level
 const classOptions = {
-  Basic: ['Basic 4', 'Basic 5', 'Basic 6'],
+  KG: ['KG 1', 'KG 2'],
+  Basic: ['Basic 1', 'Basic 2', 'Basic 3', 'Basic 4', 'Basic 5', 'Basic 6'],
   JHS: ['JHS 1', 'JHS 2', 'JHS 3'],
   SHS: ['SHS 1', 'SHS 2', 'SHS 3']
 };
@@ -265,7 +266,7 @@ const AddNewCurriculum = () => {
     }
   };
 
-  const availableSubjects = getSubjectsForLevel(formData.level as 'Basic' | 'JHS' | 'SHS' | undefined, formData.course);
+  const availableSubjects = getSubjectsForLevel(formData.level as 'KG' | 'Basic' | 'JHS' | 'SHS' | undefined, formData.course);
   
   // Get available classes for the selected level
   const availableClasses = formData.level ? classOptions[formData.level as keyof typeof classOptions] : [];
@@ -337,6 +338,7 @@ const AddNewCurriculum = () => {
                       } focus:outline-none`}
                     >
                       <option value="">Select Level</option>
+                      <option value="KG">Kindergarten</option>
                       <option value="Basic">Basic School</option>
                       <option value="JHS">Junior High School</option>
                       <option value="SHS">Senior High School</option>

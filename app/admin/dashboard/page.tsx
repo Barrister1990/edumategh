@@ -1,5 +1,6 @@
 "use client";
 
+import { useDashboardStore } from '@/stores/useDashboardStore';
 import {
   Award,
   BarChart3,
@@ -13,16 +14,13 @@ import {
   Download,
   Eye,
   FileQuestion,
-  HelpCircle,
-  MessageSquare,
   MoreHorizontal,
-  Settings,
   TrendingUp,
   UserPlus,
-  Users,
-  Zap
+  Users
 } from "lucide-react";
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import {
   Area,
   AreaChart,
@@ -89,22 +87,34 @@ const mockRevenueData = [
 
 export default function AdminDashboard() {
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
+  const router = useRouter();
   
-  const stats = mockStats;
-  const userActivity = mockUserActivity;
-  const subjectEngagement = mockSubjectEngagement;
-  const quizCompletion = mockQuizCompletion;
-  const revenueData = mockRevenueData;
+  const {
+    stats,
+    userActivity,
+    subjectEngagement,
+    quizCompletion,
+    revenueData,
+    dateFilter,
+    loading,
+    error,
+    setDateFilter,
+    fetchDashboardData
+  } = useDashboardStore();
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, [fetchDashboardData]);
 
   const statCards = [
     {
       id: 'total-users',
       title: "Total Users",
       value: stats.totalUsers.toLocaleString(),
-      change: "+12%",
-      changeValue: "+2,543",
+      change: loading ? "..." : `${stats.totalStudents.toLocaleString()} students`,
+      changeValue: loading ? "..." : `${stats.totalTeachers.toLocaleString()} teachers`,
       icon: Users,
-      description: "vs last month",
+      description: loading ? "Loading..." : "All platform users",
       color: "bg-gradient-to-br from-blue-500 to-blue-600",
       lightColor: "bg-blue-50 dark:bg-blue-900/20",
       textColor: "text-blue-600 dark:text-blue-400"
@@ -113,10 +123,10 @@ export default function AdminDashboard() {
       id: 'active-users',
       title: "Active Users",
       value: stats.activeUsers.toLocaleString(),
-      change: "+8%",
-      changeValue: "+1,234",
+      change: loading ? "..." : `${Math.round((stats.activeUsers / Math.max(stats.totalUsers, 1)) * 100)}%`,
+      changeValue: loading ? "..." : `of ${stats.totalUsers.toLocaleString()} total`,
       icon: UserPlus,
-      description: "last 30 days",
+      description: loading ? "Loading..." : `Last ${dateFilter === 'all' ? 'all time' : dateFilter}`,
       color: "bg-gradient-to-br from-emerald-500 to-emerald-600",
       lightColor: "bg-emerald-50 dark:bg-emerald-900/20",
       textColor: "text-emerald-600 dark:text-emerald-400"
@@ -125,10 +135,10 @@ export default function AdminDashboard() {
       id: 'premium-users',
       title: "Premium Users",
       value: stats.premiumUsers.toLocaleString(),
-      change: "+15%",
-      changeValue: "+456",
+      change: loading ? "..." : `${Math.round((stats.premiumUsers / Math.max(stats.totalUsers, 1)) * 100)}%`,
+      changeValue: loading ? "..." : `unique users`,
       icon: CreditCard,
-      description: "conversion rate 12%",
+      description: loading ? "Loading..." : "Users with coin purchases",
       color: "bg-gradient-to-br from-purple-500 to-purple-600",
       lightColor: "bg-purple-50 dark:bg-purple-900/20",
       textColor: "text-purple-600 dark:text-purple-400"
@@ -136,49 +146,67 @@ export default function AdminDashboard() {
     {
       id: 'total-revenue',
       title: "Total Revenue",
-      value: `GH₵${stats.totalRevenue.toLocaleString()}`,
-      change: "+20%",
-      changeValue: "+GH₵12,543",
+      value: loading ? "..." : Object.entries(stats.revenueByCurrency).length > 0 
+        ? Object.entries(stats.revenueByCurrency)
+            .map(([currency, amount]) => `${currency} ${amount.toLocaleString()}`)
+            .join(', ')
+        : "No revenue",
+      change: loading ? "..." : Object.keys(stats.revenueByCurrency).length > 0 
+        ? `${Object.keys(stats.revenueByCurrency).length} currencies`
+        : "No data",
+      changeValue: loading ? "..." : "coin transactions",
       icon: TrendingUp,
-      description: "this quarter",
+      description: loading ? "Loading..." : "From coin transactions",
       color: "bg-gradient-to-br from-amber-500 to-amber-600",
       lightColor: "bg-amber-50 dark:bg-amber-900/20",
       textColor: "text-amber-600 dark:text-amber-400"
+    },
+    {
+      id: 'curriculum-materials',
+      title: "Curriculum Materials",
+      value: stats.curriculumItems.toLocaleString(),
+      change: loading ? "..." : "documents",
+      changeValue: loading ? "..." : "available",
+      icon: BookOpen,
+      description: loading ? "Loading..." : "Educational resources",
+      color: "bg-gradient-to-br from-indigo-500 to-indigo-600",
+      lightColor: "bg-indigo-50 dark:bg-indigo-900/20",
+      textColor: "text-indigo-600 dark:text-indigo-400"
     }
   ];
 
   const performanceMetrics = [
     {
-      id: 'quiz-completion',
-      title: "Quiz Completion",
-      value: `${((stats.completedQuizzes / stats.totalQuizzes) * 100).toFixed(1)}%`,
-      change: "+10%",
+      id: 'quiz-attempts',
+      title: "Quiz Attempts",
+      value: loading ? "..." : `${stats.completedQuizzes.toLocaleString()}`,
+      change: loading ? "..." : `from ${stats.totalQuizzes.toLocaleString()} quizzes`,
       icon: FileQuestion,
-      description: "Average completion rate"
+      description: loading ? "Loading..." : "Quiz results recorded"
     },
     {
-      id: 'average-score',
-      title: "Average Score",
-      value: `${stats.averageScore}%`,
-      change: "+3%",
+      id: 'quiz-average-score',
+      title: "Quiz Average Score",
+      value: loading ? "..." : `${stats.averageScore}%`,
+      change: loading ? "..." : `${stats.completedQuizzes.toLocaleString()} attempts`,
       icon: Award,
-      description: "Student performance"
+      description: loading ? "Loading..." : "Student performance"
     },
     {
-      id: 'learning-materials',
-      title: "Learning Materials",
-      value: stats.curriculumItems.toLocaleString(),
-      change: "+5%",
+      id: 'lesson-completions',
+      title: "Lesson Completions",
+      value: loading ? "..." : `${stats.completedLessons.toLocaleString()}`,
+      change: loading ? "..." : `from ${stats.totalLessons.toLocaleString()} lessons`,
       icon: BookOpen,
-      description: "Available resources"
+      description: loading ? "Loading..." : "Lessons completed"
     },
     {
-      id: 'subjects-covered',
-      title: "Subjects Covered",
-      value: subjectEngagement.length.toString(),
-      change: "0%",
-      icon: BarChart3,
-      description: "Core curriculum"
+      id: 'lesson-average-score',
+      title: "Lesson Average Score",
+      value: loading ? "..." : `${stats.averageLessonScore}%`,
+      change: loading ? "..." : `${stats.completedLessons.toLocaleString()} completions`,
+      icon: TrendingUp,
+      description: loading ? "Loading..." : "Lesson performance"
     }
   ];
 
@@ -189,47 +217,87 @@ export default function AdminDashboard() {
       description: "Broadcast to users",
       icon: Bell,
       color: "bg-gradient-to-br from-red-500 to-red-600",
-      action: () => alert('Opening notification center...')
+      action: () => router.push('/admin/dashboard/notifications')
     },
-    {
-      id: 'customer-support',
-      title: "Customer Support",
-      description: "Help & tickets",
-      icon: HelpCircle,
-      color: "bg-gradient-to-br from-indigo-500 to-indigo-600",
-      action: () => alert('Opening support panel...')
-    },
-    {
-      id: 'live-chat',
-      title: "Live Chat",
-      description: "Active conversations",
-      icon: MessageSquare,
-      color: "bg-gradient-to-br from-green-500 to-green-600",
-      action: () => alert('Opening live chat...')
-    },
-    {
-      id: 'system-settings',
-      title: "Settings",
-      description: "System config",
-      icon: Settings,
-      color: "bg-gradient-to-br from-gray-500 to-gray-600",
-      action: () => alert('Opening settings...')
-    },
-    {
-      id: 'performance-boost',
-      title: "Performance",
-      description: "System metrics",
-      icon: Zap,
-      color: "bg-gradient-to-br from-yellow-500 to-yellow-600",
-      action: () => alert('Opening performance dashboard...')
-    },
+    // {
+    //   id: 'customer-support',
+    //   title: "Customer Support",
+    //   description: "Help & tickets",
+    //   icon: HelpCircle,
+    //   color: "bg-gradient-to-br from-indigo-500 to-indigo-600",
+    //   action: () => router.push('/admin/dashboard/support')
+    // },
+    // {
+    //   id: 'live-chat',
+    //   title: "Live Chat",
+    //   description: "Active conversations",
+    //   icon: MessageSquare,
+    //   color: "bg-gradient-to-br from-green-500 to-green-600",
+    //   action: () => router.push('/admin/dashboard/livechat')
+    // },
     {
       id: 'analytics',
       title: "Analytics",
       description: "Deep insights",
       icon: BarChart3,
       color: "bg-gradient-to-br from-blue-500 to-blue-600",
-      action: () => alert('Opening analytics...')
+      action: () => router.push('/admin/dashboard/analytics')
+    },
+    {
+      id: 'curriculum',
+      title: "Curriculum",
+      description: "Manage content",
+      icon: BookOpen,
+      color: "bg-gradient-to-br from-purple-500 to-purple-600",
+      action: () => router.push('/admin/curriculum')
+    },
+    {
+      id: 'textbooks',
+      title: "Textbooks",
+      description: "Educational resources",
+      icon: FileQuestion,
+      color: "bg-gradient-to-br from-orange-500 to-orange-600",
+      action: () => router.push('/admin/textbooks')
+    },
+    {
+      id: 'quizzes',
+      title: "Quizzes",
+      description: "Assessment tools",
+      icon: Award,
+      color: "bg-gradient-to-br from-teal-500 to-teal-600",
+      action: () => router.push('/admin/quizzes')
+    },
+    {
+      id: 'lessons',
+      title: "Lessons",
+      description: "Learning materials",
+      icon: Calendar,
+      color: "bg-gradient-to-br from-pink-500 to-pink-600",
+      action: () => router.push('/admin/lessons')
+    },
+    {
+      id: 'lesson-notes',
+      title: "Lesson Notes",
+      description: "Teaching guides",
+      icon: FileQuestion,
+      color: "bg-gradient-to-br from-cyan-500 to-cyan-600",
+      action: () => router.push('/admin/notes')
+    },
+    {
+      id: 'past-questions',
+      title: "Past Questions",
+      description: "Exam papers",
+      icon: Award,
+      color: "bg-gradient-to-br from-emerald-500 to-emerald-600",
+      action: () => router.push('/admin/pastquestions')
+    },
+    {
+      id: 'curriculum-strands',
+      title: "Curriculum Strands",
+      description: "Content structure",
+      icon: BookOpen,
+      color: "bg-gradient-to-br from-violet-500 to-violet-600",
+      action: () => router.push('/admin/curriculum-strands')
     }
   ];
 
@@ -244,21 +312,30 @@ export default function AdminDashboard() {
       <div className="max-w-7xl mx-auto">
         {/* Mobile-First Header */}
         <div className="mb-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
             <div>
-              <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-900 dark:text-white mb-1">
+              <h1 className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-bold text-gray-900 dark:text-white mb-1">
                 Dashboard
               </h1>
-              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                 Platform overview
               </p>
             </div>
             <div className="flex items-center space-x-2 sm:space-x-4">
-              <button className="flex items-center px-3 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
-                <Calendar className="h-4 w-4 mr-2" />
-                <span className="hidden sm:inline">Last 30 days</span>
-                <span className="sm:hidden">30d</span>
-              </button>
+              <div className="relative">
+                <select 
+                  value={dateFilter}
+                  onChange={(e) => setDateFilter(e.target.value as any)}
+                  className="appearance-none flex items-center px-2 sm:px-3 py-1.5 sm:py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-xs sm:text-sm pr-6 sm:pr-8"
+                >
+                  <option value="7d">Last 7 days</option>
+                  <option value="30d">Last 30 days</option>
+                  <option value="90d">Last 90 days</option>
+                  <option value="1y">Last year</option>
+                  <option value="all">All time</option>
+                </select>
+                <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+              </div>
               <button className="flex items-center px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors text-sm">
                 <Download className="h-4 w-4 mr-2" />
                 <span className="hidden sm:inline">Export</span>
@@ -267,18 +344,42 @@ export default function AdminDashboard() {
           </div>
         </div>
 
+        {/* Loading and Error States */}
+        {loading && (
+          <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+            <div className="flex items-center">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-3"></div>
+              <span className="text-blue-700 dark:text-blue-300">Loading dashboard data...</span>
+            </div>
+          </div>
+        )}
+
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+            <div className="flex items-center">
+              <span className="text-red-700 dark:text-red-300">Error: {error}</span>
+              <button 
+                onClick={fetchDashboardData}
+                className="ml-4 px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700"
+              >
+                Retry
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Quick Actions - Mobile First */}
-        <div className="mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Actions</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+        <div className="mb-4 sm:mb-6">
+          <h2 className="text-sm sm:text-base lg:text-lg font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4">Quick Actions</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-10 gap-2 sm:gap-3">
             {quickActions.map((action) => (
               <button
                 key={action.id}
                 onClick={action.action}
-                className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all duration-300 group cursor-pointer active:scale-95"
+                className="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl p-2 sm:p-3 lg:p-4 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all duration-300 group cursor-pointer active:scale-95"
               >
-                <div className={`p-2 sm:p-3 rounded-xl ${action.color} shadow-lg mb-3 mx-auto w-fit`}>
-                  <action.icon className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
+                <div className={`p-1.5 sm:p-2 lg:p-3 rounded-lg sm:rounded-xl ${action.color} shadow-lg mb-2 sm:mb-3 mx-auto w-fit`}>
+                  <action.icon className="h-3 w-3 sm:h-4 sm:w-4 lg:h-5 lg:w-5 text-white" />
                 </div>
                 <h3 className="text-xs sm:text-sm font-medium text-gray-900 dark:text-white mb-1 text-center">
                   {action.title}
@@ -292,25 +393,25 @@ export default function AdminDashboard() {
         </div>
 
         {/* Main Stats Cards - Mobile First (2 per row) */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-3 lg:gap-4 mb-4 sm:mb-6">
           {statCards.map((stat) => (
             <button
               key={stat.id}
               onClick={() => handleCardClick(stat.id)}
-              className={`bg-white dark:bg-gray-800 rounded-xl p-3 sm:p-6 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all duration-300 group cursor-pointer text-left active:scale-95 ${
+              className={`bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl p-2 sm:p-3 lg:p-4 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all duration-300 group cursor-pointer text-left active:scale-95 ${
                 selectedCard === stat.id ? 'ring-2 ring-indigo-500 shadow-lg' : ''
               }`}
             >
-              <div className="flex items-center justify-between mb-3 sm:mb-4">
-                <div className={`p-2 sm:p-3 rounded-xl ${stat.color} shadow-lg`}>
-                  <stat.icon className="h-4 w-4 sm:h-6 sm:w-6 text-white" />
+              <div className="flex items-center justify-between mb-2 sm:mb-3">
+                <div className={`p-1.5 sm:p-2 lg:p-3 rounded-lg sm:rounded-xl ${stat.color} shadow-lg`}>
+                  <stat.icon className="h-3 w-3 sm:h-4 sm:w-4 lg:h-5 lg:w-5 text-white" />
                 </div>
                 <div className="text-right">
                   <div className="flex items-center space-x-1">
                     {stat.change.startsWith('+') ? (
-                      <ChevronUp className="h-3 w-3 sm:h-4 sm:w-4 text-emerald-500" />
+                      <ChevronUp className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-emerald-500" />
                     ) : (
-                      <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4 text-red-500" />
+                      <ChevronDown className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-red-500" />
                     )}
                     <span className={`text-xs sm:text-sm font-semibold ${
                       stat.change.startsWith('+') ? 'text-emerald-500' : 'text-red-500'
@@ -327,7 +428,7 @@ export default function AdminDashboard() {
               <h3 className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
                 {stat.title}
               </h3>
-              <p className="text-lg sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-1">
+              <p className="text-sm sm:text-base lg:text-lg font-bold text-gray-900 dark:text-white mb-1">
                 {stat.value}
               </p>
               <p className="text-xs text-gray-500 dark:text-gray-400 hidden sm:block">
@@ -346,18 +447,18 @@ export default function AdminDashboard() {
         </div>
 
         {/* Performance Metrics - Mobile First */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3 lg:gap-4 mb-4 sm:mb-6">
           {performanceMetrics.map((metric) => (
             <button
               key={metric.id}
               onClick={() => handleCardClick(metric.id)}
-              className={`bg-white dark:bg-gray-800 rounded-xl p-3 sm:p-6 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all duration-300 text-left active:scale-95 ${
+              className={`bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl p-2 sm:p-3 lg:p-4 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all duration-300 text-left active:scale-95 ${
                 selectedCard === metric.id ? 'ring-2 ring-indigo-500 shadow-lg' : ''
               }`}
             >
-              <div className="flex items-center justify-between mb-3">
-                <div className="p-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                  <metric.icon className="h-4 w-4 sm:h-5 sm:w-5 text-gray-600 dark:text-gray-400" />
+              <div className="flex items-center justify-between mb-2 sm:mb-3">
+                <div className="p-1.5 sm:p-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                  <metric.icon className="h-3 w-3 sm:h-4 sm:w-4 text-gray-600 dark:text-gray-400" />
                 </div>
                 <span className={`text-xs sm:text-sm font-medium ${
                   metric.change.startsWith('+') ? 'text-emerald-500' : 'text-red-500'
@@ -368,7 +469,7 @@ export default function AdminDashboard() {
               <h3 className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
                 {metric.title}
               </h3>
-              <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white mb-1">
+              <p className="text-sm sm:text-base lg:text-lg font-bold text-gray-900 dark:text-white mb-1">
                 {metric.value}
               </p>
               <p className="text-xs text-gray-500 dark:text-gray-400 hidden sm:block">
@@ -379,15 +480,15 @@ export default function AdminDashboard() {
         </div>
 
         {/* Charts Section - Mobile Responsive */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 mb-4 sm:mb-6">
           {/* User Activity Chart */}
-          <div className="xl:col-span-2 bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100 dark:border-gray-700">
-            <div className="flex items-center justify-between mb-4 sm:mb-6">
+          <div className="xl:col-span-2 bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl p-3 sm:p-4 lg:p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
               <div>
-                <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-1">
+                <h3 className="text-sm sm:text-base lg:text-lg font-semibold text-gray-900 dark:text-white mb-1">
                   User Activity
                 </h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 hidden sm:block">
+                <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 hidden sm:block">
                   Daily active users and registrations
                 </p>
               </div>
@@ -400,7 +501,7 @@ export default function AdminDashboard() {
                 </button>
               </div>
             </div>
-            <div className="h-[250px] sm:h-[350px]">
+            <div className="h-[200px] sm:h-[250px] lg:h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={userActivity}>
                   <defs>
@@ -456,13 +557,13 @@ export default function AdminDashboard() {
           </div>
 
           {/* Quiz Completion Pie Chart */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100 dark:border-gray-700">
-            <div className="flex items-center justify-between mb-4 sm:mb-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl p-3 sm:p-4 lg:p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+                <h3 className="text-sm sm:text-base lg:text-lg font-semibold text-gray-900 dark:text-white mb-1">
                   Quiz Distribution
                 </h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 hidden sm:block">
+                <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 hidden sm:block">
                   Completion by subject
                 </p>
               </div>
@@ -510,15 +611,15 @@ export default function AdminDashboard() {
         </div>
 
         {/* Bottom Charts - Mobile Responsive */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
           {/* Revenue Chart */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100 dark:border-gray-700">
-            <div className="flex items-center justify-between mb-4 sm:mb-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl p-3 sm:p-4 lg:p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+                <h3 className="text-sm sm:text-base lg:text-lg font-semibold text-gray-900 dark:text-white mb-1">
                   Revenue Growth
                 </h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 hidden sm:block">
+                <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 hidden sm:block">
                   Monthly revenue trends
                 </p>
               </div>
@@ -559,13 +660,13 @@ export default function AdminDashboard() {
           </div>
 
           {/* Subject Engagement */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100 dark:border-gray-700">
-            <div className="flex items-center justify-between mb-4 sm:mb-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl p-3 sm:p-4 lg:p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+                <h3 className="text-sm sm:text-base lg:text-lg font-semibold text-gray-900 dark:text-white mb-1">
                   Subject Popularity
                 </h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 hidden sm:block">
+                <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 hidden sm:block">
                   Student engagement by subject
                 </p>
               </div>

@@ -61,7 +61,7 @@ const AddNewStrand = () => {
 
   // Filter subjects based on level and course
   useEffect(() => {
-    if (formData.level === 'Basic' || formData.level === 'JHS') {
+    if (formData.level === 'KG' || formData.level === 'Basic' || formData.level === 'JHS') {
       const levelSubjects = subjects.filter(subject => subject.level === formData.level);
       setAvailableSubjects(levelSubjects);
     } else if (formData.level === 'SHS') {
@@ -87,8 +87,10 @@ const AddNewStrand = () => {
   // Reset class when level changes to appropriate default
   useEffect(() => {
     let defaultClass = '1';
-    if (formData.level === 'Basic') {
-      defaultClass = '4';
+    if (formData.level === 'KG') {
+      defaultClass = '1';
+    } else if (formData.level === 'Basic') {
+      defaultClass = '1';
     } else if (formData.level === 'JHS' || formData.level === 'SHS') {
       defaultClass = '1';
     }
@@ -207,8 +209,10 @@ const AddNewStrand = () => {
 
   const getClassOptions = () => {
     switch (formData.level) {
+      case 'KG':
+        return ['1', '2'];
       case 'Basic':
-        return ['4', '5', '6'];
+        return ['1', '2', '3', '4', '5', '6'];
       case 'JHS':
       case 'SHS':
         return ['1', '2', '3'];
@@ -219,6 +223,8 @@ const AddNewStrand = () => {
 
   const getLevelDisplayName = (level: string) => {
     switch (level) {
+      case 'KG':
+        return 'Kindergarten';
       case 'Basic':
         return 'Basic School';
       case 'JHS':
@@ -318,8 +324,8 @@ const AddNewStrand = () => {
                   <label className="block text-sm font-semibold text-gray-700">
                     Education Level *
                   </label>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    {['Basic', 'JHS', 'SHS'].map((level) => (
+                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                    {['KG', 'Basic', 'JHS', 'SHS'].map((level) => (
                       <label key={level} className="relative cursor-pointer">
                         <input
                           type="radio"
@@ -351,7 +357,9 @@ const AddNewStrand = () => {
                   <label htmlFor="class" className="block text-sm font-semibold text-gray-700 mb-3">
                     Class Level *
                   </label>
-                  <div className="grid grid-cols-3 gap-3">
+                  <div className={`grid gap-3 ${
+                    formData.level === 'Basic' ? 'grid-cols-3 sm:grid-cols-6' : 'grid-cols-3'
+                  }`}>
                     {getClassOptions().map((classNum) => (
                       <label key={classNum} className="relative cursor-pointer">
                         <input

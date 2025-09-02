@@ -15,15 +15,20 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: '/sw.js',
+        // Apply CORS headers to all API routes
+        source: '/api/:path*',
         headers: [
           {
-            key: 'Cache-Control',
-            value: 'public, max-age=0, must-revalidate',
+            key: 'Access-Control-Allow-Origin',
+            value: '*', // Allow all origins for API routes
           },
           {
-            key: 'Service-Worker-Allowed',
-            value: '/',
+            key: 'Access-Control-Allow-Methods',
+            value: 'GET, POST, PUT, DELETE, OPTIONS',
+          },
+          {
+            key: 'Access-Control-Allow-Headers',
+            value: 'Content-Type, Authorization',
           },
         ],
       },

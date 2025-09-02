@@ -3,16 +3,16 @@
 import { uploadToCloudinary } from '@/lib/cloudinary';
 import { shsCourses, useAdminCurriculumStore } from '@/stores/curriculum';
 import {
-  AlertCircle,
-  ArrowLeft,
-  Check,
-  Download,
-  Edit3,
-  ExternalLink,
-  Eye,
-  FileText,
-  Save,
-  X
+    AlertCircle,
+    ArrowLeft,
+    Check,
+    Download,
+    Edit3,
+    ExternalLink,
+    Eye,
+    FileText,
+    Save,
+    X
 } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -20,7 +20,7 @@ import { useEffect, useState } from 'react';
 // Type definitions
 interface FormData {
   title: string;
-  level: 'Basic' | 'JHS' | 'SHS';
+  level: 'KG' | 'Basic' | 'JHS' | 'SHS';
   class: string;
   course: string;
   subject: string;
@@ -97,7 +97,7 @@ const EditCurriculum = () => {
   // Set form data when document is loaded
   useEffect(() => {
     if (selectedDocument) {
-      const levelFromClass = selectedDocument.class.split(' ')[0] as 'Basic' | 'JHS' | 'SHS';
+      const levelFromClass = selectedDocument.class.split(' ')[0] as 'KG' | 'Basic' | 'JHS' | 'SHS';
       const classNumber = selectedDocument.class.split(' ')[1];
       
       const data: FormData = {
@@ -290,7 +290,7 @@ const handleInputChange = (field: keyof FormData, value: string): void => {
   };
 
   const availableSubjects = getSubjectsForLevel(
-    formData.level as 'Basic' | 'JHS' | 'SHS' | undefined, 
+    formData.level as 'KG' | 'Basic' | 'JHS' | 'SHS' | undefined, 
     formData.course
   );
 
@@ -466,13 +466,16 @@ const handleInputChange = (field: keyof FormData, value: string): void => {
                         } focus:outline-none`}
                       >
                         <option value="">Select Level</option>
+                        <option value="KG">Kindergarten</option>
                         <option value="Basic">Basic School</option>
                         <option value="JHS">Junior High School</option>
                         <option value="SHS">Senior High School</option>
                       </select>
                     ) : (
                       <div className="w-full px-4 py-3 bg-gray-50 rounded-lg border border-gray-200">
-                        {formData.level === 'JHS' ? 'Junior High School' : 'Senior High School'}
+                        {formData.level === 'KG' ? 'Kindergarten' : 
+                         formData.level === 'Basic' ? 'Basic School' :
+                         formData.level === 'JHS' ? 'Junior High School' : 'Senior High School'}
                       </div>
                     )}
                     {errors.level && (
@@ -497,8 +500,17 @@ const handleInputChange = (field: keyof FormData, value: string): void => {
                         } focus:outline-none disabled:bg-gray-100`}
                       >
                         <option value="">Select Class</option>
+                        {formData.level === 'KG' && (
+                          <>
+                            <option value="KG 1">KG 1</option>
+                            <option value="KG 2">KG 2</option>
+                          </>
+                        )}
                         {formData.level === 'Basic' && (
                           <>
+                            <option value="Basic 1">Basic 1</option>
+                            <option value="Basic 2">Basic 2</option>
+                            <option value="Basic 3">Basic 3</option>
                             <option value="Basic 4">Basic 4</option>
                             <option value="Basic 5">Basic 5</option>
                             <option value="Basic 6">Basic 6</option>

@@ -578,7 +578,6 @@ if (level === 'SHS' && course) {
           subject: data.subject,
           level: data.level,
           class: data.class,
-          course: data.course,
           createdAt: data.created_at,
           updatedAt: data.updated_at,
         };
@@ -635,7 +634,7 @@ if (level === 'SHS' && course) {
           subject: data.subject,
           level: data.level,
           class: data.class,
-          course: data.course,
+          
           createdAt: data.created_at,
           updatedAt: data.updated_at,
         };

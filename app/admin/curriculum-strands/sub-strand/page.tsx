@@ -77,7 +77,9 @@ const AddNewSubStrand = () => {
   }, [formData.level, subjects]);
 
 const availableSubjects = useMemo(() => {
-  if (formData.level === 'Basic') {
+  if (formData.level === 'KG') {
+    return subjects.filter(subject => subject.level === 'KG');
+  } else if (formData.level === 'Basic') {
     return subjects.filter(subject => subject.level === 'Basic');
   } else if (formData.level === 'JHS') {
     return subjects.filter(subject => subject.level === 'JHS');
@@ -99,21 +101,20 @@ const availableSubjects = useMemo(() => {
     return strands.filter(strand => 
       strand.subjectId === formData.subjectId &&
       strand.level === formData.level &&
-      strand.class === `${formData.level} ${formData.class}` &&
-      (formData.level === 'Basic' || formData.level === 'JHS' || strand.course === formData.course)
+      strand.class === `${formData.level} ${formData.class}`
     );
-  }, [formData.subjectId, formData.level, formData.class, formData.course, strands]);
+  }, [formData.subjectId, formData.level, formData.class, strands]);
 
 const isFormValid = useMemo(() => {
   return formData.name.trim() !== '' && 
          formData.subjectId !== '' && 
          formData.strandId !== '' &&
-         (formData.level === 'Basic' || formData.level === 'JHS' || formData.course !== '');
+         (formData.level === 'KG' || formData.level === 'Basic' || formData.level === 'JHS' || formData.course !== '');
 }, [formData]);
 
 
 const progressPercentage = useMemo(() => {
-  const totalFields = (formData.level === 'Basic' || formData.level === 'JHS') ? 5 : 6;
+  const totalFields = (formData.level === 'KG' || formData.level === 'Basic' || formData.level === 'JHS') ? 5 : 6;
   let filledFields = 0;
   
   if (formData.name.trim()) filledFields++;
@@ -121,7 +122,7 @@ const progressPercentage = useMemo(() => {
   if (formData.class) filledFields++;
   if (formData.subjectId) filledFields++;
   if (formData.strandId) filledFields++;
-  if (formData.level === 'Basic' || formData.level === 'JHS' || formData.course) filledFields++;
+  if (formData.level === 'KG' || formData.level === 'Basic' || formData.level === 'JHS' || formData.course) filledFields++;
   
   return Math.round((filledFields / totalFields) * 100);
 }, [formData]);
@@ -137,8 +138,8 @@ const loadData = useCallback(async () => {
     
     // Only fetch strands if we have the required dependencies
     if (formData.subjectId && formData.level && formData.class) {
-      // For Basic and JHS, course is not required, for SHS it is
-      if (formData.level === 'Basic' || formData.level === 'JHS' || (formData.level === 'SHS' && formData.course)) {
+      // For KG, Basic and JHS, course is not required, for SHS it is
+      if (formData.level === 'KG' || formData.level === 'Basic' || formData.level === 'JHS' || (formData.level === 'SHS' && formData.course)) {
         const fullClassName = `${formData.level} ${formData.class}`;
         await fetchStrands(formData.subjectId, formData.level, fullClassName, formData.course);
       }
@@ -167,8 +168,8 @@ useEffect(() => {
 // Load strands when dependencies change
 useEffect(() => {
   if (fetchStrands && formData.subjectId && formData.level && formData.class) {
-    // For Basic and JHS, course is not required, for SHS it is
-    if (formData.level === 'Basic' || formData.level === 'JHS' || (formData.level === 'SHS' && formData.course)) {
+    // For KG, Basic and JHS, course is not required, for SHS it is
+    if (formData.level === 'KG' || formData.level === 'Basic' || formData.level === 'JHS' || (formData.level === 'SHS' && formData.course)) {
       const fullClassName = `${formData.level} ${formData.class}`;
       fetchStrands(formData.subjectId, formData.level, fullClassName, formData.course).catch(err => {
         console.error('Failed to load strands:', err);
@@ -408,8 +409,8 @@ const validateForm = useCallback(() => {
   <label className="block text-sm font-semibold text-gray-700">
     Education Level *
   </label>
-  <div className="grid grid-cols-3 gap-4">
-    {(['Basic', 'JHS', 'SHS'] as const).map((level) => (
+  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+    {(['KG', 'Basic', 'JHS', 'SHS'] as const).map((level) => (
       <label key={level} className="relative cursor-pointer">
         <input
           type="radio"
@@ -425,7 +426,7 @@ const validateForm = useCallback(() => {
             : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
         }`}>
           <div className={`font-semibold ${formData.level === level ? 'text-purple-700' : 'text-gray-700'}`}>
-            {level === 'Basic' ? 'Basic School' : level === 'JHS' ? 'Junior High School' : 'Senior High School'}
+            {level === 'KG' ? 'Kindergarten' : level === 'Basic' ? 'Basic School' : level === 'JHS' ? 'Junior High School' : 'Senior High School'}
           </div>
           <div className={`text-sm ${formData.level === level ? 'text-purple-600' : 'text-gray-500'}`}>
             {level}
@@ -441,9 +442,32 @@ const validateForm = useCallback(() => {
   <label htmlFor="class" className="block text-sm font-semibold text-gray-700 mb-3">
     Class Level *
   </label>
-  <div className="grid grid-cols-3 gap-3">
-    {formData.level === 'Basic' 
-      ? ['4', '5', '6'].map((classNum) => (
+  <div className={`grid gap-3 ${
+    formData.level === 'Basic' ? 'grid-cols-3 sm:grid-cols-6' : 
+    formData.level === 'KG' ? 'grid-cols-2' : 'grid-cols-3'
+  }`}>
+    {formData.level === 'KG'
+      ? ['1', '2'].map((classNum) => (
+          <label key={classNum} className="relative cursor-pointer">
+            <input
+              type="radio"
+              name="class"
+              value={classNum}
+              checked={formData.class === classNum}
+              onChange={handleInputChange}
+              className="sr-only"
+            />
+            <div className={`p-3 border-2 rounded-lg text-center font-medium transition-all duration-200 ${
+              formData.class === classNum
+                ? 'border-purple-500 bg-purple-50 text-purple-700 shadow-md'
+                : 'border-gray-200 text-gray-700 hover:border-gray-300 hover:bg-gray-50'
+            }`}>
+              KG {classNum}
+            </div>
+          </label>
+        ))
+      : formData.level === 'Basic' 
+      ? ['1', '2', '3', '4', '5', '6'].map((classNum) => (
           <label key={classNum} className="relative cursor-pointer">
             <input
               type="radio"
@@ -698,13 +722,13 @@ const validateForm = useCallback(() => {
                         <div className="flex justify-between">
   <span className="text-gray-600">Level:</span>
   <span className="font-medium text-gray-900">
-    {formData.level === 'Basic' ? 'Basic School' : formData.level === 'JHS' ? 'Junior High School' : 'Senior High School'}
+    {formData.level === 'KG' ? 'Kindergarten' : formData.level === 'Basic' ? 'Basic School' : formData.level === 'JHS' ? 'Junior High School' : 'Senior High School'}
   </span>
 </div>
                         <div className="flex justify-between">
   <span className="text-gray-600">Class:</span>
   <span className="font-medium text-gray-900">
-    {formData.level === 'Basic' ? `Basic ${formData.class}` : `${formData.level} ${formData.class}`}
+    {formData.level === 'KG' ? `KG ${formData.class}` : formData.level === 'Basic' ? `Basic ${formData.class}` : `${formData.level} ${formData.class}`}
   </span>
 </div>
                         {formData.level === 'SHS' && (

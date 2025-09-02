@@ -38,6 +38,8 @@ const AddNewQuiz = () => {
     createQuiz,
     fetchSubjects,
     fetchSubStrands,
+    getAvailableCourses: getStoreAvailableCourses,
+    getFilteredSubjects,
     setCurrentQuiz,
     addQuestion,
     updateQuestion,
@@ -69,21 +71,11 @@ const AddNewQuiz = () => {
   // Store refs for all textareas to track focus and cursor position
   const textareaRefs = useRef<{ [key: string]: HTMLTextAreaElement }>({});
 
-  // Course options for SHS
-  const shsCourses = [
-    'General Science',
-    'General Arts',
-    'Business',
-    'Visual Arts',
-    'Home Economics',
-    'Technical',
-    'Agricultural Science'
-  ];
-
   // Class options
+  const kgClasses = ['KG 1', 'KG 2'];
+  const basicClasses = ['Basic 1', 'Basic 2', 'Basic 3', 'Basic 4', 'Basic 5', 'Basic 6'];
   const jhsClasses = ['JHS 1', 'JHS 2', 'JHS 3'];
   const shsClasses = ['SHS 1', 'SHS 2', 'SHS 3'];
-  const basicClasses = ['Basic 4', 'Basic 5', 'Basic 6'];
 
   useEffect(() => {
     fetchSubjects();
@@ -104,21 +96,24 @@ const AddNewQuiz = () => {
   }, [fetchSubjects, setCurrentQuiz]);
 
   useEffect(() => {
-    if (formData.level === 'JHS') {
+    if (formData.level === 'KG') {
+      fetchSubjects('KG');
+      setFormData(prev => ({ ...prev, course: '', subject: '', sub_strand: '' }));
+    } else if (formData.level === 'Basic') {
+      fetchSubjects('Basic');
+      setFormData(prev => ({ ...prev, course: '', subject: '', sub_strand: '' }));
+    } else if (formData.level === 'JHS') {
       fetchSubjects('JHS');
       setFormData(prev => ({ ...prev, course: '', subject: '', sub_strand: '' }));
-    }
-  }, [formData.level, formData.class, fetchSubjects]);
-    useEffect(() => {
-    if (formData.level === 'Basic') {
-      fetchSubjects('Basic');
+    } else if (formData.level === 'SHS') {
+      fetchSubjects('SHS');
       setFormData(prev => ({ ...prev, course: '', subject: '', sub_strand: '' }));
     }
   }, [formData.level, formData.class, fetchSubjects]);
 
   useEffect(() => {
     if (formData.course && formData.level === 'SHS') {
-      fetchSubjects('SHS');
+      fetchSubjects('SHS', formData.course);
       setFormData(prev => ({ ...prev, subject: '', sub_strand: '' }));
     }
   }, [formData.course, formData.level, fetchSubjects]);
@@ -398,12 +393,10 @@ const AddNewQuiz = () => {
   };
 
   const getAvailableSubjects = () => {
-    if (formData.level === 'JHS') {
-      return subjects.filter(s => s.level === 'JHS');
-    } else {
-      return subjects.filter(s => s.level === 'SHS' && (!formData.course || s.course === formData.course));
-    }
+    return getFilteredSubjects(formData.level, formData.course);
   };
+
+  const availableCourses = getStoreAvailableCourses(formData.level);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -469,6 +462,7 @@ const AddNewQuiz = () => {
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 >
+                  <option value="KG">Kindergarten (KG)</option>
                   <option value="Basic">Upper Primary</option>
                   <option value="JHS">Junior High School (JHS)</option>
                   <option value="SHS">Senior High School (SHS)</option>
@@ -486,7 +480,9 @@ const AddNewQuiz = () => {
                   required
                 >
                   <option value="">Select Class</option>
-                  {(formData.level === 'Basic'
+                  {(formData.level === 'KG'
+                    ? kgClasses
+                    : formData.level === 'Basic'
                     ? basicClasses
                     : formData.level === 'JHS'
                     ? jhsClasses
@@ -509,8 +505,8 @@ const AddNewQuiz = () => {
                     required
                   >
                     <option value="">Select Course</option>
-                    {shsCourses.map(course => (
-                      <option key={course} value={course}>{course}</option>
+                    {availableCourses.map(course => (
+                      <option key={course.name} value={course.name}>{course.name}</option>
                     ))}
                   </select>
                 </div>

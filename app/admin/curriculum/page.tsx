@@ -3,37 +3,37 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/components/ui/select";
 import { CurriculumDocument, shsCourses, useAdminCurriculumStore } from "@/stores/curriculum";
 import { motion } from "framer-motion";
 import {
-  ArrowRight,
-  BookOpen,
-  Calendar,
-  ChevronLeft,
-  ChevronRight,
-  Clock,
-  Edit3,
-  GraduationCap,
-  Grid3X3,
-  List,
-  Search,
-  Target,
-  Trash2,
-  Users
+    ArrowRight,
+    BookOpen,
+    Calendar,
+    ChevronLeft,
+    ChevronRight,
+    Clock,
+    Edit3,
+    GraduationCap,
+    Grid3X3,
+    List,
+    Search,
+    Target,
+    Trash2,
+    Users
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function CurriculumPage() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedLevel, setSelectedLevel] = useState<"all" | "Basic" | "JHS" | "SHS">("all");
-  const [selectedClass, setSelectedClass] = useState<"all" | "Basic 4" | "Basic 5" | "Basic 6" | "JHS 1" | "JHS 2" | "JHS 3" | "SHS 1" | "SHS 2" | "SHS 3">("all");
+  const [selectedLevel, setSelectedLevel] = useState<"all" | "KG" | "Basic" | "JHS" | "SHS">("all");
+  const [selectedClass, setSelectedClass] = useState<"all" | "KG 1" | "KG 2" | "Basic 1" | "Basic 2" | "Basic 3" | "Basic 4" | "Basic 5" | "Basic 6" | "JHS 1" | "JHS 2" | "JHS 3" | "SHS 1" | "SHS 2" | "SHS 3">("all");
   const [selectedSubject, setSelectedSubject] = useState("all");
   const [selectedCourse, setSelectedCourse] = useState("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
@@ -438,6 +438,7 @@ export default function CurriculumPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Levels</SelectItem>
+                  <SelectItem value="KG">KG</SelectItem>
                   <SelectItem value="Basic">Basic</SelectItem>
                   <SelectItem value="JHS">JHS</SelectItem>
                   <SelectItem value="SHS">SHS</SelectItem>
@@ -450,6 +451,11 @@ export default function CurriculumPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Classes</SelectItem>
+                  <SelectItem value="KG 1">KG 1</SelectItem>
+                  <SelectItem value="KG 2">KG 2</SelectItem>
+                  <SelectItem value="Basic 1">Basic 1</SelectItem>
+                  <SelectItem value="Basic 2">Basic 2</SelectItem>
+                  <SelectItem value="Basic 3">Basic 3</SelectItem>
                   <SelectItem value="Basic 4">Basic 4</SelectItem>
                   <SelectItem value="Basic 5">Basic 5</SelectItem>
                   <SelectItem value="Basic 6">Basic 6</SelectItem>
