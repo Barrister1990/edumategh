@@ -2,7 +2,7 @@
 
 import { useCurriculumStore } from '@/stores/curriculumStrand';
 import { BookOpen, CheckSquare, ChevronDown, FileText, Filter, Grid, Layers, List, Search, Square, Target, Trash2, Users, X } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 // SHS Courses from your store
 const shsCourses = [
@@ -114,32 +114,15 @@ const GESCurriculumPage = () => {
   }, [levelFilter]);
 
   // Selection and deletion helpers
-  const resetSelection = () => {
+  const resetSelection = useCallback(() => {
     setSelectedItems(new Set());
     setSelectAll(false);
-  };
-
-  const getCurrentItems = () => {
-    switch (activeTab) {
-      case 'subjects':
-        return filteredData.subjects;
-      case 'strands':
-        return filteredData.strands;
-      case 'substrands':
-        return filteredData.substrands;
-      case 'contentStandards':
-        return filteredData.contentStandards;
-      case 'indicators':
-        return filteredData.indicators;
-      default:
-        return [];
-    }
-  };
+  }, []);
 
   // Reset selection when active tab changes
   useEffect(() => {
     resetSelection();
-    setViewMode('cards'); // Reset to cards view when changing tabs
+    // Don't reset view mode - let user keep their preferred view
   }, [activeTab, resetSelection]);
 
   const levels = ['all', 'KG', 'Basic', 'JHS', 'SHS'] as const;
@@ -263,6 +246,83 @@ const GESCurriculumPage = () => {
     substrandFilter, contentStandardFilter, classFilter, searchQuery
   ]);
 
+  const getCurrentItems = useCallback(() => {
+    switch (activeTab) {
+      case 'subjects':
+        return filteredData.subjects;
+      case 'strands':
+        return filteredData.strands;
+      case 'substrands':
+        return filteredData.substrands;
+      case 'contentStandards':
+        return filteredData.contentStandards;
+      case 'indicators':
+        return filteredData.indicators;
+      default:
+        return [];
+    }
+  }, [activeTab, filteredData]);
+
+  // Selection and deletion helpers
+  const handleSelectItem = useCallback((itemId: string) => {
+    const newSelected = new Set(selectedItems);
+    if (newSelected.has(itemId)) {
+      newSelected.delete(itemId);
+    } else {
+      newSelected.add(itemId);
+    }
+    setSelectedItems(newSelected);
+    // Calculate length based on current tab and filtered data
+    let currentLength = 0;
+    switch (activeTab) {
+      case 'subjects':
+        currentLength = filteredData.subjects.length;
+        break;
+      case 'strands':
+        currentLength = filteredData.strands.length;
+        break;
+      case 'substrands':
+        currentLength = filteredData.substrands.length;
+        break;
+      case 'contentStandards':
+        currentLength = filteredData.contentStandards.length;
+        break;
+      case 'indicators':
+        currentLength = filteredData.indicators.length;
+        break;
+    }
+    setSelectAll(newSelected.size === currentLength);
+  }, [selectedItems, activeTab, filteredData]);
+
+  const handleSelectAll = useCallback(() => {
+    if (selectAll) {
+      setSelectedItems(new Set());
+      setSelectAll(false);
+    } else {
+      // Get current items based on active tab
+      let currentItems: any[] = [];
+      switch (activeTab) {
+        case 'subjects':
+          currentItems = filteredData.subjects;
+          break;
+        case 'strands':
+          currentItems = filteredData.strands;
+          break;
+        case 'substrands':
+          currentItems = filteredData.substrands;
+          break;
+        case 'contentStandards':
+          currentItems = filteredData.contentStandards;
+          break;
+        case 'indicators':
+          currentItems = filteredData.indicators;
+          break;
+      }
+      setSelectedItems(new Set(currentItems.map(item => item.id)));
+      setSelectAll(true);
+    }
+  }, [selectAll, activeTab, filteredData]);
+
   // Available options for dropdowns based on filtered data
   const availableSubjects = useMemo(() => 
     filteredData.subjects.map(subject => ({ id: subject.id, name: subject.name })),
@@ -375,28 +435,7 @@ const GESCurriculumPage = () => {
     setSearchQuery('');
   };
 
-  // Selection and deletion helpers
-  const handleSelectItem = (itemId: string) => {
-    const newSelected = new Set(selectedItems);
-    if (newSelected.has(itemId)) {
-      newSelected.delete(itemId);
-    } else {
-      newSelected.add(itemId);
-    }
-    setSelectedItems(newSelected);
-    setSelectAll(newSelected.size === getCurrentItems().length);
-  };
 
-  const handleSelectAll = () => {
-    if (selectAll) {
-      setSelectedItems(new Set());
-      setSelectAll(false);
-    } else {
-      const currentItems = getCurrentItems();
-      setSelectedItems(new Set(currentItems.map(item => item.id)));
-      setSelectAll(true);
-    }
-  };
 
   const handleDeleteSelected = async () => {
     if (selectedItems.size === 0) return;

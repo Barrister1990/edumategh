@@ -51,11 +51,13 @@ const AddNewContentStandard = () => {
     subjects = [],
     strands = [],
     subStrands = [],
+    contentStandards = [],
     isCreating = false,
     error,
     fetchSubjects,
     fetchStrands,
     fetchSubStrands,
+    fetchContentStandards,
     createContentStandard,
     clearError
   } = useCurriculumStore();
@@ -201,6 +203,15 @@ const progressPercentage = useMemo(() => {
     }
   }, [formData.strandId, fetchSubStrands]);
 
+  // Load content standards when sub-strand changes
+  useEffect(() => {
+    if (fetchContentStandards && formData.subStrandId) {
+      fetchContentStandards(formData.subStrandId).catch(err => {
+        console.error('Failed to load content standards:', err);
+      });
+    }
+  }, [formData.subStrandId, fetchContentStandards]);
+
   // Reset dependent fields when parent selections change
   useEffect(() => {
     setFormData(prev => ({ 
@@ -270,6 +281,16 @@ const progressPercentage = useMemo(() => {
     }
   }, [availableSubjects, availableStrands, availableSubStrands]);
 
+// Check for duplicate content standards
+const checkForDuplicate = useCallback((name: string, subStrandId: string): boolean => {
+  if (!name.trim() || !subStrandId) return false;
+  
+  return contentStandards.some(cs => 
+    cs.subStrandId === subStrandId && 
+    cs.name.toLowerCase().trim() === name.toLowerCase().trim()
+  );
+}, [contentStandards]);
+
 const validateForm = useCallback(() => {
   const errors: string[] = [];
   
@@ -293,8 +314,13 @@ const validateForm = useCallback(() => {
     errors.push('Please select a course for SHS');
   }
 
+  // Check for duplicate content standard
+  if (formData.name.trim() && formData.subStrandId && checkForDuplicate(formData.name, formData.subStrandId)) {
+    errors.push('A content standard with this name already exists for the selected sub-strand');
+  }
+
   return errors;
-}, [formData]);
+}, [formData, checkForDuplicate]);
 
   const handleSubmit = useCallback(async () => {
     const validationErrors = validateForm();
@@ -349,7 +375,13 @@ const validateForm = useCallback(() => {
     
     switch (fieldName) {
       case 'name':
-        return formData.name.trim() === '' ? 'Content standard name is required' : '';
+        if (formData.name.trim() === '') {
+          return 'Content standard name is required';
+        }
+        if (formData.name.trim() && formData.subStrandId && checkForDuplicate(formData.name, formData.subStrandId)) {
+          return 'A content standard with this name already exists for the selected sub-strand';
+        }
+        return '';
       case 'subjectId':
         return formData.subjectId === '' ? 'Please select a subject' : '';
       case 'strandId':
@@ -361,7 +393,7 @@ const validateForm = useCallback(() => {
       default:
         return '';
     }
-  }, [formData, touchedFields]);
+  }, [formData, touchedFields, checkForDuplicate]);
 
   if (isLoading) {
     return (
@@ -468,6 +500,15 @@ const validateForm = useCallback(() => {
                     <span className="text-sm font-medium text-gray-600">Sub-Strand:</span>
                     <span className="text-sm font-semibold text-gray-900 truncate ml-2">{formData.subStrand || 'Not selected'}</span>
                   </div>
+
+                  {formData.subStrandId && (
+                    <div className="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg">
+                      <span className="text-sm font-medium text-gray-600">Existing Content Standards:</span>
+                      <span className="text-sm font-semibold text-gray-900">
+                        {contentStandards.filter(cs => cs.subStrandId === formData.subStrandId).length}
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Validation Status */}
@@ -593,6 +634,20 @@ const validateForm = useCallback(() => {
                         <AlertCircle className="w-4 h-4 mr-1 flex-shrink-0" />
                         {getFieldError('name')}
                       </p>
+                    )}
+                    {formData.name.trim() && formData.subStrandId && checkForDuplicate(formData.name, formData.subStrandId) && (
+                      <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                        <div className="flex items-start">
+                          <AlertCircle className="w-4 h-4 text-red-500 mr-2 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="text-sm text-red-800 font-medium">Duplicate Content Standard</p>
+                            <p className="text-xs text-red-700 mt-1">
+                              A content standard with the name "{formData.name}" already exists for this sub-strand. 
+                              Please choose a different name or select a different sub-strand.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
                     )}
                   </div>
 
@@ -926,6 +981,15 @@ const validateForm = useCallback(() => {
                         <span className="text-sm font-medium text-gray-600">Sub-Strand:</span>
                         <span className="text-sm font-semibold text-gray-900 truncate ml-2">{formData.subStrand || 'Not selected'}</span>
                       </div>
+
+                      {formData.subStrandId && (
+                        <div className="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg">
+                          <span className="text-sm font-medium text-gray-600">Existing Content Standards:</span>
+                          <span className="text-sm font-semibold text-gray-900">
+                            {contentStandards.filter(cs => cs.subStrandId === formData.subStrandId).length}
+                          </span>
+                        </div>
+                      )}
                     </div>
 
                     {/* Validation Status */}

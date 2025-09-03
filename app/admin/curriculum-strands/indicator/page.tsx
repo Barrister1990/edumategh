@@ -53,12 +53,14 @@ const AddNewIndicator = () => {
     strands = [],
     subStrands = [],
     contentStandards = [],
+    indicators = [],
     isCreating = false,
     error,
     fetchSubjects,
     fetchStrands,
     fetchSubStrands,
     fetchContentStandards,
+    fetchIndicators,
     createIndicator,
     clearError
   } = useCurriculumStore();
@@ -228,6 +230,15 @@ const progressPercentage = useMemo(() => {
     }
   }, [formData.subStrandId, fetchContentStandards]);
 
+  // Load indicators when content standard changes
+  useEffect(() => {
+    if (fetchIndicators && formData.contentStandardId) {
+      fetchIndicators(formData.contentStandardId).catch(err => {
+        console.error('Failed to load indicators:', err);
+      });
+    }
+  }, [formData.contentStandardId, fetchIndicators]);
+
   // Reset dependent fields when parent selections change
   useEffect(() => {
     setFormData(prev => ({ 
@@ -324,6 +335,16 @@ const progressPercentage = useMemo(() => {
     }
   }, [availableSubjects, availableStrands, availableSubStrands, availableContentStandards]);
 
+// Check for duplicate indicators
+const checkForDuplicate = useCallback((name: string, contentStandardId: string): boolean => {
+  if (!name.trim() || !contentStandardId) return false;
+  
+  return indicators.some(indicator => 
+    indicator.contentStandardId === contentStandardId && 
+    indicator.name.toLowerCase().trim() === name.toLowerCase().trim()
+  );
+}, [indicators]);
+
 const validateForm = useCallback(() => {
   const errors: string[] = [];
   
@@ -351,8 +372,13 @@ const validateForm = useCallback(() => {
     errors.push('Please select a course for SHS');
   }
 
+  // Check for duplicate indicator
+  if (formData.name.trim() && formData.contentStandardId && checkForDuplicate(formData.name, formData.contentStandardId)) {
+    errors.push('An indicator with this name already exists for the selected content standard');
+  }
+
   return errors;
-}, [formData]);
+}, [formData, checkForDuplicate]);
 
   const handleSubmit = useCallback(async () => {
     const validationErrors = validateForm();
@@ -409,7 +435,13 @@ const getFieldError = useCallback((fieldName: string): string => {
   
   switch (fieldName) {
     case 'name':
-      return formData.name.trim() === '' ? 'Indicator name is required' : '';
+      if (formData.name.trim() === '') {
+        return 'Indicator name is required';
+      }
+      if (formData.name.trim() && formData.contentStandardId && checkForDuplicate(formData.name, formData.contentStandardId)) {
+        return 'An indicator with this name already exists for the selected content standard';
+      }
+      return '';
     case 'subjectId':
       return formData.subjectId === '' ? 'Please select a subject' : '';
     case 'strandId':
@@ -423,7 +455,7 @@ const getFieldError = useCallback((fieldName: string): string => {
     default:
       return '';
   }
-}, [formData, touchedFields]);
+}, [formData, touchedFields, checkForDuplicate]);
 
   if (isLoading) {
     return (
@@ -531,6 +563,15 @@ const getFieldError = useCallback((fieldName: string): string => {
                     <span className="text-sm font-medium text-gray-600">Content Standard:</span>
                     <span className="text-sm font-semibold text-gray-900 truncate ml-2">{formData.contentStandard || 'Not selected'}</span>
                   </div>
+
+                  {formData.contentStandardId && (
+                    <div className="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg">
+                      <span className="text-sm font-medium text-gray-600">Existing Indicators:</span>
+                      <span className="text-sm font-semibold text-gray-900">
+                        {indicators.filter(indicator => indicator.contentStandardId === formData.contentStandardId).length}
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Validation Status */}
@@ -657,6 +698,20 @@ const getFieldError = useCallback((fieldName: string): string => {
                         <AlertCircle className="w-4 h-4 mr-1 flex-shrink-0" />
                         {getFieldError('name')}
                       </p>
+                    )}
+                    {formData.name.trim() && formData.contentStandardId && checkForDuplicate(formData.name, formData.contentStandardId) && (
+                      <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                        <div className="flex items-start">
+                          <AlertCircle className="w-4 h-4 text-red-500 mr-2 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="text-sm text-red-800 font-medium">Duplicate Indicator</p>
+                            <p className="text-xs text-red-700 mt-1">
+                              An indicator with the name "{formData.name}" already exists for this content standard. 
+                              Please choose a different name or select a different content standard.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
                     )}
                   </div>
 
@@ -1090,6 +1145,15 @@ const getFieldError = useCallback((fieldName: string): string => {
                             {formData.contentStandard || 'Not selected'}
                           </span>
                         </div>
+
+                        {formData.contentStandardId && (
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-sm font-medium text-gray-600">Existing Indicators:</span>
+                            <span className="text-sm font-semibold text-gray-900">
+                              {indicators.filter(indicator => indicator.contentStandardId === formData.contentStandardId).length}
+                            </span>
+                          </div>
+                        )}
                       </div>
                     </div>
 
