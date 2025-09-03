@@ -642,7 +642,7 @@ const validateForm = useCallback(() => {
                           <div>
                             <p className="text-sm text-red-800 font-medium">Duplicate Content Standard</p>
                             <p className="text-xs text-red-700 mt-1">
-                              A content standard with the name "{formData.name}" already exists for this sub-strand. 
+                              A content standard with the name &ldquo;{formData.name}&ldquo; already exists for this sub-strand. 
                               Please choose a different name or select a different sub-strand.
                             </p>
                           </div>

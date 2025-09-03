@@ -706,7 +706,7 @@ const getFieldError = useCallback((fieldName: string): string => {
                           <div>
                             <p className="text-sm text-red-800 font-medium">Duplicate Indicator</p>
                             <p className="text-xs text-red-700 mt-1">
-                              An indicator with the name "{formData.name}" already exists for this content standard. 
+                              An indicator with the name &ldquo;{formData.name}&ldquo; already exists for this content standard. 
                               Please choose a different name or select a different content standard.
                             </p>
                           </div>
