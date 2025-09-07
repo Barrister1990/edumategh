@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
         'X-Title': process.env.SITE_NAME || '',
       },
       body: JSON.stringify({
-        model: 'deepseek/deepseek-r1-0528:free',
+        model: 'deepseek/deepseek-chat-v3.1:free',
         temperature: 0.7,
         messages: [
           {
