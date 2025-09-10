@@ -15,6 +15,8 @@ export interface CreateTextbookInput {
   class: string;
   course?: string; // For SHS only
   subject: string;
+  subject_id: string;
+  reference: 'learner' | 'teacher';
 }
 
 export interface UpdateTextbookInput extends Partial<CreateTextbookInput> {
@@ -34,6 +36,8 @@ export interface AdminTextbook {
   class: string;
   course: string | null;
   subject: string;
+  subject_id: string;
+  reference: 'learner' | 'teacher';
   created_at: string;
   updated_at: string;
 }
@@ -534,6 +538,8 @@ if (level === 'SHS' && course) {
         class: originalBook.class,
         course: originalBook.course,
         subject: originalBook.subject,
+        subject_id: originalBook.subject_id,
+        reference: originalBook.reference || 'learner', // Default to learner if not set
       };
       
       const { data, error } = await supabase

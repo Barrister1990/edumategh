@@ -66,6 +66,8 @@ interface FormData {
   class: string;
   course: string;
   subject: string;
+  subject_id: string;
+  reference: 'learner' | 'teacher';
 }
 
 interface ValidationErrors {
@@ -78,6 +80,8 @@ interface ValidationErrors {
   class?: string;
   course?: string;
   subject?: string;
+  subject_id?: string;
+  reference?: string;
   pdf?: string;
   cover?: string;
 }
@@ -331,7 +335,9 @@ export default function NewTextbookPage() {
     level: '',
     class: '',
     course: '',
-    subject: ''
+    subject: '',
+    subject_id: '',
+    reference: 'learner'
   };
   
   // Form state
@@ -387,6 +393,7 @@ useEffect(() => {
     setFormData(prev => ({
       ...prev,
       subject: '',
+      subject_id: '',
       course: (prev.level === 'KG' || prev.level === 'Basic' || prev.level === 'JHS') ? '' : prev.course
     }));
   }, [formData.level, formData.class]);
@@ -439,6 +446,8 @@ useEffect(() => {
     if (!formData.level) errors.level = 'Level is required';
     if (!formData.class) errors.class = 'Class is required';
     if (!formData.subject) errors.subject = 'Subject is required';
+    if (!formData.subject_id) errors.subject_id = 'Subject ID is required';
+    if (!formData.reference) errors.reference = 'Reference type is required';
     if (formData.level === 'SHS' && !formData.course) errors.course = 'Course is required for SHS';
     if (!pdfFile) errors.pdf = 'PDF file is required';
     
@@ -479,7 +488,9 @@ useEffect(() => {
         level: formData.level as string,
         class: formData.class as string,
         course: formData.level === 'SHS' ? formData.course : undefined,
-        subject: formData.subject
+        subject: formData.subject,
+        subject_id: formData.subject_id,
+        reference: formData.reference
       };
       
       // Create textbook using store method
@@ -694,25 +705,31 @@ useEffect(() => {
   <option value="">Select class</option>
   {formData.level === 'KG' ? (
     <>
-      <option value="1">KG 1</option>
-      <option value="2">KG 2</option>
+      <option value="KG 1">KG 1</option>
+      <option value="KG 2">KG 2</option>
     </>
   ) : formData.level === 'Basic' ? (
     <>
-      <option value="1">Basic 1</option>
-      <option value="2">Basic 2</option>
-      <option value="3">Basic 3</option>
-      <option value="4">Basic 4</option>
-      <option value="5">Basic 5</option>
-      <option value="6">Basic 6</option>
+      <option value="Basic 1">Basic 1</option>
+      <option value="Basic 2">Basic 2</option>
+      <option value="Basic 3">Basic 3</option>
+      <option value="Basic 4">Basic 4</option>
+      <option value="Basic 5">Basic 5</option>
+      <option value="Basic 6">Basic 6</option>
     </>
-  ) : (
+  ) : formData.level === 'JHS' ? (
     <>
-      <option value="1">Class 1</option>
-      <option value="2">Class 2</option>
-      <option value="3">Class 3</option>
+      <option value="JHS 1">JHS 1</option>
+      <option value="JHS 2">JHS 2</option>
+      <option value="JHS 3">JHS 3</option>
     </>
-  )}
+  ) : formData.level === 'SHS' ? (
+    <>
+      <option value="SHS 1">SHS 1</option>
+      <option value="SHS 2">SHS 2</option>
+      <option value="SHS 3">SHS 3</option>
+    </>
+  ) : null}
 </ModernSelect>
             </div>
 
@@ -756,7 +773,12 @@ useEffect(() => {
                 icon={BookOpen}
                 required
                 value={formData.subject}
-                onChange={(e) => handleInputChange('subject', e.target.value)}
+                onChange={(e) => {
+                  const selectedOption = e.target.selectedOptions[0];
+                  const subjectId = selectedOption?.getAttribute('data-subject-id') || '';
+                  handleInputChange('subject', e.target.value);
+                  handleInputChange('subject_id', subjectId);
+                }}
                 error={validationErrors.subject}
                 disabled={!formData.level || (formData.level === 'SHS' && !formData.course) || isLoadingSubjects}
               >
@@ -773,7 +795,7 @@ useEffect(() => {
                   }
                 </option>
                 {availableSubjects.map(subject => (
-                  <option key={subject.id} value={subject.name}>
+                  <option key={subject.id} value={subject.name} data-subject-id={subject.id}>
                     {subject.name}
                   </option>
                 ))}
@@ -790,6 +812,21 @@ useEffect(() => {
                   No subjects found for {formData.course} course. Please ensure subjects are available.
                 </p>
               )}
+            </div>
+
+            <div className="mt-6">
+              <ModernSelect
+                label="Reference Type"
+                icon={User}
+                required
+                value={formData.reference}
+                onChange={(e) => handleInputChange('reference', e.target.value as 'learner' | 'teacher')}
+                error={validationErrors.reference}
+              >
+                <option value="">Select reference type</option>
+                <option value="learner">Learner</option>
+                <option value="teacher">Teacher</option>
+              </ModernSelect>
             </div>
           </div>
 

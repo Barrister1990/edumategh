@@ -460,6 +460,15 @@ const handleDuplicate = useCallback(async (id: string) => { // Changed from stri
                               <GraduationCap className="w-4 h-4" />
                               {textbook.subject}
                             </div>
+                            <div className="flex items-center gap-1">
+                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                textbook.reference === 'teacher' 
+                                  ? 'bg-blue-100 text-blue-800 border border-blue-200' 
+                                  : 'bg-green-100 text-green-800 border border-green-200'
+                              }`}>
+                                {textbook.reference === 'teacher' ? 'Teacher' : 'Learner'}
+                              </span>
+                            </div>
                           </div>
                         </div>
 
@@ -467,7 +476,7 @@ const handleDuplicate = useCallback(async (id: string) => { // Changed from stri
                         <div className="flex items-start gap-3">
                           <div className="flex flex-col gap-2">
                             <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getLevelBadgeColor(textbook.level)}`}>
-                              {textbook.level} Class {textbook.class}
+                              {textbook.class}
                             </span>
                             {textbook.course && (
                               <span className="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200">
@@ -595,7 +604,7 @@ const handleDuplicate = useCallback(async (id: string) => { // Changed from stri
                   <p className="text-gray-600 mb-4">{selectedTextbook.description}</p>
                   <div className="flex gap-2">
                     <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getLevelBadgeColor(selectedTextbook.level)}`}>
-                      {selectedTextbook.level} Class {selectedTextbook.class}
+                      {selectedTextbook.class}
                     </span>
                     {selectedTextbook.course && (
                       <span className="px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-700 border border-gray-200">
@@ -622,6 +631,18 @@ const handleDuplicate = useCallback(async (id: string) => { // Changed from stri
                 <div>
                   <label className="text-sm font-medium text-gray-500">Subject</label>
                   <p className="text-gray-900">{selectedTextbook.subject}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Reference Type</label>
+                  <p className="text-gray-900">
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      selectedTextbook.reference === 'teacher' 
+                        ? 'bg-blue-100 text-blue-800 border border-blue-200' 
+                        : 'bg-green-100 text-green-800 border border-green-200'
+                    }`}>
+                      {selectedTextbook.reference === 'teacher' ? 'Teacher' : 'Learner'}
+                    </span>
+                  </p>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-500">Created</label>
