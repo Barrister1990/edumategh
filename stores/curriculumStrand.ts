@@ -559,7 +559,7 @@ if (level === 'SHS' && course) {
         subject_name: input.subject,
         level: input.level,
         class: input.class,
-        course: input.level === 'SHS' ? input.course : null,
+        
       };
       
       const { data, error } = await supabase
